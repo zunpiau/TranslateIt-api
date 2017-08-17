@@ -2,11 +2,16 @@ package zjp.translateit.web.domain;
 
 public class Response {
 
-    private String status;
+    private int statusCode;
     private String message;
 
-    public Response(String status, String message) {
-        this.status = status;
+    public Response(int statusCode, String message) {
+        this.statusCode = statusCode;
         this.message = message;
     }
+
+    public static Response getResponseOK() {
+        return new Response(200, "");
+    }
+
 }

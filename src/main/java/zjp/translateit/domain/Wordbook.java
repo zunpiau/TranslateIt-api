@@ -1,10 +1,13 @@
 package zjp.translateit.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Wordbook {
 
-    private Long id;
+    @JsonIgnore
     private Long uid;
-    private String wordName;
+
+    private String word;
     private String phEn;
     private String phAm;
     private String phEnUrl;
@@ -13,14 +16,14 @@ public class Wordbook {
     private String means;
     private String sentence;
     private String note;
+    private String category;
 
     public Wordbook() {
     }
 
-    public Wordbook(Long uid, String wordName, String phEn, String phAm, String phEnUrl,
-                    String phAmUrl, String exchange, String means, String sentence, String note) {
-        this.uid = uid;
-        this.wordName = wordName;
+    public Wordbook(String word, String phEn, String phAm, String phEnUrl,
+                    String phAmUrl, String exchange, String means, String sentence, String note, String category) {
+        this.word = word;
         this.phEn = phEn;
         this.phAm = phAm;
         this.phEnUrl = phEnUrl;
@@ -28,6 +31,15 @@ public class Wordbook {
         this.exchange = exchange;
         this.means = means;
         this.sentence = sentence;
+        this.note = note;
+        this.category = category;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
         this.note = note;
     }
 
@@ -71,12 +83,12 @@ public class Wordbook {
         this.means = means;
     }
 
-    public String getWordName() {
-        return wordName;
+    public String getWord() {
+        return word;
     }
 
-    public void setWordName(String wordName) {
-        this.wordName = wordName;
+    public void setWord(String word) {
+        this.word = word;
     }
 
     public String getPhAmUrl() {
@@ -95,4 +107,11 @@ public class Wordbook {
         this.sentence = sentence;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
 }

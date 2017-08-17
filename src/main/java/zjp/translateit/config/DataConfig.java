@@ -31,7 +31,8 @@ public class DataConfig {
     @Bean
     public DataSource dataSource() {
         MysqlDataSource dataSource = new MysqlDataSource();
-        dataSource.setURL("jdbc:mysql://localhost:3306/translateit?characterSetResults=utf8&characterEncoding=utf8&useUnicode=true&nullNamePatternMatchesAll=true");
+        dataSource.setURL("jdbc:mysql://localhost:3306/translateit?" +
+                "characterSetResults=utf8&characterEncoding=utf8&useUnicode=true&nullNamePatternMatchesAll=true");
         dataSource.setUser(user);
         dataSource.setPassword(password);
         ResourceDatabasePopulator populator = new ResourceDatabasePopulator();

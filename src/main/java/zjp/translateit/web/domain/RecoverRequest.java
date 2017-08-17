@@ -1,22 +1,30 @@
 package zjp.translateit.web.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import java.util.Date;
+import java.util.List;
 
 public class RecoverRequest {
 
     @JsonSerialize(as = Token.class)
     private Token token;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date date;
+    @JsonProperty("words")
+    private List<String> words;
 
-    public Date getDate() {
-        return date;
+    public List<String> getWords() {
+        return words;
+    }
+
+    public void setWords(List<String> words) {
+        this.words = words;
     }
 
     public Token getToken() {
         return token;
+    }
+
+    public void setToken(Token token) {
+        this.token = token;
     }
 }

@@ -6,8 +6,16 @@ import java.util.List;
 
 public interface WordbookRepository {
 
-    public int insert(List<Wordbook> wordbooks);
+    void insert(long uid, List<Wordbook> wordbooks);
 
-    public int update(List<Wordbook> wordbooks);
+    void update(long uid, List<Wordbook> wordbooks);
+
+    List<Wordbook> getWordbook(long uid, List<String> words);
+
+    List<Wordbook> getWordbookNotIn(long uid, List<String> words);
+
+    void deleteNotIn(long uid, List<String> words);
+
+    List<String> getWords(long uid);
 
 }

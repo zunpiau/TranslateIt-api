@@ -21,7 +21,6 @@ import zjp.translateit.web.domain.LoginRequest;
 import zjp.translateit.web.domain.Token;
 import zjp.translateit.web.domain.UserForm;
 import zjp.translateit.web.domain.VerifyCodeRequest;
-import zjp.translateit.web.exception.InnerException;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -73,12 +72,13 @@ public class UserService {
 
     public Token generateToken(long id) {
         long currentTime = System.currentTimeMillis();
-        String key = EncryptUtil.getMD5("" + id + tokenSalt + currentTime);
+        String key = EncryptUtil.getMD5(id + "." + tokenSalt + "." + currentTime);
         return new Token(id, currentTime, key);
     }
 
-    public void deleteUser(long id) {
-        repository.updateUserStatus(id, User.STATUS.DELETE);
+    public boolean checkToken(Token token) {
+        String str = token.getId() + "." + tokenSalt + "." + token.getTimestamp();
+        return token.getKey().equals(EncryptUtil.getMD5(str));
     }
 
     public void registerUser(UserForm userForm) {
@@ -106,26 +106,23 @@ public class UserService {
         return userForm.getVerifyCode().equals(verifyCode);
     }
 
-    public void sendVerifyCode(VerifyCodeRequest request) throws InnerException {
+    public boolean sendVerifyCode(VerifyCodeRequest request) throws IOException, ClientException {
         RandomStringGenerator generator = new RandomStringGenerator.Builder().withinRange('a', 'z').build();
         String verifyCode = generator.generate(9);
         String email = request.getEmail();
-        aliEmail(email, verifyCode);
+        if (!aliEmail(email, verifyCode))
+            return false;
         redisTemplate.opsForValue().set(VERIFY_CODE_KEY_PREFIX + email, verifyCode, 30, TimeUnit.MINUTES);
         redisTemplate.opsForValue().set(EMAIL_KEY_PREFIX + email, "", 5, TimeUnit.MINUTES);
+        return true;
     }
 
-    private void aliEmail(String mailTo, String verifyCode) throws InnerException {
+    private boolean aliEmail(String mailTo, String verifyCode) throws IOException, ClientException {
         IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", aliKey, aliSecret);
         IAcsClient client = new DefaultAcsClient(profile);
         SingleSendMailRequest request = new SingleSendMailRequest();
         String template;
-        try {
-            template = new String(Files.readAllBytes(emailTemplate.getFile().toPath()), StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new InnerException("邮件发送失败");
-        }
+        template = new String(Files.readAllBytes(emailTemplate.getFile().toPath()), StandardCharsets.UTF_8);
         String content = MessageFormat.format(template, verifyCode);
         request.setAccountName(aliAccount);
         request.setFromAlias("TranslateIt");
@@ -135,14 +132,8 @@ public class UserService {
         request.setSubject("邮箱验证");
         request.setHtmlBody(content);
         HttpResponse response;
-        try {
-            response = client.doAction(request, true, 2, profile);
-        } catch (ClientException e) {
-            e.printStackTrace();
-            throw new InnerException("邮件发送失败");
-        }
-        if (!response.isSuccess())
-            throw new InnerException("邮件发送失败");
+        response = client.doAction(request, true, 2, profile);
+        return response.isSuccess();
     }
 
     public boolean forbidGetVerifyCode(String email) {

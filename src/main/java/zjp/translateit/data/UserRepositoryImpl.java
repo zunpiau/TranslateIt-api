@@ -35,15 +35,6 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User findUserByName(Long id) {
-        try {
-            return template.queryForObject(SELECT_USER + " where id = ? ", new UserRowMapper(), id);
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
-    }
-
-    @Override
     public User findUserByName(String username) {
         try {
             return template.queryForObject(SELECT_USER + " where name = ? ", new UserRowMapper(), username);
