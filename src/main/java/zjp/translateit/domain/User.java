@@ -1,55 +1,31 @@
 package zjp.translateit.domain;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-
 public class User {
 
     private Long id;
 
-    @NotNull
-    @Size(min = 3, max = 9)
-    @Pattern(regexp = "[0-9a-zA-Z]*")
     private String name;
-
-    @NotNull
-    @Size(min = 6, max = 9)
-    @Pattern(regexp = "[0-9a-zA-Z]*")
     private String password;
-
-    @NotNull
-    @Pattern(regexp = "[a-zA-Z0-9+._%+-]+@[a-zA-Z0-9]+[.][a-zA-Z0-9]+")
     private String email;
-
     private int status;
 
     public User() {
     }
 
-    public User(@NotNull @Size(min = 3, max = 9) @Pattern(regexp = "[0-9a-zA-Z]*") String name,
-                @NotNull @Size(min = 6, max = 9) @Pattern(regexp = "[0-9a-zA-Z]*") String password,
-                @NotNull String email,
-                int status) {
+    public User(String name, String password, String email, int status) {
         this.name = name;
         this.password = password;
         this.email = email;
         this.status = status;
     }
 
-    public User(@NotNull @Size(min = 3, max = 9) @Pattern(regexp = "[0-9a-zA-Z]*") String name,
-                @NotNull @Size(min = 6, max = 9) @Pattern(regexp = "[0-9a-zA-Z]*") String password,
-                @NotNull String email) {
+    public User(String name, String password, String email) {
         this.name = name;
         this.password = password;
         this.email = email;
     }
 
-    public User(Long id,
-                @NotNull @Size(min = 3, max = 9) @Pattern(regexp = "[0-9a-zA-Z]*") String name,
-                @NotNull @Size(min = 6, max = 9) @Pattern(regexp = "[0-9a-zA-Z]*") String password,
-                @NotNull String email,
-                int status) {
+    public User(Long id, String name, String password, String email, int status) {
         this.id = id;
         this.name = name;
         this.password = password;

@@ -9,10 +9,6 @@ public interface UserRepository {
 
     User findUserByEmail(String username);
 
-    User findUserByNameAndPassword(String username, String passwordEncrypted);
-
     User add(User user);
-
-    void updateUserStatus(long id, int status);
 
 }

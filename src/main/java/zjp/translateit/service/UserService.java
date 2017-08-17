@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import zjp.translateit.data.UserRepository;
 import zjp.translateit.domain.User;
@@ -32,16 +33,13 @@ import java.util.concurrent.TimeUnit;
 @PropertySource(value = "classpath:app.props")
 public class UserService {
 
-    @SuppressWarnings("FieldCanBeLocal")
+
     private final UserRepository repository;
     private final StringRedisTemplate redisTemplate;
+    @SuppressWarnings("FieldCanBeLocal")
     private final String EMAIL_KEY_PREFIX = "email:";
     private final String VERIFY_CODE_KEY_PREFIX = "verify.code:";
 
-    @Value("${salt.password.suffix}")
-    private String saltSuffix;
-    @Value("${salt.password.prefix}")
-    private String saltPrefix;
     @Value("${salt.token}")
     private String tokenSalt;
     @Value("${salt.verify}")
@@ -63,26 +61,29 @@ public class UserService {
     }
 
     public User getUserFromLoginRequest(LoginRequest request) {
-        return repository.findUserByNameAndPassword(request.getName(), encryptPassword(request.getPassword()));
-    }
-
-    private String encryptPassword(String password) {
-        return EncryptUtil.getMD5(saltPrefix + password + saltSuffix);
+        User user = repository.findUserByName(request.getName());
+        if (user == null)
+            return null;
+        if (BCrypt.checkpw(request.getPassword(), user.getPassword()))
+            return user;
+        else
+            return null;
     }
 
     public Token generateToken(long id) {
         long currentTime = System.currentTimeMillis();
-        String key = EncryptUtil.getMD5(id + "." + tokenSalt + "." + currentTime);
+        String key = EncryptUtil.getMD5(id + tokenSalt + currentTime);
         return new Token(id, currentTime, key);
     }
 
     public boolean checkToken(Token token) {
-        String str = token.getId() + "." + tokenSalt + "." + token.getTimestamp();
+        String str = token.getId() + tokenSalt + token.getTimestamp();
         return token.getKey().equals(EncryptUtil.getMD5(str));
     }
 
     public void registerUser(UserForm userForm) {
-        repository.add(new User(userForm.getName(), encryptPassword(userForm.getPassword()), userForm.getEmail()));
+        String passwordSalted = BCrypt.hashpw(userForm.getPassword(), BCrypt.gensalt(10));
+        repository.add(new User(userForm.getName(), passwordSalted, userForm.getEmail()));
         redisTemplate.delete(VERIFY_CODE_KEY_PREFIX + userForm.getEmail());
         redisTemplate.delete(EMAIL_KEY_PREFIX + userForm.getEmail());
     }
@@ -96,7 +97,7 @@ public class UserService {
     }
 
     public boolean checkVerifyCodeSign(VerifyCodeRequest request) {
-        String raw = request.getEmail() + "." + verifySalt + "." + request.getTimestamp();
+        String raw = request.getEmail() + verifySalt + request.getTimestamp();
         String sign = EncryptUtil.getMD5(raw);
         return request.getSign().equals(sign);
     }

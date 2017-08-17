@@ -10,6 +10,14 @@ public class Response {
         this.message = message;
     }
 
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
     public static Response getResponseOK() {
         return new Response(200, "");
     }

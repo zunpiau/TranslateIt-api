@@ -53,18 +53,6 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User findUserByNameAndPassword(String username, String passwordEncrypted) {
-        try {
-            return template.queryForObject(SELECT_USER + " where name = ? and password = ? ",
-                    new UserRowMapper(),
-                    username,
-                    passwordEncrypted);
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
-    }
-
-    @Override
     public User add(User user) {
         SimpleJdbcInsert insert = new SimpleJdbcInsert(template).withTableName("user");
         insert.setGeneratedKeyName("id");
@@ -75,11 +63,6 @@ public class UserRepositoryImpl implements UserRepository {
         args.put("status", User.STATUS.NORMAL);
         long id = insert.executeAndReturnKey(args).longValue();
         return User.setUserId(id, user);
-    }
-
-    @Override
-    public void updateUserStatus(long id, int status) {
-        template.update("update user set status = ? where id = ?", status, id);
     }
 
     static class UserRowMapper implements RowMapper<User> {
