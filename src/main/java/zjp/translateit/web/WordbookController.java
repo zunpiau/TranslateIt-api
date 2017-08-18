@@ -43,8 +43,7 @@ public class WordbookController {
         Token token = backupRequest.getToken();
         long uid = token.getId();
         checkParameter(backupRequest.getToken(), result);
-        wordbookService.deleteWordbooks(uid, backupRequest.getWords());
-        wordbookService.insertOrUpdate(uid, backupRequest.getWordbooks());
+        wordbookService.backupWordbook(uid, backupRequest.getWords(), backupRequest.getWordbooks());
         return Response.getResponseOK();
     }
 

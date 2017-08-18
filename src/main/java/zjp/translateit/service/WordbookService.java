@@ -2,6 +2,7 @@ package zjp.translateit.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import zjp.translateit.data.WordbookRepository;
 import zjp.translateit.domain.Wordbook;
 
@@ -18,21 +19,18 @@ public class WordbookService {
         this.repository = repository;
     }
 
-    public void deleteWordbooks(long uid, List<String> words) {
+    @Transactional
+    public void backupWordbook(long uid, List<String> words, List<Wordbook> wordbooksModify) {
         repository.deleteNotIn(uid, words);
-    }
-
-    public void insertOrUpdate(long uid, List<Wordbook> wordbooksAll) {
         List<String> wordsHaving = repository.getWords(uid);
-        System.out.println(wordbooksAll.size());
-        ArrayList<Wordbook> wordbooksNew = new ArrayList<>(wordbooksAll.size());
-        for (Wordbook wordbook : wordbooksAll) {
+        ArrayList<Wordbook> wordbooksNew = new ArrayList<>(wordbooksModify.size());
+        for (Wordbook wordbook : wordbooksModify) {
             if (!wordsHaving.contains(wordbook.getWord())) {
                 wordbooksNew.add(wordbook);
             }
         }
-        wordbooksAll.removeAll(wordbooksNew);
-        repository.update(uid, wordbooksAll);
+        wordbooksModify.removeAll(wordbooksNew);
+        repository.update(uid, wordbooksModify);
         repository.insert(uid, wordbooksNew);
     }
 

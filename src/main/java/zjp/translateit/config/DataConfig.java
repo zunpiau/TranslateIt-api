@@ -10,13 +10,16 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 
 @Configuration
 @PropertySource(value = "classpath:app.props")
+@EnableTransactionManagement
 public class DataConfig {
 
     @Value("classpath:data.sql")
@@ -27,6 +30,11 @@ public class DataConfig {
 
     @Value("${db.password}")
     private String password;
+
+    @Bean
+    public DataSourceTransactionManager txManager(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
 
     @Bean
     public DataSource dataSource() {
@@ -56,7 +64,9 @@ public class DataConfig {
 
     @Bean
     public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory connectionFactory) {
-        return new StringRedisTemplate(connectionFactory);
+        StringRedisTemplate template = new StringRedisTemplate(connectionFactory);
+        template.setEnableTransactionSupport(true);
+        return template;
     }
 
 }

@@ -15,6 +15,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import zjp.translateit.data.UserRepository;
 import zjp.translateit.domain.User;
 import zjp.translateit.util.EncryptUtil;
@@ -81,6 +82,7 @@ public class UserService {
         return token.getKey().equals(EncryptUtil.getMD5(str));
     }
 
+    @Transactional
     public void registerUser(UserForm userForm) {
         String passwordSalted = BCrypt.hashpw(userForm.getPassword(), BCrypt.gensalt(10));
         repository.add(new User(userForm.getName(), passwordSalted, userForm.getEmail()));
@@ -107,6 +109,7 @@ public class UserService {
         return userForm.getVerifyCode().equals(verifyCode);
     }
 
+    @Transactional
     public boolean sendVerifyCode(VerifyCodeRequest request) throws IOException, ClientException {
         RandomStringGenerator generator = new RandomStringGenerator.Builder().withinRange('a', 'z').build();
         String verifyCode = generator.generate(9);
