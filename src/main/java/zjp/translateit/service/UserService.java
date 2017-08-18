@@ -8,6 +8,8 @@ import com.aliyuncs.http.HttpResponse;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
 import org.apache.commons.text.RandomStringGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -54,6 +56,8 @@ public class UserService {
 
     @Value("classpath:email-template.html")
     private Resource emailTemplate;
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public UserService(StringRedisTemplate redisTemplate, UserRepository repository) {
@@ -114,6 +118,7 @@ public class UserService {
         RandomStringGenerator generator = new RandomStringGenerator.Builder().withinRange('a', 'z').build();
         String verifyCode = generator.generate(9);
         String email = request.getEmail();
+        logger.debug("Send email to " + email + " , verifyCode: " + verifyCode);
         if (!aliEmail(email, verifyCode))
             return false;
         redisTemplate.opsForValue().set(VERIFY_CODE_KEY_PREFIX + email, verifyCode, 30, TimeUnit.MINUTES);

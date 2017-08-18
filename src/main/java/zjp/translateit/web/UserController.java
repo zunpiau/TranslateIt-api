@@ -1,6 +1,8 @@
 package zjp.translateit.web;
 
 import com.aliyuncs.exceptions.ClientException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,6 +24,7 @@ public class UserController {
     @SuppressWarnings("FieldCanBeLocal")
     private final long REQUEST_EXPIRE = 5 * 60 * 1000;    //5min
     private UserService userService;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public void setUserService(UserService userService) {
@@ -34,6 +37,7 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Response getVerifyCode(@Valid @RequestBody VerifyCodeRequest request, BindingResult result) {
+        logger.debug("email " + request.getEmail() + " request verify");
         if (result.hasErrors())
             throw new BadRequestException("参数不合法");
         if (!userService.checkVerifyCodeSign(request))
@@ -60,6 +64,7 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Token login(@RequestBody LoginRequest request) {
+        logger.debug("user " + request.getName() + " login");
         User user = userService.getUserFromLoginRequest(request);
         if (user == null) {
             throw new BadRequestException("用户名和密码不匹配");
@@ -75,7 +80,7 @@ public class UserController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Response register(@Valid @RequestBody UserForm userForm, BindingResult result) {
-
+        logger.debug("email " + userForm.getEmail() + " register");
         if (!userService.checkVerifyCode(userForm))
             throw new BadRequestException("验证码不存在或与邮箱不匹配");
         if (result.hasErrors())
