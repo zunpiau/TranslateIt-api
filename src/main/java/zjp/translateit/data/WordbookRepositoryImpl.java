@@ -95,6 +95,12 @@ public class WordbookRepositoryImpl implements WordbookRepository {
 
     @Override
     public List<Wordbook> getWordbookNotIn(long uid, List<String> words) {
+        if (words.isEmpty()) {
+            return template.query("select word,phEn,phAm,phEnUrl,phAmUrl,means,exchange,sentence,note, category " +
+                            "from wordbooks where uid = ? ",
+                    new WordbookRowMapper(),
+                    uid);
+        }
         HashMap<String, Object> param = new HashMap<>(3);
         param.put("uid", uid);
         param.put("words", words);
@@ -106,11 +112,15 @@ public class WordbookRepositoryImpl implements WordbookRepository {
     }
 
     public void deleteNotIn(long uid, List<String> words) {
-        HashMap<String, Object> param = new HashMap<>(3);
-        param.put("uid", uid);
-        param.put("words", words);
-        NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(template);
-        namedParameterJdbcTemplate.update("delete from wordbooks where uid = :uid and word not in (:words)", param);
+        if (words.isEmpty()) {
+            template.update("delete from wordbooks where uid = ? ", uid);
+        } else {
+            HashMap<String, Object> param = new HashMap<>(3);
+            param.put("uid", uid);
+            param.put("words", words);
+            NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(template);
+            namedParameterJdbcTemplate.update("delete from wordbooks where uid = :uid and word not in (:words)", param);
+        }
     }
 
     public List<String> getWords(long uid) {
