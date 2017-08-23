@@ -1,5 +1,7 @@
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS wordbooks;
+DROP TABLE IF EXISTS token;
+
 CREATE TABLE user
 (
   id       INT AUTO_INCREMENT
@@ -8,7 +10,9 @@ CREATE TABLE user
   password VARCHAR(128) NOT NULL,
   email    VARCHAR(64)  NOT NULL,
   status   TINYINT      NOT NULL,
-  UNIQUE (name, email)
+  UNIQUE (name, email),
+  INDEX (name),
+  INDEX (email)
 )
   CHARSET utf8mb4;
 
@@ -26,7 +30,21 @@ CREATE TABLE wordbooks
   exchange VARCHAR(1024) DEFAULT NULL,
   sentence VARCHAR(4096) DEFAULT NULL,
   note     VARCHAR(1024) DEFAULT NULL,
-  category VARCHAR(32)   DEFAULT NULL
+  category VARCHAR(32)   DEFAULT NULL,
+  INDEX (uid),
+  INDEX (uid, word)
+)
+  CHARSET utf8mb4;
+
+CREATE TABLE token
+(
+  id   INT AUTO_INCREMENT
+    PRIMARY KEY,
+  uid  INT NOT NULL,
+  time LONG,
+  sign VARCHAR(64),
+  used BOOL,
+  INDEX (id DESC, uid)
 )
   CHARSET utf8mb4;
 

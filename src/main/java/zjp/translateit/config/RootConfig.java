@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import({DataConfig.class})
+@Import({DataConfig.class, LogbackConfig.class})
 @ComponentScan(basePackages = "zjp.translateit")
 public class RootConfig {
 

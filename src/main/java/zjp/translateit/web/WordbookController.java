@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import zjp.translateit.domain.Wordbook;
-import zjp.translateit.service.UserService;
+import zjp.translateit.service.TokenService;
 import zjp.translateit.service.WordbookService;
 import zjp.translateit.web.domain.BackupRequest;
 import zjp.translateit.web.domain.RecoverRequest;
@@ -24,15 +24,15 @@ import java.util.List;
 public class WordbookController {
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final long TOKEN_EXPIRE = 10 * 60 * 1000;
+    private final long TOKEN_EXPIRE = 5 * 60 * 1000;
 
     private WordbookService wordbookService;
-    private UserService userService;
+    private TokenService tokenService;
 
     @Autowired
-    public WordbookController(WordbookService wordbookService, UserService userService) {
+    public WordbookController(WordbookService wordbookService, TokenService tokenService) {
         this.wordbookService = wordbookService;
-        this.userService = userService;
+        this.tokenService = tokenService;
     }
 
     @RequestMapping(value = "/backup",
@@ -48,7 +48,7 @@ public class WordbookController {
     }
 
     private void checkParameter(Token token, BindingResult result) {
-        if (result.hasErrors() || !userService.checkToken(token))
+        if (result.hasErrors() || !tokenService.checkToken(token))
             throw new BadRequestException("Token 错误");
         if ((System.currentTimeMillis() - token.getTimestamp()) > TOKEN_EXPIRE)
             throw new BadRequestException("Token 过期");

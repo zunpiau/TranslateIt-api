@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import zjp.translateit.domain.User;
+import zjp.translateit.service.TokenService;
 import zjp.translateit.service.UserService;
 import zjp.translateit.web.domain.*;
 import zjp.translateit.web.exception.BadRequestException;
@@ -24,11 +25,13 @@ public class UserController {
     @SuppressWarnings("FieldCanBeLocal")
     private final long REQUEST_EXPIRE = 5 * 60 * 1000;    //5min
     private UserService userService;
+    private TokenService tokenService;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public void setUserService(UserService userService) {
+    public UserController(UserService userService, TokenService tokenService) {
         this.userService = userService;
+        this.tokenService = tokenService;
     }
 
     @RequestMapping(value = "/getVerifyCode",
@@ -71,7 +74,23 @@ public class UserController {
         }
         if (user.getStatus() == User.STATUS.DELETE)
             throw new BadRequestException(BadRequestException.MESSAGE_USER_DELETED);
-        return userService.generateToken(user.getId());
+        return tokenService.generateToken(user.getId());
+    }
+
+    @RequestMapping(value = "/token",
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public Token token(@RequestBody Token token) {
+        if (!tokenService.checkToken(token)) {
+            throw new BadRequestException("");
+        }
+        if (tokenService.isTokenUsed(token)) {
+            tokenService.setAllTokenUsed(token.getId());
+            throw new BadRequestException("请重新登录");
+        }
+        return tokenService.generateToken(token);
     }
 
     @ResponseStatus(HttpStatus.OK)

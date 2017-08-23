@@ -22,7 +22,6 @@ import zjp.translateit.data.UserRepository;
 import zjp.translateit.domain.User;
 import zjp.translateit.util.EncryptUtil;
 import zjp.translateit.web.domain.LoginRequest;
-import zjp.translateit.web.domain.Token;
 import zjp.translateit.web.domain.UserForm;
 import zjp.translateit.web.domain.VerifyCodeRequest;
 
@@ -33,7 +32,8 @@ import java.text.MessageFormat;
 import java.util.concurrent.TimeUnit;
 
 @Service
-@PropertySource(value = "classpath:app.props")
+@PropertySource(value = "classpath:application.properties")
+@PropertySource(value = "classpath:application-${spring.profiles.active}.properties")
 public class UserService {
 
 
@@ -43,8 +43,6 @@ public class UserService {
     private final String EMAIL_KEY_PREFIX = "email:";
     private final String VERIFY_CODE_KEY_PREFIX = "verify.code:";
 
-    @Value("${salt.token}")
-    private String tokenSalt;
     @Value("${salt.verify}")
     private String verifySalt;
     @Value("${ali.accessKey}")
@@ -73,17 +71,6 @@ public class UserService {
             return user;
         else
             return null;
-    }
-
-    public Token generateToken(long id) {
-        long currentTime = System.currentTimeMillis();
-        String key = EncryptUtil.getMD5(id + tokenSalt + currentTime);
-        return new Token(id, currentTime, key);
-    }
-
-    public boolean checkToken(Token token) {
-        String str = token.getId() + tokenSalt + token.getTimestamp();
-        return token.getKey().equals(EncryptUtil.getMD5(str));
     }
 
     @Transactional
