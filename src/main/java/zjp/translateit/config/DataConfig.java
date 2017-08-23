@@ -4,6 +4,7 @@ import com.mysql.cj.jdbc.MysqlDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -18,7 +19,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 
 @Configuration
-@PropertySource(value = "classpath:app.props")
+@PropertySource(value = "classpath:application.properties")
+@PropertySource(value = "classpath:application-${spring.profiles.active}.properties")
 @EnableTransactionManagement
 public class DataConfig {
 
@@ -36,10 +38,23 @@ public class DataConfig {
         return new DataSourceTransactionManager(dataSource);
     }
 
+
     @Bean
-    public DataSource dataSource() {
+    @Profile("prod")
+    public DataSource dataSourceProd() throws Exception {
         MysqlDataSource dataSource = new MysqlDataSource();
-        dataSource.setURL("jdbc:mysql://localhost:3306/translateit?" +
+        dataSource.setURL("jdbc:mysql://localhost:3306/traapi?" +
+                "characterSetResults=utf8&characterEncoding=utf8&useUnicode=true&nullNamePatternMatchesAll=true");
+        dataSource.setUser(user);
+        dataSource.setPassword(password);
+        return dataSource;
+    }
+
+    @Bean
+    @Profile("dev")
+    public DataSource dataSourceDev() {
+        MysqlDataSource dataSource = new MysqlDataSource();
+        dataSource.setURL("jdbc:mysql://localhost:3306/translateit_dev?" +
                 "characterSetResults=utf8&characterEncoding=utf8&useUnicode=true&nullNamePatternMatchesAll=true");
         dataSource.setUser(user);
         dataSource.setPassword(password);
@@ -48,6 +63,7 @@ public class DataConfig {
         DatabasePopulatorUtils.execute(populator, dataSource);
         return dataSource;
     }
+
 
     @Bean
     public JdbcTemplate userJdbcTemplate(DataSource dataSource) {
