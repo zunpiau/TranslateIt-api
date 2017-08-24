@@ -16,14 +16,6 @@ import org.springframework.context.annotation.Profile;
 public class LogbackConfigProd {
 
     @Bean(initMethod = "start", destroyMethod = "stop")
-    public static PatternLayoutEncoder encoder(LoggerContext ctx) {
-        PatternLayoutEncoder encoder = new PatternLayoutEncoder();
-        encoder.setContext(ctx);
-        encoder.setPattern(" %d{yy-MM-dd HH:mm:ss} [prod] [%-5level] %logger - %msg%n");
-        return encoder;
-    }
-
-    @Bean(initMethod = "start", destroyMethod = "stop")
     public static FileAppender appender(LoggerContext ctx, PatternLayoutEncoder encoder) {
         RollingFileAppender appender = new RollingFileAppender();
         appender.setContext(ctx);

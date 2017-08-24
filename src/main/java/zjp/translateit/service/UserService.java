@@ -74,11 +74,12 @@ public class UserService {
     }
 
     @Transactional
-    public void registerUser(UserForm userForm) {
+    public long registerUser(UserForm userForm) {
         String passwordSalted = BCrypt.hashpw(userForm.getPassword(), BCrypt.gensalt(10));
-        repository.add(new User(userForm.getName(), passwordSalted, userForm.getEmail()));
+        long uid = repository.add(new User(userForm.getName(), passwordSalted, userForm.getEmail()));
         redisTemplate.delete(VERIFY_CODE_KEY_PREFIX + userForm.getEmail());
         redisTemplate.delete(EMAIL_KEY_PREFIX + userForm.getEmail());
+        return uid;
     }
 
     public boolean hasUser(String name) {

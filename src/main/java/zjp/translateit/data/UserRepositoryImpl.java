@@ -53,7 +53,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User add(User user) {
+    public long add(User user) {
         SimpleJdbcInsert insert = new SimpleJdbcInsert(template).withTableName("user");
         insert.setGeneratedKeyName("id");
         HashMap<String, Object> args = new HashMap<>(6);
@@ -61,8 +61,7 @@ public class UserRepositoryImpl implements UserRepository {
         args.put("password", user.getPassword());
         args.put("email", user.getEmail());
         args.put("status", User.STATUS.NORMAL);
-        long id = insert.executeAndReturnKey(args).longValue();
-        return User.setUserId(id, user);
+        return insert.executeAndReturnKey(args).longValue();
     }
 
     static class UserRowMapper implements RowMapper<User> {

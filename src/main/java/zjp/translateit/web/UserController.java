@@ -98,7 +98,7 @@ public class UserController {
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Response register(@Valid @RequestBody UserForm userForm, BindingResult result) {
+    public Token register(@Valid @RequestBody UserForm userForm, BindingResult result) {
         logger.debug("email " + userForm.getEmail() + " register");
         if (!userService.checkVerifyCode(userForm))
             throw new BadRequestException("验证码不存在或与邮箱不匹配");
@@ -107,8 +107,8 @@ public class UserController {
         if (userService.hasUser(userForm.getName()))
             throw new BadRequestException(BadRequestException.MESSAGE_USER_REGISTERED);
 
-        userService.registerUser(userForm);
-        return Response.getResponseOK();
+        long uid = userService.registerUser(userForm);
+        return tokenService.generateToken(uid);
     }
 
 //    @RequestMapping(value = "/retrieve",
