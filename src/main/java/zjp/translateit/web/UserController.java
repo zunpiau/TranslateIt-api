@@ -53,8 +53,7 @@ public class UserController {
             throw new BadRequestException("该邮箱已被注册");
 
         try {
-            if (!userService.sendVerifyCode(request))
-                throw new InnerException("邮件发送失败");
+            userService.sendVerifyCode(request);
         } catch (IOException | ClientException e) {
             throw new InnerException("邮件发送失败");
         }

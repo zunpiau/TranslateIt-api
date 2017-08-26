@@ -16,11 +16,11 @@ public class TokenRepository {
         this.template = template;
     }
 
-    public Boolean isTokenUsed(Token token) {
+    public boolean isTokenUsed(Token token) {
         try {
             return template.queryForObject("select used from token where sign = ? ", Boolean.TYPE, token.getSign());
         } catch (EmptyResultDataAccessException e) {
-            return null;
+            return true;
         }
     }
 

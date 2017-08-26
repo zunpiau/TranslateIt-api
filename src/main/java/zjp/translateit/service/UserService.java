@@ -102,16 +102,15 @@ public class UserService {
     }
 
     @Transactional
-    public boolean sendVerifyCode(VerifyCodeRequest request) throws IOException, ClientException {
+    public void sendVerifyCode(VerifyCodeRequest request) throws IOException, ClientException {
         RandomStringGenerator generator = new RandomStringGenerator.Builder().withinRange('a', 'z').build();
         String verifyCode = generator.generate(9);
         String email = request.getEmail();
         logger.debug("Send email to " + email + " , verifyCode: " + verifyCode);
         if (!aliEmail(email, verifyCode))
-            return false;
+            throw new ClientException("");
         redisTemplate.opsForValue().set(VERIFY_CODE_KEY_PREFIX + email, verifyCode, 30, TimeUnit.MINUTES);
         redisTemplate.opsForValue().set(EMAIL_KEY_PREFIX + email, "", 5, TimeUnit.MINUTES);
-        return true;
     }
 
     private boolean aliEmail(String mailTo, String verifyCode) throws IOException, ClientException {

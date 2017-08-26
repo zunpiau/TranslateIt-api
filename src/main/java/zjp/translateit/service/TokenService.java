@@ -23,7 +23,7 @@ public class TokenService {
         this.repository = repository;
     }
 
-    public Boolean isTokenUsed(Token token) {
+    public boolean isTokenUsed(Token token) {
         return repository.isTokenUsed(token);
     }
 
