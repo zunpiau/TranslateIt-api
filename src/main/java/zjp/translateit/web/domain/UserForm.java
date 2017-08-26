@@ -8,11 +8,11 @@ public class UserForm {
 
     @NotNull
     @Size(min = 3, max = 9)
-    @Pattern(regexp = "[0-9a-zA-Z]*")
+    @Pattern(regexp = "[a-zA-Z].[0-9a-zA-Z_]*")
     private String name;
 
     @NotNull
-    @Size(min = 6, max = 9)
+    @Size(min = 4, max = 9)
     @Pattern(regexp = "[0-9a-zA-Z]*")
     private String password;
 
@@ -21,16 +21,16 @@ public class UserForm {
     private String verifyCode;
 
     @NotNull
-    @Pattern(regexp = "[a-zA-Z0-9+._%+-]+@[a-zA-Z0-9]+[.][a-zA-Z0-9]+")
+    @Pattern(regexp = "[a-zA-Z0-9+._%+-]+@[a-zA-Z0-9.]+")
     private String email;
 
     public UserForm() {
     }
 
-    public UserForm(@NotNull @Size(min = 3, max = 9) @Pattern(regexp = "[0-9a-zA-Z]*") String name,
-                    @NotNull @Size(min = 6, max = 9) @Pattern(regexp = "[0-9a-zA-Z]*") String password,
+    public UserForm(@NotNull @Size(min = 3, max = 9) @Pattern(regexp = "[a-zA-Z].[0-9a-zA-Z_]*") String name,
+                    @NotNull @Size(min = 4, max = 9) @Pattern(regexp = "[0-9a-zA-Z]*") String password,
                     @NotNull @Pattern(regexp = "[a-z]{9}") String verifyCode,
-                    @NotNull @Pattern(regexp = "[a-zA-Z0-9+._%+-]+@[a-zA-Z0-9]+[.][a-zA-Z0-9]+") String email) {
+                    @NotNull @Pattern(regexp = "[a-zA-Z0-9+._%+-]+@[a-zA-Z0-9.]+") String email) {
         this.name = name;
         this.password = password;
         this.verifyCode = verifyCode;
