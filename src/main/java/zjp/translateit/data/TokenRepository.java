@@ -18,7 +18,7 @@ public class TokenRepository {
 
     public Boolean isTokenUsed(Token token) {
         try {
-            return template.queryForObject("select used from token where sign = ? ", Boolean.TYPE, token.getKey());
+            return template.queryForObject("select used from token where sign = ? ", Boolean.TYPE, token.getSign());
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -28,14 +28,14 @@ public class TokenRepository {
         template.update("insert into token (uid, time, sign, used) values (?, ?, ?, ?)",
                 token.getId(),
                 token.getTimestamp(),
-                token.getKey(),
+                token.getSign(),
                 false);
     }
 
     public void setTokenUsed(Token token) {
         template.update("update token set used = ? where sign = ? ",
                 true,
-                token.getKey());
+                token.getSign());
     }
 
     public void setAllTokenUsed(long uid) {

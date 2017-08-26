@@ -7,15 +7,15 @@ public class Token {
     private long id;
     private long timestamp;
     @NotNull
-    private String key;
+    private String sign;
 
     public Token() {
     }
 
-    public Token(long id, long timestamp, String key) {
+    public Token(long id, long timestamp, String sign) {
         this.id = id;
         this.timestamp = timestamp;
-        this.key = key;
+        this.sign = sign;
     }
 
     public long getId() {
@@ -34,11 +34,11 @@ public class Token {
         this.timestamp = timestamp;
     }
 
-    public String getKey() {
-        return key;
+    public String getSign() {
+        return sign;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setSign(String sign) {
+        this.sign = sign;
     }
 }

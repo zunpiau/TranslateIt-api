@@ -51,7 +51,7 @@ public class TokenService {
 
     public boolean checkToken(Token token) {
         String str = token.getId() + tokenSalt + token.getTimestamp();
-        return token.getKey().equals(EncryptUtil.getMD5(str));
+        return token.getSign().equals(EncryptUtil.getMD5(str));
     }
 
 }
