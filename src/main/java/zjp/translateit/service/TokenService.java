@@ -30,7 +30,7 @@ public class TokenService {
     @Transactional
     public Token generateToken(Token tokenOld) {
         long currentTime = System.currentTimeMillis();
-        String key = EncryptUtil.getMD5(tokenOld.getUid() + tokenSalt + currentTime);
+        String key = EncryptUtil.hash(EncryptUtil.Algorithm.SHA256, tokenOld.getUid() + tokenSalt + currentTime);
         Token token = new Token(tokenOld.getUid(), currentTime, key);
         repository.setTokenUsed(tokenOld);
         repository.addToken(token);
@@ -43,7 +43,7 @@ public class TokenService {
 
     public Token generateToken(int uid) {
         long currentTime = System.currentTimeMillis();
-        String key = EncryptUtil.getMD5(uid + tokenSalt + currentTime);
+        String key = EncryptUtil.hash(EncryptUtil.Algorithm.SHA256, uid + tokenSalt + currentTime);
         Token token = new Token(uid, currentTime, key);
         repository.addToken(token);
         return token;
@@ -51,7 +51,7 @@ public class TokenService {
 
     public boolean checkToken(Token token) {
         String str = token.getUid() + tokenSalt + token.getTimestamp();
-        return token.getSign().equals(EncryptUtil.getMD5(str));
+        return token.getSign().equals(EncryptUtil.hash(EncryptUtil.Algorithm.SHA256, str));
     }
 
 }

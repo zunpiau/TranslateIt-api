@@ -93,7 +93,7 @@ public class UserService {
 
     public boolean checkVerifyCodeSign(VerifyCodeRequest request) {
         String raw = request.getEmail() + verifySalt + request.getTimestamp();
-        String sign = EncryptUtil.getMD5(raw);
+        String sign = EncryptUtil.hash(EncryptUtil.Algorithm.MD5, raw);
         return request.getSign().equals(sign);
     }
 
