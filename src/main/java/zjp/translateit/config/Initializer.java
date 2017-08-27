@@ -19,6 +19,7 @@ public class Initializer extends AbstractAnnotationConfigDispatcherServletInitia
         super.onStartup(servletContext);
         servletContext.setInitParameter("spring.profiles.active", env);
         servletContext.setInitParameter("spring.profiles.default", env);
+        servletContext.setInitParameter("spring.liveBeansView.mbeanDomain", env);
         servletContext.addListener(LogbackConfigListener.class);
     }
 
