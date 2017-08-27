@@ -73,7 +73,7 @@ public class UserController {
         }
         if (user.getStatus() == User.STATUS.DELETE)
             throw new BadRequestException(BadRequestException.MESSAGE_USER_DELETED);
-        return tokenService.generateToken(user.getId());
+        return tokenService.generateToken(user.getUid());
     }
 
     @RequestMapping(value = "/token",
@@ -86,7 +86,7 @@ public class UserController {
             throw new BadRequestException("");
         }
         if (tokenService.isTokenUsed(token)) {
-            tokenService.setAllTokenUsed(token.getId());
+            tokenService.setAllTokenUsed(token.getUid());
             throw new BadRequestException("请重新登录");
         }
         return tokenService.generateToken(token);
@@ -106,7 +106,7 @@ public class UserController {
         if (userService.hasUser(userForm.getName()))
             throw new BadRequestException(BadRequestException.MESSAGE_USER_REGISTERED);
 
-        long uid = userService.registerUser(userForm);
+        int uid = userService.registerUser(userForm);
         return tokenService.generateToken(uid);
     }
 

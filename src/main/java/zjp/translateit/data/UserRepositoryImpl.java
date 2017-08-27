@@ -26,7 +26,7 @@ CREATE TABLE `user` (
 @Repository
 public class UserRepositoryImpl implements UserRepository {
 
-    private static final String SELECT_USER = "select id, name, password, email, status from user ";
+    private static final String SELECT_USER = "select uid, name, password, email, status from user ";
     private JdbcTemplate template;
 
     @Autowired
@@ -53,22 +53,37 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public long add(User user) {
+    public int add(User user) {
         SimpleJdbcInsert insert = new SimpleJdbcInsert(template).withTableName("user");
         insert.setGeneratedKeyName("id");
-        HashMap<String, Object> args = new HashMap<>(6);
+        HashMap<String, Object> args = new HashMap<>();
+        args.put("uid", user.getUid());
         args.put("name", user.getName());
         args.put("password", user.getPassword());
         args.put("email", user.getEmail());
-        args.put("status", User.STATUS.NORMAL);
-        return insert.executeAndReturnKey(args).longValue();
+        args.put("status", user.getStatus());
+        return insert.executeAndReturnKey(args).intValue();
+    }
+
+    @Override
+    public int generateUid() {
+        return template.queryForObject("SELECT uid " +
+                "FROM (" +
+                "  SELECT FLOOR(RAND() * 8999999) + 1000000 AS uid " +
+                "  FROM user " +
+                "  UNION " +
+                "  SELECT FLOOR(RAND() * 9999999) + 1000000 AS uid " +
+                ") AS ss " +
+                "WHERE uid NOT IN (SELECT uid FROM user) " +
+                "LIMIT 1 ", Integer.TYPE);
     }
 
     static class UserRowMapper implements RowMapper<User> {
 
         @Override
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new User(rs.getLong("id"),
+            return new User(
+                    rs.getInt("uid"),
                     rs.getString("name"),
                     rs.getString("password"),
                     rs.getString("email"),

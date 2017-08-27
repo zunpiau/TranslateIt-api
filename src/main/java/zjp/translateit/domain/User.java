@@ -2,8 +2,7 @@ package zjp.translateit.domain;
 
 public class User {
 
-    private Long id;
-
+    private int uid;
     private String name;
     private String password;
     private String email;
@@ -19,22 +18,12 @@ public class User {
         this.status = status;
     }
 
-    public User(String name, String password, String email) {
-        this.name = name;
-        this.password = password;
-        this.email = email;
-    }
-
-    public User(Long id, String name, String password, String email, int status) {
-        this.id = id;
+    public User(int uid, String name, String password, String email, int status) {
+        this.uid = uid;
         this.name = name;
         this.password = password;
         this.email = email;
         this.status = status;
-    }
-
-    public static User setUserId(long id, User user) {
-        return new User(id, user.getName(), user.getPassword(), user.getEmail(), user.getStatus());
     }
 
     public String getName() {
@@ -53,8 +42,8 @@ public class User {
         return status;
     }
 
-    public Long getId() {
-        return id;
+    public int getUid() {
+        return uid;
     }
 
     public interface STATUS {

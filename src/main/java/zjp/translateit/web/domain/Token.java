@@ -4,7 +4,7 @@ import javax.validation.constraints.NotNull;
 
 public class Token {
 
-    private long id;
+    private int uid;
     private long timestamp;
     @NotNull
     private String sign;
@@ -12,18 +12,18 @@ public class Token {
     public Token() {
     }
 
-    public Token(long id, long timestamp, String sign) {
-        this.id = id;
+    public Token(int uid, long timestamp, String sign) {
+        this.uid = uid;
         this.timestamp = timestamp;
         this.sign = sign;
     }
 
-    public long getId() {
-        return id;
+    public int getUid() {
+        return uid;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setUid(int uid) {
+        this.uid = uid;
     }
 
     public long getTimestamp() {

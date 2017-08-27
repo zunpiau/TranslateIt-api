@@ -9,6 +9,8 @@ public interface UserRepository {
 
     User findUserByEmail(String username);
 
-    long add(User user);
+    int add(User user);
+
+    int generateUid();
 
 }

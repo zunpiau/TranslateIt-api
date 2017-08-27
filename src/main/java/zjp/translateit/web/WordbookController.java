@@ -41,7 +41,7 @@ public class WordbookController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Response backup(@Valid @RequestBody BackupRequest backupRequest, BindingResult result) {
         Token token = backupRequest.getToken();
-        long uid = token.getId();
+        long uid = token.getUid();
         checkParameter(backupRequest.getToken(), result);
         wordbookService.backupWordbook(uid, backupRequest.getWords(), backupRequest.getWordbooks());
         return Response.getResponseOK();
@@ -60,6 +60,6 @@ public class WordbookController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Wordbook> recover(@Valid @RequestBody RecoverRequest requestBody, BindingResult result) {
         checkParameter(requestBody.getToken(), result);
-        return wordbookService.getWordbooksMissing(requestBody.getToken().getId(), requestBody.getWords());
+        return wordbookService.getWordbooksMissing(requestBody.getToken().getUid(), requestBody.getWords());
     }
 }

@@ -74,9 +74,10 @@ public class UserService {
     }
 
     @Transactional
-    public long registerUser(UserForm userForm) {
+    public int registerUser(UserForm userForm) {
         String passwordSalted = BCrypt.hashpw(userForm.getPassword(), BCrypt.gensalt(10));
-        long uid = repository.add(new User(userForm.getName(), passwordSalted, userForm.getEmail()));
+        int uid = repository.generateUid();
+        repository.add(new User(uid, userForm.getName(), passwordSalted, userForm.getEmail(), User.STATUS.NORMAL));
         redisTemplate.delete(VERIFY_CODE_KEY_PREFIX + userForm.getEmail());
         redisTemplate.delete(EMAIL_KEY_PREFIX + userForm.getEmail());
         return uid;

@@ -26,7 +26,7 @@ public class TokenRepository {
 
     public void addToken(Token token) {
         template.update("insert into token (uid, time, sign, used) values (?, ?, ?, ?)",
-                token.getId(),
+                token.getUid(),
                 token.getTimestamp(),
                 token.getSign(),
                 false);

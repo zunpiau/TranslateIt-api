@@ -6,11 +6,12 @@ CREATE TABLE user
 (
   id       INT AUTO_INCREMENT
     PRIMARY KEY,
+  uid      INT          NOT NULL,
   name     VARCHAR(16)  NOT NULL,
   password VARCHAR(128) NOT NULL,
   email    VARCHAR(64)  NOT NULL,
   status   TINYINT      NOT NULL,
-  UNIQUE (name, email),
+  UNIQUE (name, email, uid),
   INDEX (name),
   INDEX (email)
 )
