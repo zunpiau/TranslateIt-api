@@ -1,8 +1,9 @@
-package zjp.translateit.web.domain;
+package zjp.translateit.web.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import zjp.translateit.domain.Token;
 import zjp.translateit.domain.Wordbook;
 
 import java.util.List;

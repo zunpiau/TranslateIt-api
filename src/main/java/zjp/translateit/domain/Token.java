@@ -1,10 +1,12 @@
-package zjp.translateit.web.domain;
+package zjp.translateit.domain;
 
 import javax.validation.constraints.NotNull;
 
 public class Token {
 
+    @NotNull
     private int uid;
+    @NotNull
     private long timestamp;
     @NotNull
     private String sign;

@@ -1,4 +1,4 @@
-package zjp.translateit.web.domain;
+package zjp.translateit.web.request;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;

@@ -1,4 +1,4 @@
-package zjp.translateit.web.domain;
+package zjp.translateit.web.request;
 
 public class LoginRequest {
 

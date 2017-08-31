@@ -6,8 +6,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import zjp.translateit.data.TokenRepository;
+import zjp.translateit.domain.Token;
 import zjp.translateit.util.EncryptUtil;
-import zjp.translateit.web.domain.Token;
 
 @Service
 @PropertySource(value = "classpath:application.properties")
