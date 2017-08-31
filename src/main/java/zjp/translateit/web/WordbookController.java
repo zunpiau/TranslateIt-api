@@ -7,17 +7,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import zjp.translateit.domain.Wordbook;
+import zjp.translateit.domain.Token;
 import zjp.translateit.service.TokenService;
 import zjp.translateit.service.WordbookService;
-import zjp.translateit.web.domain.BackupRequest;
-import zjp.translateit.web.domain.RecoverRequest;
-import zjp.translateit.web.domain.Response;
-import zjp.translateit.web.domain.Token;
-import zjp.translateit.web.exception.BadRequestException;
+import zjp.translateit.web.Response.Response;
+import zjp.translateit.web.Response.WordbookResponse;
+import zjp.translateit.web.request.BackupRequest;
+import zjp.translateit.web.request.RecoverRequest;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/wordbook")
@@ -42,24 +40,29 @@ public class WordbookController {
     public Response backup(@Valid @RequestBody BackupRequest backupRequest, BindingResult result) {
         Token token = backupRequest.getToken();
         long uid = token.getUid();
-        checkParameter(backupRequest.getToken(), result);
+        Response response = checkParameter(backupRequest.getToken(), result);
+        if (response != null)
+            return response;
         wordbookService.backupWordbook(uid, backupRequest.getWords(), backupRequest.getWordbooks());
-        return Response.getResponseOK();
+        return new Response(Response.ResponseCode.OK);
     }
 
-    private void checkParameter(Token token, BindingResult result) {
+    private Response checkParameter(Token token, BindingResult result) {
         if (result.hasErrors() || !tokenService.checkToken(token))
-            throw new BadRequestException("Token 错误");
+            return new Response(Response.ResponseCode.BAD_TOKEN);
         if ((System.currentTimeMillis() - token.getTimestamp()) > TOKEN_EXPIRE)
-            throw new BadRequestException("Token 过期");
+            return new Response(Response.ResponseCode.TOKEN_EXPIRED);
+        return null;
     }
 
     @RequestMapping(value = "/recover",
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Wordbook> recover(@Valid @RequestBody RecoverRequest requestBody, BindingResult result) {
-        checkParameter(requestBody.getToken(), result);
-        return wordbookService.getWordbooksMissing(requestBody.getToken().getUid(), requestBody.getWords());
+    public Response recover(@Valid @RequestBody RecoverRequest requestBody, BindingResult result) {
+        Response response = checkParameter(requestBody.getToken(), result);
+        if (response != null)
+            return response;
+        return new WordbookResponse(wordbookService.getWordbooksMissing(requestBody.getToken().getUid(), requestBody.getWords()));
     }
 }

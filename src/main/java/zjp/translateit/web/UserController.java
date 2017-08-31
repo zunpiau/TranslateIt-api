@@ -8,12 +8,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import zjp.translateit.domain.Token;
 import zjp.translateit.domain.User;
 import zjp.translateit.service.TokenService;
 import zjp.translateit.service.UserService;
-import zjp.translateit.web.domain.*;
-import zjp.translateit.web.exception.BadRequestException;
-import zjp.translateit.web.exception.InnerException;
+import zjp.translateit.web.Response.Response;
+import zjp.translateit.web.Response.TokenResponse;
+import zjp.translateit.web.request.LoginRequest;
+import zjp.translateit.web.request.RegisterRequest;
+import zjp.translateit.web.request.VerifyCodeRequest;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -23,7 +26,7 @@ import java.io.IOException;
 public class UserController {
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final long REQUEST_EXPIRE = 5 * 60 * 1000;    //5min
+    private final long REQUEST_EXPIRE = 60 * 1000;    //5min
     private UserService userService;
     private TokenService tokenService;
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -34,7 +37,7 @@ public class UserController {
         this.tokenService = tokenService;
     }
 
-    @RequestMapping(value = "/getVerifyCode",
+    @RequestMapping(value = "/verify",
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -42,22 +45,22 @@ public class UserController {
     public Response getVerifyCode(@Valid @RequestBody VerifyCodeRequest request, BindingResult result) {
         logger.debug("email " + request.getEmail() + " request verify");
         if (result.hasErrors())
-            throw new BadRequestException("参数不合法");
+            return new Response(Response.ResponseCode.INVALID_PARAMETER);
         if (!userService.checkVerifyCodeSign(request))
-            throw new BadRequestException("签名错误");
+            return new Response(Response.ResponseCode.BAD_SIGN);
         if ((System.currentTimeMillis() - request.getTimestamp()) > REQUEST_EXPIRE)
-            throw new BadRequestException("请求过期");
+            return new Response(Response.ResponseCode.REQUIRE_EXPIRED);
         if (userService.forbidGetVerifyCode(request.getEmail()))
-            throw new BadRequestException("请检查你的邮箱，或五分钟后再试");
+            return new Response(Response.ResponseCode.REQUIRE_FRA);
         if (userService.emailRegistered(request.getEmail()))
-            throw new BadRequestException("该邮箱已被注册");
+            return new Response(Response.ResponseCode.EMAIL_REGISTERED);
 
         try {
             userService.sendVerifyCode(request);
         } catch (IOException | ClientException e) {
-            throw new InnerException("邮件发送失败");
+            return new Response(Response.ResponseCode.INNER_EXCEPTION);
         }
-        return Response.getResponseOK();
+        return new Response(Response.ResponseCode.OK);
     }
 
     @RequestMapping(value = "/login",
@@ -65,15 +68,15 @@ public class UserController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Token login(@RequestBody LoginRequest request) {
+    public Response login(@RequestBody LoginRequest request) {
         logger.debug("user " + request.getName() + " login");
         User user = userService.getUserFromLoginRequest(request);
         if (user == null) {
-            throw new BadRequestException("用户名和密码不匹配");
+            return new Response(Response.ResponseCode.INVALID_ACCOUNT);
         }
         if (user.getStatus() == User.STATUS.DELETE)
-            throw new BadRequestException(BadRequestException.MESSAGE_USER_DELETED);
-        return tokenService.generateToken(user.getUid());
+            return new Response(Response.ResponseCode.USER_DELETED);
+        return new TokenResponse(tokenService.generateToken(user.getUid()));
     }
 
     @RequestMapping(value = "/token",
@@ -81,15 +84,15 @@ public class UserController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Token token(@RequestBody Token token) {
-        if (!tokenService.checkToken(token)) {
-            throw new BadRequestException("");
+    public Response token(@RequestBody @Valid Token token, BindingResult result) {
+        if (result.hasErrors() || !tokenService.checkToken(token)) {
+            return new Response(Response.ResponseCode.BAD_TOKEN);
         }
         if (tokenService.isTokenUsed(token)) {
             tokenService.setAllTokenUsed(token.getUid());
-            throw new BadRequestException("请重新登录");
+            return new Response(Response.ResponseCode.RE_LOGIN);
         }
-        return tokenService.generateToken(token);
+        return new TokenResponse(tokenService.generateToken(token));
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -97,17 +100,17 @@ public class UserController {
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Token register(@Valid @RequestBody UserForm userForm, BindingResult result) {
-        logger.debug("email " + userForm.getEmail() + " register");
-        if (!userService.checkVerifyCode(userForm))
-            throw new BadRequestException("验证码不存在或与邮箱不匹配");
+    public Response register(@Valid @RequestBody RegisterRequest registerRequest, BindingResult result) {
+        logger.debug("email " + registerRequest.getEmail() + " register");
+        if (!userService.checkVerifyCode(registerRequest))
+            return new Response(Response.ResponseCode.BAD_VERIFY_CODE);
         if (result.hasErrors())
-            throw new BadRequestException("参数不合法");
-        if (userService.hasUser(userForm.getName()))
-            throw new BadRequestException(BadRequestException.MESSAGE_USER_REGISTERED);
+            return new Response(Response.ResponseCode.INVALID_PARAMETER);
+        if (userService.hasUser(registerRequest.getName()))
+            return new Response(Response.ResponseCode.USERNAME_REGISTERED);
 
-        int uid = userService.registerUser(userForm);
-        return tokenService.generateToken(uid);
+        int uid = userService.registerUser(registerRequest);
+        return new TokenResponse(tokenService.generateToken(uid));
     }
 
 //    @RequestMapping(value = "/retrieve",

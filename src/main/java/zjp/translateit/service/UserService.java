@@ -21,9 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 import zjp.translateit.data.UserRepository;
 import zjp.translateit.domain.User;
 import zjp.translateit.util.EncryptUtil;
-import zjp.translateit.web.domain.LoginRequest;
-import zjp.translateit.web.domain.UserForm;
-import zjp.translateit.web.domain.VerifyCodeRequest;
+import zjp.translateit.web.request.LoginRequest;
+import zjp.translateit.web.request.RegisterRequest;
+import zjp.translateit.web.request.VerifyCodeRequest;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -74,12 +74,12 @@ public class UserService {
     }
 
     @Transactional
-    public int registerUser(UserForm userForm) {
-        String passwordSalted = BCrypt.hashpw(userForm.getPassword(), BCrypt.gensalt(10));
+    public int registerUser(RegisterRequest registerRequest) {
+        String passwordSalted = BCrypt.hashpw(registerRequest.getPassword(), BCrypt.gensalt(10));
         int uid = repository.generateUid();
-        repository.add(new User(uid, userForm.getName(), passwordSalted, userForm.getEmail(), User.STATUS.NORMAL));
-        redisTemplate.delete(VERIFY_CODE_KEY_PREFIX + userForm.getEmail());
-        redisTemplate.delete(EMAIL_KEY_PREFIX + userForm.getEmail());
+        repository.add(new User(uid, registerRequest.getName(), passwordSalted, registerRequest.getEmail(), User.STATUS.NORMAL));
+        redisTemplate.delete(VERIFY_CODE_KEY_PREFIX + registerRequest.getEmail());
+        redisTemplate.delete(EMAIL_KEY_PREFIX + registerRequest.getEmail());
         return uid;
     }
 
@@ -97,9 +97,9 @@ public class UserService {
         return request.getSign().equals(sign);
     }
 
-    public boolean checkVerifyCode(UserForm userForm) {
-        String verifyCode = redisTemplate.opsForValue().get(VERIFY_CODE_KEY_PREFIX + userForm.getEmail());
-        return userForm.getVerifyCode().equals(verifyCode);
+    public boolean checkVerifyCode(RegisterRequest registerRequest) {
+        String verifyCode = redisTemplate.opsForValue().get(VERIFY_CODE_KEY_PREFIX + registerRequest.getEmail());
+        return registerRequest.getVerifyCode().equals(verifyCode);
     }
 
     @Transactional
@@ -111,7 +111,7 @@ public class UserService {
         if (!aliEmail(email, verifyCode))
             throw new ClientException("");
         redisTemplate.opsForValue().set(VERIFY_CODE_KEY_PREFIX + email, verifyCode, 30, TimeUnit.MINUTES);
-        redisTemplate.opsForValue().set(EMAIL_KEY_PREFIX + email, "", 5, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set(EMAIL_KEY_PREFIX + email, "", 1, TimeUnit.MINUTES);
     }
 
     private boolean aliEmail(String mailTo, String verifyCode) throws IOException, ClientException {
