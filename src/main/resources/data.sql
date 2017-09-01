@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS wordbooks;
 DROP TABLE IF EXISTS token;
+DROP TABLE IF EXISTS feedback;
 
 CREATE TABLE user
 (
@@ -46,6 +47,17 @@ CREATE TABLE token
   sign VARCHAR(64),
   used BOOL,
   INDEX (id DESC, uid)
+)
+  CHARSET utf8mb4;
+
+CREATE TABLE feedback
+(
+  id      INT AUTO_INCREMENT
+    PRIMARY KEY,
+  data    DATETIME,
+  content VARCHAR(512),
+  contact VARCHAR(64),
+  ua      VARCHAR(512)
 )
   CHARSET utf8mb4;
 
