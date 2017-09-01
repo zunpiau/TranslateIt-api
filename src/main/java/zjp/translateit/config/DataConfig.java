@@ -1,11 +1,10 @@
 package zjp.translateit.config;
 
-import com.mysql.cj.jdbc.MysqlDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
@@ -33,34 +32,34 @@ public class DataConfig {
     @Value("${db.password}")
     private String password;
 
+    @Value("${db.name}")
+    private String database;
+
     @Bean
     public DataSourceTransactionManager txManager(DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
     }
 
-
     @Bean
-    @Profile("prod")
-    public DataSource dataSourceProd() throws Exception {
-        MysqlDataSource dataSource = new MysqlDataSource();
-        dataSource.setURL("jdbc:mysql://localhost:3306/traapi?" +
-                "characterSetResults=utf8&characterEncoding=utf8&useUnicode=true&nullNamePatternMatchesAll=true");
-        dataSource.setUser(user);
+    public DataSource dataSource(Environment env) {
+        org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
+        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        dataSource.setUrl("");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/" + database +
+                "?useSSL=false&characterEncoding=UTF-8&useUnicode=yes&nullNamePatternMatchesAll=true");
+        dataSource.setUsername(user);
         dataSource.setPassword(password);
-        return dataSource;
-    }
-
-    @Bean
-    @Profile("dev")
-    public DataSource dataSourceDev() {
-        MysqlDataSource dataSource = new MysqlDataSource();
-        dataSource.setURL("jdbc:mysql://localhost:3306/translateit_dev?" +
-                "characterSetResults=utf8&characterEncoding=utf8&useUnicode=true&nullNamePatternMatchesAll=true");
-        dataSource.setUser(user);
-        dataSource.setPassword(password);
-        ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
-        populator.addScript(dataScript);
-        DatabasePopulatorUtils.execute(populator, dataSource);
+        dataSource.setInitialSize(4);
+        dataSource.setMaxIdle(20);
+        dataSource.setInitSQL("SET NAMES utf8mb4");
+        String[] profiles = env.getActiveProfiles();
+        for (String profile : profiles) {
+            if (profile.equals("dev")) {
+                ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
+                populator.addScript(dataScript);
+                DatabasePopulatorUtils.execute(populator, dataSource);
+            }
+        }
         return dataSource;
     }
 

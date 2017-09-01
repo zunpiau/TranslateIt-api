@@ -16,7 +16,9 @@ CREATE TABLE user
   INDEX (name),
   INDEX (email)
 )
-  CHARSET utf8mb4;
+  ENGINE = InnoDB
+  DEFAULT CHARSET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE wordbooks
 (
@@ -36,7 +38,9 @@ CREATE TABLE wordbooks
   INDEX (uid),
   INDEX (uid, word)
 )
-  CHARSET utf8mb4;
+  ENGINE = InnoDB
+  DEFAULT CHARSET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE token
 (
@@ -48,16 +52,20 @@ CREATE TABLE token
   used BOOL,
   INDEX (id DESC, uid)
 )
-  CHARSET utf8mb4;
+  ENGINE = InnoDB
+  DEFAULT CHARSET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
 
 CREATE TABLE feedback
 (
   id      INT AUTO_INCREMENT
     PRIMARY KEY,
-  data    DATETIME,
+  data    TIMESTAMP,
   content VARCHAR(512),
   contact VARCHAR(64),
   ua      VARCHAR(512)
 )
-  CHARSET utf8mb4;
+  ENGINE = InnoDB
+  DEFAULT CHARSET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
 
