@@ -1,19 +1,12 @@
 package zjp.translateit.service;
 
-import com.aliyuncs.DefaultAcsClient;
-import com.aliyuncs.IAcsClient;
-import com.aliyuncs.dm.model.v20151123.SingleSendMailRequest;
 import com.aliyuncs.exceptions.ClientException;
-import com.aliyuncs.http.HttpResponse;
-import com.aliyuncs.profile.DefaultProfile;
-import com.aliyuncs.profile.IClientProfile;
 import org.apache.commons.text.RandomStringGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.io.Resource;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -26,9 +19,6 @@ import zjp.translateit.web.request.RegisterRequest;
 import zjp.translateit.web.request.VerifyCodeRequest;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.text.MessageFormat;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -39,28 +29,21 @@ public class UserService {
 
     private final UserRepository repository;
     private final StringRedisTemplate redisTemplate;
+    private final EmailService emailService;
     @SuppressWarnings("FieldCanBeLocal")
     private final String EMAIL_KEY_PREFIX = "email:";
     private final String VERIFY_CODE_KEY_PREFIX = "verify.code:";
 
     @Value("${salt.verify}")
     private String verifySalt;
-    @Value("${ali.accessKey}")
-    private String aliKey;
-    @Value("${ali.accessSecret}")
-    private String aliSecret;
-    @Value("${ali.emailAccount}")
-    private String aliAccount;
-
-    @Value("classpath:email-template.html")
-    private Resource emailTemplate;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public UserService(StringRedisTemplate redisTemplate, UserRepository repository) {
+    public UserService(StringRedisTemplate redisTemplate, UserRepository repository, EmailService emailService) {
         this.redisTemplate = redisTemplate;
         this.repository = repository;
+        this.emailService = emailService;
     }
 
     public User getUserFromLoginRequest(LoginRequest request) {
@@ -108,29 +91,10 @@ public class UserService {
         String verifyCode = generator.generate(9);
         String email = request.getEmail();
         logger.debug("Send email to " + email + " , verifyCode: " + verifyCode);
-        if (!aliEmail(email, verifyCode))
+        if (!emailService.sendVerifyEmail(email, verifyCode))
             throw new ClientException("");
         redisTemplate.opsForValue().set(VERIFY_CODE_KEY_PREFIX + email, verifyCode, 30, TimeUnit.MINUTES);
         redisTemplate.opsForValue().set(EMAIL_KEY_PREFIX + email, "", 1, TimeUnit.MINUTES);
-    }
-
-    private boolean aliEmail(String mailTo, String verifyCode) throws IOException, ClientException {
-        IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", aliKey, aliSecret);
-        IAcsClient client = new DefaultAcsClient(profile);
-        SingleSendMailRequest request = new SingleSendMailRequest();
-        String template;
-        template = new String(Files.readAllBytes(emailTemplate.getFile().toPath()), StandardCharsets.UTF_8);
-        String content = MessageFormat.format(template, verifyCode);
-        request.setAccountName(aliAccount);
-        request.setFromAlias("TranslateIt");
-        request.setAddressType(1);
-        request.setReplyToAddress(true);
-        request.setToAddress(mailTo);
-        request.setSubject("邮箱验证");
-        request.setHtmlBody(content);
-        HttpResponse response;
-        response = client.doAction(request, true, 2, profile);
-        return response.isSuccess();
     }
 
     public boolean forbidGetVerifyCode(String email) {
