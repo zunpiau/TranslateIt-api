@@ -23,13 +23,13 @@ import java.text.MessageFormat;
 @PropertySource(value = "classpath:application-${spring.profiles.active}.properties")
 public class EmailService {
 
+    private static final String feedbackTemplate = "<p>From: {0}</p><p>UA: {1}</p><p>{2}</p>";
     @Value("${ali.accessKey}")
     private String aliKey;
     @Value("${ali.accessSecret}")
     private String aliSecret;
     @Value("${ali.emailAccount}")
     private String aliAccount;
-
     @Value("classpath:email-template.html")
     private Resource emailTemplate;
 
@@ -57,7 +57,7 @@ public class EmailService {
 
     @Async
     public void sendFeedbackEmail(String content, String contact, String ua) throws ClientException {
-        String emailContent = contact + "\n" + ua + "\n" + content;
+        String emailContent = MessageFormat.format(feedbackTemplate, contact, ua, content);
         sendEmail("tra@shadowland.cn", "Feedback", emailContent);
     }
 
