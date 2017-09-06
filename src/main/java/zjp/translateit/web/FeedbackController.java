@@ -7,7 +7,8 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import zjp.translateit.service.EmailService;
 import zjp.translateit.service.FeedbackService;
-import zjp.translateit.web.Response.Response;
+import zjp.translateit.web.request.FeedbackRequest;
+import zjp.translateit.web.response.Response;
 
 @RestController
 public class FeedbackController {
@@ -23,16 +24,14 @@ public class FeedbackController {
 
     @RequestMapping(value = "/feedback",
             method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Response feedback(@RequestParam("content") String content,
-                             @RequestParam("contact") String contact,
-                             @RequestHeader("User-Agent") String ua) {
-        if (!content.equals("")) {
-            feedbackService.addFeedback(content, contact, ua);
+    public Response feedback(@RequestBody FeedbackRequest request, @RequestHeader("User-Agent") String ua) {
+        if (!request.getContent().equals("")) {
+            feedbackService.addFeedback(request, ua);
             try {
-                emailService.sendFeedbackEmail(content, contact, ua);
+                emailService.sendFeedbackEmail(request, ua);
             } catch (ClientException e) {
                 e.printStackTrace();
             }

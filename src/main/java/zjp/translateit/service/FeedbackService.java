@@ -3,6 +3,7 @@ package zjp.translateit.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import zjp.translateit.web.request.FeedbackRequest;
 
 @Service
 public class FeedbackService {
@@ -14,9 +15,9 @@ public class FeedbackService {
         this.template = template;
     }
 
-    public void addFeedback(String content, String contact, String ua) {
+    public void addFeedback(FeedbackRequest request, String ua) {
         template.update("insert into feedback (content, contact, ua) values (?, ? , ?) ",
-                content, contact, ua);
+                request.getContent(), request.getContact(), ua);
     }
 
 }

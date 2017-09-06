@@ -12,6 +12,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import zjp.translateit.web.request.FeedbackRequest;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -56,8 +57,8 @@ public class EmailService {
     }
 
     @Async
-    public void sendFeedbackEmail(String content, String contact, String ua) throws ClientException {
-        String emailContent = MessageFormat.format(feedbackTemplate, contact, ua, content);
+    public void sendFeedbackEmail(FeedbackRequest request, String ua) throws ClientException {
+        String emailContent = MessageFormat.format(feedbackTemplate, request.getContent(), ua, request.getContact());
         sendEmail("tra@shadowland.cn", "Feedback", emailContent);
     }
 
