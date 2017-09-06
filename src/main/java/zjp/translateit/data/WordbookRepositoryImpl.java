@@ -27,7 +27,7 @@ public class WordbookRepositoryImpl implements WordbookRepository {
     @Override
     public void insert(long uid, List<Wordbook> wordbooks) {
         template.batchUpdate("insert into wordbooks " +
-                "(uid,word,phEn,phAm,phEnUrl,phAmUrl,means,exchange,sentence,note,category)" +
+                "(uid,word,phEn,phAm,phEnUrl,phAmUrl,mean,exchange,sentence,note,category)" +
                 "values(?,?,?,?,?,?,?,?,?,?,?)", new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
@@ -38,7 +38,7 @@ public class WordbookRepositoryImpl implements WordbookRepository {
                 ps.setString(4, wordbook.getPhAm());
                 ps.setString(5, wordbook.getPhEnUrl());
                 ps.setString(6, wordbook.getPhAmUrl());
-                ps.setString(7, wordbook.getMeans());
+                ps.setString(7, wordbook.getMean());
                 ps.setString(8, wordbook.getExchange());
                 ps.setString(9, wordbook.getSentence());
                 ps.setString(10, wordbook.getNote());
@@ -56,7 +56,7 @@ public class WordbookRepositoryImpl implements WordbookRepository {
     @Override
     public void update(long uid, List<Wordbook> wordbooks) {
         template.batchUpdate("update wordbooks " +
-                "set phEn = ?, phAm = ?, phEnUrl = ?, phAmUrl = ?, means = ?, exchange = ?, sentence = ?, note = ?, category = ? " +
+                "set phEn = ?, phAm = ?, phEnUrl = ?, phAmUrl = ?, mean = ?, exchange = ?, sentence = ?, note = ?, category = ? " +
                 " where uid = ? and word = ? ", new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
@@ -65,7 +65,7 @@ public class WordbookRepositoryImpl implements WordbookRepository {
                 ps.setString(2, wordbook.getPhAm());
                 ps.setString(3, wordbook.getPhEnUrl());
                 ps.setString(4, wordbook.getPhAmUrl());
-                ps.setString(5, wordbook.getMeans());
+                ps.setString(5, wordbook.getMean());
                 ps.setString(6, wordbook.getExchange());
                 ps.setString(7, wordbook.getSentence());
                 ps.setString(8, wordbook.getNote());
@@ -87,7 +87,7 @@ public class WordbookRepositoryImpl implements WordbookRepository {
         param.put("uid", uid);
         param.put("words", words);
         NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(template);
-        return namedParameterJdbcTemplate.query("select word,phEn,phAm,phEnUrl,phAmUrl,means,exchange,sentence,note, category " +
+        return namedParameterJdbcTemplate.query("select word,phEn,phAm,phEnUrl,phAmUrl,mean,exchange,sentence,note, category " +
                         " from wordbooks where uid = :uid and word in (:words)",
                 param,
                 new WordbookRowMapper());
@@ -96,7 +96,7 @@ public class WordbookRepositoryImpl implements WordbookRepository {
     @Override
     public List<Wordbook> getWordbookNotIn(long uid, List<String> words) {
         if (words.isEmpty()) {
-            return template.query("select word,phEn,phAm,phEnUrl,phAmUrl,means,exchange,sentence,note, category " +
+            return template.query("select word,phEn,phAm,phEnUrl,phAmUrl,mean,exchange,sentence,note, category " +
                             "from wordbooks where uid = ? ",
                     new WordbookRowMapper(),
                     uid);
@@ -105,7 +105,7 @@ public class WordbookRepositoryImpl implements WordbookRepository {
         param.put("uid", uid);
         param.put("words", words);
         NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(template);
-        return namedParameterJdbcTemplate.query("select word,phEn,phAm,phEnUrl,phAmUrl,means,exchange,sentence,note, category " +
+        return namedParameterJdbcTemplate.query("select word,phEn,phAm,phEnUrl,phAmUrl,mean,exchange,sentence,note, category " +
                         "from wordbooks where uid = :uid and word not in (:words)",
                 param,
                 new WordbookRowMapper());
@@ -137,7 +137,7 @@ public class WordbookRepositoryImpl implements WordbookRepository {
                     rs.getString("phAm"),
                     rs.getString("phEnUrl"),
                     rs.getString("phAmUrl"),
-                    rs.getString("means"),
+                    rs.getString("mean"),
                     rs.getString("exchange"),
                     rs.getString("sentence"),
                     rs.getString("note"),

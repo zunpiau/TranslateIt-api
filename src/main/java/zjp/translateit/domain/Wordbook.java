@@ -12,8 +12,8 @@ public class Wordbook {
     private String phAm;
     private String phEnUrl;
     private String phAmUrl;
+    private String mean;
     private String exchange;
-    private String means;
     private String sentence;
     private String note;
     private String category;
@@ -22,14 +22,14 @@ public class Wordbook {
     }
 
     public Wordbook(String word, String phEn, String phAm, String phEnUrl,
-                    String phAmUrl, String exchange, String means, String sentence, String note, String category) {
+                    String phAmUrl, String mean, String exchange, String sentence, String note, String category) {
         this.word = word;
         this.phEn = phEn;
         this.phAm = phAm;
         this.phEnUrl = phEnUrl;
         this.phAmUrl = phAmUrl;
+        this.mean = mean;
         this.exchange = exchange;
-        this.means = means;
         this.sentence = sentence;
         this.note = note;
         this.category = category;
@@ -75,12 +75,12 @@ public class Wordbook {
         this.exchange = exchange;
     }
 
-    public String getMeans() {
-        return means;
+    public String getMean() {
+        return mean;
     }
 
-    public void setMeans(String means) {
-        this.means = means;
+    public void setMean(String mean) {
+        this.mean = mean;
     }
 
     public String getWord() {
