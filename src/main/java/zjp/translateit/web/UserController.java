@@ -12,11 +12,10 @@ import zjp.translateit.domain.Token;
 import zjp.translateit.domain.User;
 import zjp.translateit.service.TokenService;
 import zjp.translateit.service.UserService;
-import zjp.translateit.web.Response.Response;
-import zjp.translateit.web.Response.TokenResponse;
 import zjp.translateit.web.request.LoginRequest;
 import zjp.translateit.web.request.RegisterRequest;
 import zjp.translateit.web.request.VerifyCodeRequest;
+import zjp.translateit.web.response.Response;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -76,7 +75,7 @@ public class UserController {
         }
         if (user.getStatus() == User.STATUS.DELETE)
             return new Response(Response.ResponseCode.USER_DELETED);
-        return new TokenResponse(tokenService.generateToken(user.getUid()));
+        return new Response<>(tokenService.generateToken(user.getUid()));
     }
 
     @RequestMapping(value = "/token",
@@ -92,7 +91,7 @@ public class UserController {
             tokenService.setAllTokenUsed(token.getUid());
             return new Response(Response.ResponseCode.RE_LOGIN);
         }
-        return new TokenResponse(tokenService.generateToken(token));
+        return new Response<>(tokenService.generateToken(token));
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -110,7 +109,7 @@ public class UserController {
             return new Response(Response.ResponseCode.USERNAME_REGISTERED);
 
         int uid = userService.registerUser(registerRequest);
-        return new TokenResponse(tokenService.generateToken(uid));
+        return new Response<>(tokenService.generateToken(uid));
     }
 
 //    @RequestMapping(value = "/retrieve",

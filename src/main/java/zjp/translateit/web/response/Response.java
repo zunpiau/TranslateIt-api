@@ -1,17 +1,27 @@
-package zjp.translateit.web.Response;
+package zjp.translateit.web.response;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public class Response {
+public class Response<T> {
 
     private ResponseCode code;
+    private T data;
 
     public Response(ResponseCode code) {
         this.code = code;
     }
 
+    public Response(T data) {
+        code = ResponseCode.OK;
+        this.data = data;
+    }
+
     public ResponseCode getCode() {
         return code;
+    }
+
+    public T getData() {
+        return data;
     }
 
     public enum ResponseCode {

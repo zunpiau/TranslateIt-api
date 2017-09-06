@@ -10,10 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 import zjp.translateit.domain.Token;
 import zjp.translateit.service.TokenService;
 import zjp.translateit.service.WordbookService;
-import zjp.translateit.web.Response.Response;
-import zjp.translateit.web.Response.WordbookResponse;
 import zjp.translateit.web.request.BackupRequest;
 import zjp.translateit.web.request.RecoverRequest;
+import zjp.translateit.web.response.Response;
 
 import javax.validation.Valid;
 
@@ -63,6 +62,6 @@ public class WordbookController {
         Response response = checkParameter(requestBody.getToken(), result);
         if (response != null)
             return response;
-        return new WordbookResponse(wordbookService.getWordbooksMissing(requestBody.getToken().getUid(), requestBody.getWords()));
+        return new Response<>(wordbookService.getWordbooksMissing(requestBody.getToken().getUid(), requestBody.getWords()));
     }
 }

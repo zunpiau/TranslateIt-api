@@ -1,9 +1,9 @@
-package zjp.translateit.web.Response;
+package zjp.translateit.web.response;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import zjp.translateit.domain.Token;
 
-public class TokenResponse extends Response {
+class TokenResponse extends Response {
 
     @JsonSerialize(as = Token.class)
     private Token token;

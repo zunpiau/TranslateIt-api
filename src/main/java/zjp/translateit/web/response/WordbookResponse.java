@@ -1,10 +1,10 @@
-package zjp.translateit.web.Response;
+package zjp.translateit.web.response;
 
 import zjp.translateit.domain.Wordbook;
 
 import java.util.List;
 
-public class WordbookResponse extends Response {
+class WordbookResponse extends Response {
 
     private List<Wordbook> wordbooks;
 

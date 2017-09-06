@@ -5,7 +5,7 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import zjp.translateit.web.Response.Response;
+import zjp.translateit.web.response.Response;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
