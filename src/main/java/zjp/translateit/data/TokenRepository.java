@@ -1,7 +1,6 @@
 package zjp.translateit.data;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import zjp.translateit.domain.Token;
@@ -16,14 +15,6 @@ public class TokenRepository {
         this.template = template;
     }
 
-    public boolean isTokenUsed(Token token) {
-        try {
-            return template.queryForObject("select used from token where sign = ? ", Boolean.TYPE, token.getSign());
-        } catch (EmptyResultDataAccessException e) {
-            return true;
-        }
-    }
-
     public void addToken(Token token) {
         template.update("insert into token (uid, time, sign, used) values (?, ?, ?, ?)",
                 token.getUid(),
@@ -32,10 +23,12 @@ public class TokenRepository {
                 false);
     }
 
-    public void setTokenUsed(Token token) {
-        template.update("update token set used = ? where sign = ? ",
-                true,
-                token.getSign());
+    public int replaceToken(Token oldToken, Token newToken) {
+        return template.update("update token set sign = ? , time = ?  where uid = ? and sign = ? and used = false ",
+                newToken.getSign(),
+                newToken.getTimestamp(),
+                oldToken.getUid(),
+                oldToken.getSign());
     }
 
     public void setAllTokenUsed(long uid) {

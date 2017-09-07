@@ -23,28 +23,26 @@ public class TokenService {
         this.repository = repository;
     }
 
-    public boolean isTokenUsed(Token token) {
-        return repository.isTokenUsed(token);
-    }
-
     @Transactional
-    public Token generateToken(Token tokenOld) {
-        long currentTime = System.currentTimeMillis();
-        String key = EncryptUtil.hash(EncryptUtil.Algorithm.SHA256, tokenOld.getUid() + tokenSalt + currentTime);
-        Token token = new Token(tokenOld.getUid(), currentTime, key);
-        repository.setTokenUsed(tokenOld);
-        repository.addToken(token);
-        return token;
+    public Token getNewToken(Token oldToken) {
+        Token token = generateToken(oldToken.getUid());
+        int i = repository.replaceToken(oldToken, token);
+        if (i == 1)
+            return token;
+        else {
+            repository.setAllTokenUsed(oldToken.getUid());
+            return null;
+        }
     }
 
-    public void setAllTokenUsed(int uid) {
-        repository.setAllTokenUsed(uid);
-    }
-
-    public Token generateToken(int uid) {
+    private Token generateToken(int uid) {
         long currentTime = System.currentTimeMillis();
         String key = EncryptUtil.hash(EncryptUtil.Algorithm.SHA256, uid + tokenSalt + currentTime);
-        Token token = new Token(uid, currentTime, key);
+        return new Token(uid, currentTime, key);
+    }
+
+    public Token getNewToken(int uid) {
+        Token token = generateToken(uid);
         repository.addToken(token);
         return token;
     }

@@ -4,6 +4,7 @@ import com.aliyuncs.exceptions.ClientException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
@@ -75,7 +76,7 @@ public class UserController {
         }
         if (user.getStatus() == User.STATUS.DELETE)
             return new Response(Response.ResponseCode.USER_DELETED);
-        return new Response<>(tokenService.generateToken(user.getUid()));
+        return new Response<>(tokenService.getNewToken(user.getUid()));
     }
 
     @RequestMapping(value = "/token",
@@ -87,11 +88,10 @@ public class UserController {
         if (result.hasErrors() || !tokenService.checkToken(token)) {
             return new Response(Response.ResponseCode.BAD_TOKEN);
         }
-        if (tokenService.isTokenUsed(token)) {
-            tokenService.setAllTokenUsed(token.getUid());
+        Token newToken = tokenService.getNewToken(token);
+        if (newToken == null)
             return new Response(Response.ResponseCode.RE_LOGIN);
-        }
-        return new Response<>(tokenService.generateToken(token));
+        return new Response<>(newToken);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -109,8 +109,14 @@ public class UserController {
             return new Response(Response.ResponseCode.USERNAME_REGISTERED);
 
         int uid = userService.registerUser(registerRequest);
-        return new Response<>(tokenService.generateToken(uid));
+        return new Response<>(tokenService.getNewToken(uid));
     }
+
+    @ExceptionHandler(DuplicateKeyException.class)
+    public Response usernameRegister() {
+        return new Response(Response.ResponseCode.USERNAME_REGISTERED);
+    }
+
 
 //    @RequestMapping(value = "/retrieve",
 //            method = RequestMethod.POST,
