@@ -14,6 +14,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import redis.clients.jedis.JedisPoolConfig;
 
 import javax.sql.DataSource;
 
@@ -69,10 +70,20 @@ public class DataConfig {
     }
 
     @Bean
-    public RedisConnectionFactory connectionFactory() {
+    public JedisPoolConfig jedisPoolConfig() {
+        JedisPoolConfig config = new JedisPoolConfig();
+        config.setMaxTotal(20);
+        config.setMinIdle(1);
+        return config;
+    }
+
+    @Bean
+    public RedisConnectionFactory connectionFactory(JedisPoolConfig config) {
         JedisConnectionFactory connectionFactory = new JedisConnectionFactory();
         connectionFactory.setClientName("translateit");
         connectionFactory.setUsePool(true);
+        connectionFactory.setUsePool(true);
+        connectionFactory.setPoolConfig(config);
         return connectionFactory;
     }
 
