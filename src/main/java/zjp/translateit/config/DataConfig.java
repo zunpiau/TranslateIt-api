@@ -45,8 +45,8 @@ public class DataConfig {
     public DataSource dataSource(Environment env) {
         org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/" + database +
-                "?useSSL=false&characterEncoding=UTF-8&useUnicode=yes&nullNamePatternMatchesAll=true");
+        dataSource.setUrl("jdbc:mysql://localhost:3006/" + database +
+                "?useSSL=false&characterEncoding=UTF-8&useUnicode=yes&nullNamePatternMatchesAll=true&autoReconnect=true");
         dataSource.setUsername(user);
         dataSource.setPassword(password);
         dataSource.setInitialSize(4);
