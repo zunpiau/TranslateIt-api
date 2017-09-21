@@ -51,7 +51,7 @@ public class DataConfig {
         dataSource.setPassword(password);
         dataSource.setInitialSize(4);
         dataSource.setMaxIdle(20);
-        dataSource.setInitSQL("SET NAMES utf8mb4");
+        dataSource.setInitSQL("SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci");
         if (helper.isDev()) {
                 ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
                 populator.addScript(dataScript);
