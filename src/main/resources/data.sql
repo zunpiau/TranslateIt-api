@@ -50,7 +50,8 @@ CREATE TABLE token
   time LONG,
   sign VARCHAR(64),
   used BOOL,
-  INDEX (id DESC, uid)
+  INDEX (uid),
+  INDEX (uid, sign, used)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET utf8mb4
