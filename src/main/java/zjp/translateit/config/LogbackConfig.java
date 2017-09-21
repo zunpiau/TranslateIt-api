@@ -26,7 +26,7 @@ public class LogbackConfig {
     public static PatternLayoutEncoder encoder(LoggerContext ctx) {
         PatternLayoutEncoder encoder = new PatternLayoutEncoder();
         encoder.setContext(ctx);
-        encoder.setPattern("%d{yy-MM-dd HH:mm:ss.SSS} [%-5level] %logger - %msg%n");
+        encoder.setPattern("%d{yy-MM-dd HH:mm:ss.SSS} [%-5level] [%thread] %logger - %msg%n");
         return encoder;
     }
 }
