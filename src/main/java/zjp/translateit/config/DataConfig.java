@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
@@ -15,6 +14,7 @@ import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import redis.clients.jedis.JedisPoolConfig;
+import zjp.translateit.util.ProfileHelper;
 
 import javax.sql.DataSource;
 
@@ -42,7 +42,7 @@ public class DataConfig {
     }
 
     @Bean
-    public DataSource dataSource(Environment env) {
+    public DataSource dataSource(ProfileHelper helper) {
         org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         dataSource.setUrl("jdbc:mysql://localhost:3006/" + database +
@@ -52,14 +52,11 @@ public class DataConfig {
         dataSource.setInitialSize(4);
         dataSource.setMaxIdle(20);
         dataSource.setInitSQL("SET NAMES utf8mb4");
-        String[] profiles = env.getActiveProfiles();
-        for (String profile : profiles) {
-            if (profile.equals("dev")) {
+        if (helper.isDev()) {
                 ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
                 populator.addScript(dataScript);
                 DatabasePopulatorUtils.execute(populator, dataSource);
             }
-        }
         return dataSource;
     }
 
