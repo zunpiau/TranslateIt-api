@@ -1,7 +1,17 @@
 package zjp.translateit.web.response;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+import zjp.translateit.util.ProfileHelper;
 
+import java.io.IOException;
+
+@JsonSerialize(using = Response.ResponseSerializer.class)
 public class Response<T> {
 
     private ResponseCode code;
@@ -57,6 +67,27 @@ public class Response<T> {
         @JsonValue
         public int getStatusCode() {
             return statusCode;
+        }
+    }
+
+    public static class ResponseSerializer extends JsonSerializer<Response> {
+
+        @Autowired
+        private ProfileHelper helper;
+
+        public ResponseSerializer() {
+            SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+        }
+
+        @Override
+        public void serialize(Response value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+            gen.writeStartObject();
+            gen.writeNumberField("code", value.getCode().getStatusCode());
+            if (helper.isDev())
+                gen.writeStringField("message", value.getCode().toString());
+            gen.writeObjectField("data", value.getData());
+            gen.writeEndObject();
+
         }
     }
 }
