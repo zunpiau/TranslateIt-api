@@ -85,7 +85,8 @@ public class Response<T> {
             gen.writeNumberField("code", value.getCode().getStatusCode());
             if (helper.isDev())
                 gen.writeStringField("message", value.getCode().toString());
-            gen.writeObjectField("data", value.getData());
+            if (value.getData() != null)
+                gen.writeObjectField("data", value.getData());
             gen.writeEndObject();
 
         }
