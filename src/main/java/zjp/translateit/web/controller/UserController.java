@@ -1,4 +1,4 @@
-package zjp.translateit.web;
+package zjp.translateit.web.controller;
 
 import com.aliyuncs.exceptions.ClientException;
 import org.slf4j.Logger;

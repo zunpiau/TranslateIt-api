@@ -1,4 +1,4 @@
-package zjp.translateit.web;
+package zjp.translateit.web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

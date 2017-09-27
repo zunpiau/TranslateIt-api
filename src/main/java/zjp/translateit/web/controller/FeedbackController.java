@@ -1,4 +1,4 @@
-package zjp.translateit.web;
+package zjp.translateit.web.controller;
 
 import com.aliyuncs.exceptions.ClientException;
 import org.springframework.beans.factory.annotation.Autowired;

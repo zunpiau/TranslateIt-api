@@ -16,7 +16,7 @@ import java.util.List;
 
 @EnableWebMvc
 @Configuration
-@ComponentScan(basePackages = {"zjp.translateit.web", "zjp.translateit.web"})
+@ComponentScan(basePackages = {"zjp.translateit.web.controller"})
 public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Override
