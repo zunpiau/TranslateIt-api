@@ -24,7 +24,7 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 public class DataConfig {
 
-    @Value("classpath:data.sql")
+    @Value("classpath:schema.sql")
     private Resource dataScript;
 
     @Value("${db.user}")
@@ -46,12 +46,16 @@ public class DataConfig {
         org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         dataSource.setUrl("jdbc:mysql://localhost:3006/" + database +
-                "?useSSL=false&characterEncoding=UTF-8&useUnicode=yes&nullNamePatternMatchesAll=true&autoReconnect=true");
+                "?useSSL=false&characterEncoding=UTF-8&useUnicode=yes&nullNamePatternMatchesAll=true");
         dataSource.setUsername(user);
         dataSource.setPassword(password);
         dataSource.setInitialSize(4);
+        dataSource.setMinIdle(4);
         dataSource.setMaxIdle(20);
         dataSource.setInitSQL("SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci");
+        dataSource.setTestOnBorrow(true);
+        dataSource.setRemoveAbandoned(true);
+        dataSource.setValidationQuery("SELECT 1");
         if (helper.isDev()) {
                 ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
                 populator.addScript(dataScript);
