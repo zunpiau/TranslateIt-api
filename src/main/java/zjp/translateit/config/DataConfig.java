@@ -25,6 +25,9 @@ import javax.sql.DataSource;
 public class DataConfig {
 
     @Value("classpath:schema.sql")
+    private Resource schemaScript;
+
+    @Value("classpath:data.sql")
     private Resource dataScript;
 
     @Value("${db.user}")
@@ -58,6 +61,7 @@ public class DataConfig {
         dataSource.setValidationQuery("SELECT 1");
         if (helper.isDev()) {
                 ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
+            populator.addScript(schemaScript);
                 populator.addScript(dataScript);
                 DatabasePopulatorUtils.execute(populator, dataSource);
             }

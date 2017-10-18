@@ -7,11 +7,11 @@ CREATE TABLE user
 (
   id       INT AUTO_INCREMENT
     PRIMARY KEY,
-  uid      INT         NOT NULL,
-  name     VARCHAR(16) NOT NULL,
-  password VARCHAR(16) NOT NULL,
-  email    VARCHAR(32) NOT NULL,
-  status   TINYINT     NOT NULL,
+  uid      INT          NOT NULL,
+  name     VARCHAR(16)  NOT NULL,
+  password VARCHAR(128) NOT NULL,
+  email    VARCHAR(32)  NOT NULL,
+  status   TINYINT      NOT NULL,
   UNIQUE uk_uid(uid),
   UNIQUE uk_name(name),
   UNIQUE uk_email(email)
