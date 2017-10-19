@@ -60,14 +60,10 @@ public class DataConfig {
         dataSource.setRemoveAbandoned(true);
         dataSource.setValidationQuery("SELECT 1");
         if (helper.isDev()) {
-                ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
-            populator.addScript(schemaScript);
-                populator.addScript(dataScript);
-                DatabasePopulatorUtils.execute(populator, dataSource);
-            }
+            DatabasePopulatorUtils.execute(new ResourceDatabasePopulator(schemaScript, dataScript), dataSource);
+        }
         return dataSource;
     }
-
 
     @Bean
     public JdbcTemplate userJdbcTemplate(DataSource dataSource) {
@@ -77,8 +73,8 @@ public class DataConfig {
     @Bean
     public JedisPoolConfig jedisPoolConfig() {
         JedisPoolConfig config = new JedisPoolConfig();
-        config.setMaxTotal(20);
-        config.setMinIdle(1);
+        config.setMaxIdle(10);
+        config.setMinIdle(2);
         return config;
     }
 
