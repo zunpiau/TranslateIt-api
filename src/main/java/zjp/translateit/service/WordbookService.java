@@ -6,8 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 import zjp.translateit.data.WordbookRepository;
 import zjp.translateit.domain.Wordbook;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class WordbookService {
@@ -23,15 +24,10 @@ public class WordbookService {
     public void backupWordbook(long uid, List<String> words, List<Wordbook> wordbooksModify) {
         repository.deleteNotIn(uid, words);
         List<String> wordsHaving = repository.getWords(uid);
-        ArrayList<Wordbook> wordbooksNew = new ArrayList<>(wordbooksModify.size());
-        for (Wordbook wordbook : wordbooksModify) {
-            if (!wordsHaving.contains(wordbook.getWord())) {
-                wordbooksNew.add(wordbook);
-            }
-        }
-        wordbooksModify.removeAll(wordbooksNew);
-        repository.update(uid, wordbooksModify);
-        repository.insert(uid, wordbooksNew);
+        Map<Boolean, List<Wordbook>> contains = wordbooksModify.stream()
+                .collect(Collectors.partitioningBy(wordbook -> wordsHaving.contains(wordbook.getWord())));
+        repository.update(uid, contains.get(true));
+        repository.insert(uid, contains.get(false));
     }
 
     public List<Wordbook> getWordbooksMissing(long uid, List<String> words) {
