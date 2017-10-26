@@ -47,9 +47,12 @@ public class TokenService {
         return token;
     }
 
-    public boolean checkToken(Token token) {
-        String str = token.getUid() + tokenSalt + token.getTimestamp();
-        return token.getSign().equals(EncryptUtil.hash(EncryptUtil.Algorithm.SHA256, str));
+    public boolean verifyToken(Token token) {
+        return verifyToken(token.getUid(), token.getTimestamp(), token.getSign());
+    }
+
+    public boolean verifyToken(int uid, long timestamp, String sign) {
+        return sign.equals(EncryptUtil.hash(EncryptUtil.Algorithm.SHA256, "" + uid + tokenSalt + timestamp));
     }
 
 }

@@ -52,7 +52,7 @@ public class TokenController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Response refreshToken(@RequestBody @Valid Token token, BindingResult result) {
-        if (result.hasErrors() || !tokenService.checkToken(token)) {
+        if (result.hasErrors() || !tokenService.verifyToken(token)) {
             return new Response(Response.ResponseCode.BAD_TOKEN);
         }
         Token newToken = tokenService.getNewToken(token);

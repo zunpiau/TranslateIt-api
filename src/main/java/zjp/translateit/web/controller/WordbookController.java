@@ -47,7 +47,7 @@ public class WordbookController {
     }
 
     private Response checkParameter(Token token, BindingResult result) {
-        if (result.hasErrors() || !tokenService.checkToken(token))
+        if (result.hasErrors() || !tokenService.verifyToken(token))
             return new Response(Response.ResponseCode.BAD_TOKEN);
         if ((System.currentTimeMillis() - token.getTimestamp()) > TOKEN_EXPIRE)
             return new Response(Response.ResponseCode.TOKEN_EXPIRED);
