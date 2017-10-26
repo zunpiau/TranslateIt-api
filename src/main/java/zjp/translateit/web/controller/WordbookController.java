@@ -21,7 +21,7 @@ import javax.validation.Valid;
 public class WordbookController {
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final long TOKEN_EXPIRE = 5 * 60 * 1000;
+    private final long TOKEN_EXPIRE = 24 * 60 * 60 * 1000;
 
     private WordbookService wordbookService;
     private TokenService tokenService;
@@ -33,7 +33,7 @@ public class WordbookController {
     }
 
     @RequestMapping(value = "/backup",
-            method = RequestMethod.POST,
+            method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Response backup(@Valid @RequestBody BackupRequest backupRequest, BindingResult result) {
