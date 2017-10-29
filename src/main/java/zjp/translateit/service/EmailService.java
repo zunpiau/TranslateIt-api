@@ -31,12 +31,14 @@ public class EmailService {
     private String aliSecret;
     @Value("${ali.emailAccount}")
     private String aliAccount;
+    @Value("${ali.email.reply}")
+    private String aliEmailReply;
     @Value("classpath:email-template.html")
     private Resource emailTemplate;
 
     boolean sendVerifyEmail(String mailTo, String verifyCode) throws IOException, ClientException {
         String template = new String(Files.readAllBytes(emailTemplate.getFile().toPath()), StandardCharsets.UTF_8);
-        String content = MessageFormat.format(template, verifyCode);
+        String content = MessageFormat.format(template, verifyCode, aliEmailReply, aliEmailReply);
         return sendEmail(mailTo, "TranslateIt", content);
     }
 
