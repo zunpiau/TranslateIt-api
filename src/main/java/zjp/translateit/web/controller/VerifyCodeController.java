@@ -1,7 +1,6 @@
 package zjp.translateit.web.controller;
 
 
-import com.aliyuncs.exceptions.ClientException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +13,8 @@ import zjp.translateit.web.request.VerifyCodeRequest;
 import zjp.translateit.web.response.Response;
 
 import javax.validation.Valid;
-import java.io.IOException;
 
-@RequestMapping("/verify-code")
+@RequestMapping("/verifyCode")
 @RestController
 public class VerifyCodeController {
 
@@ -47,11 +45,7 @@ public class VerifyCodeController {
         if (userService.emailRegistered(request.getEmail()))
             return new Response(Response.ResponseCode.EMAIL_REGISTERED);
 
-        try {
-            userService.sendVerifyCode(request);
-        } catch (IOException | ClientException e) {
-            return new Response(Response.ResponseCode.INNER_EXCEPTION);
-        }
+        userService.sendVerifyCode(request);
         return new Response(Response.ResponseCode.OK);
     }
 }
