@@ -40,7 +40,6 @@ public class Response<T> {
 
         BAD_SIGN(300),
         BAD_TOKEN(301),
-        BAD_VERIFY_CODE(302),
         REQUIRE_EXPIRED(303),
         REQUIRE_FRA(304),
         INVALID_ACCOUNT(305),
@@ -54,7 +53,9 @@ public class Response<T> {
         INVALID_VERIFY_CODE(404),
         EMAIL_REGISTERED(405),
         USERNAME_REGISTERED(406),
-        USER_DELETED(407),
+        VERIFY_CODE_USED(407),
+        INVITE_CODE_USED(408),
+        USER_DELETED(409),
 
         INNER_EXCEPTION(500);
 

@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS wordbooks;
 DROP TABLE IF EXISTS token;
+DROP TABLE IF EXISTS invite_code;
 DROP TABLE IF EXISTS feedback;
 
 CREATE TABLE user
@@ -52,6 +53,22 @@ CREATE TABLE token
   used BOOL        NOT NULL,
   INDEX idx_uid(uid),
   INDEX idx_uid_sign_used(uid, sign, used)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE invite_code
+(
+  id            INT      AUTO_INCREMENT
+    PRIMARY KEY,
+  uid           INT NOT NULL,
+  code          INT NOT NULL,
+  time_create   DATETIME DEFAULT CURRENT_TIMESTAMP,
+  time_modified DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  user          INT      DEFAULT 0,
+  INDEX idx_uid(uid),
+  UNIQUE uk_code(code)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET utf8mb4
