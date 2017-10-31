@@ -4,9 +4,9 @@ import java.util.Date;
 
 public class InviteCodeDto {
 
-    private int code;
-    private Date timeModified;
-    private boolean used;
+    private final int code;
+    private final Date timeModified;
+    private final boolean used;
 
     public InviteCodeDto(int code, Date timeModified, boolean used) {
         this.code = code;

@@ -12,7 +12,7 @@ import java.io.IOException;
 @JsonSerialize(using = Response.ResponseSerializer.class)
 public class Response<T> {
 
-    private ResponseCode code;
+    private final ResponseCode code;
     private T data;
 
     public Response(ResponseCode code) {
@@ -57,7 +57,7 @@ public class Response<T> {
 
         INNER_EXCEPTION(500);
 
-        private int statusCode;
+        private final int statusCode;
 
         ResponseCode(int statusCode) {
             this.statusCode = statusCode;

@@ -22,10 +22,10 @@ import javax.validation.Valid;
 @RequestMapping("/user")
 public class UserController {
 
-    private UserService userService;
-    private InviteCodeService inviteCodeService;
-    private TokenService tokenService;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final UserService userService;
+    private final InviteCodeService inviteCodeService;
+    private final TokenService tokenService;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public UserController(UserService userService,

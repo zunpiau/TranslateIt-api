@@ -21,7 +21,7 @@ public class EncryptUtil {
         MD5("md5"),
         SHA256("SHA-256");
 
-        private String algorithm;
+        private final String algorithm;
 
         Algorithm(String algorithm) {
             this.algorithm = algorithm;

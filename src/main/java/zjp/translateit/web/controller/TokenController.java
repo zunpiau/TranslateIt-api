@@ -20,9 +20,9 @@ import javax.validation.Valid;
 @RequestMapping("/token")
 public class TokenController {
 
-    private UserService userService;
-    private TokenService tokenService;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final UserService userService;
+    private final TokenService tokenService;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public TokenController(UserService userService, TokenService tokenService) {

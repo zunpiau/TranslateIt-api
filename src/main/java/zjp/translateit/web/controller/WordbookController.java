@@ -23,8 +23,8 @@ public class WordbookController {
     @SuppressWarnings("FieldCanBeLocal")
     private final long TOKEN_EXPIRE = 24 * 60 * 60 * 1000;
 
-    private WordbookService wordbookService;
-    private TokenService tokenService;
+    private final WordbookService wordbookService;
+    private final TokenService tokenService;
 
     @Autowired
     public WordbookController(WordbookService wordbookService, TokenService tokenService) {

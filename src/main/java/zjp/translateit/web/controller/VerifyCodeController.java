@@ -21,7 +21,7 @@ public class VerifyCodeController {
     @SuppressWarnings("FieldCanBeLocal")
     private final long REQUEST_EXPIRE = 60 * 1000;    //5min
     private final UserService userService;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public VerifyCodeController(UserService userService) {

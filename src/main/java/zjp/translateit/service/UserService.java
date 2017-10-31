@@ -39,7 +39,7 @@ public class UserService {
     @Value("${salt.verify}")
     private String verifySalt;
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public UserService(StringRedisTemplate redisTemplate,
