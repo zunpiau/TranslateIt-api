@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.nio.charset.Charset;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @EnableWebMvc
@@ -26,14 +26,14 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        ArrayList<MediaType> plainText = new ArrayList<>(2);
-        plainText.add(MediaType.parseMediaType(MediaType.TEXT_PLAIN + ";charset=utf-8"));
         StringHttpMessageConverter stringHttpMessageConverter = new StringHttpMessageConverter(Charset.forName("utf-8"));
-        stringHttpMessageConverter.setSupportedMediaTypes(plainText);
+        stringHttpMessageConverter.setSupportedMediaTypes(
+                Collections.singletonList(
+                        MediaType.parseMediaType(MediaType.TEXT_PLAIN.getType())));
         MappingJackson2HttpMessageConverter jackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
-        ArrayList<MediaType> mediaTypes = new ArrayList<>(2);
-        mediaTypes.add(MediaType.parseMediaType("application/json;charset=utf-8"));
-        jackson2HttpMessageConverter.setSupportedMediaTypes(mediaTypes);
+        jackson2HttpMessageConverter.setSupportedMediaTypes(
+                Collections.singletonList(
+                        MediaType.parseMediaType(MediaType.APPLICATION_JSON.getType())));
         converters.add(stringHttpMessageConverter);
         converters.add(jackson2HttpMessageConverter);
     }
