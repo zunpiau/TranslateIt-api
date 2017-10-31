@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import zjp.translateit.domain.Token;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class RecoverRequest {
 
     @JsonSerialize(as = Token.class)
     private Token token;
+    @NotNull
     @JsonProperty("words")
     private List<String> words;
 

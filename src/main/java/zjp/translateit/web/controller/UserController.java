@@ -58,7 +58,7 @@ public class UserController {
         logger.debug("email " + registerRequest.getEmail() + " register");
         if (result.hasErrors())
             return new Response(Response.ResponseCode.INVALID_PARAMETER);
-        if (!userService.checkVerifyCode(registerRequest))
+        if (!userService.verifyCodeValid(registerRequest))
             return new Response(Response.ResponseCode.VERIFY_CODE_USED);
         if (userService.hasUser(registerRequest.getName()))
             return new Response(Response.ResponseCode.USERNAME_REGISTERED);

@@ -1,24 +1,27 @@
 package zjp.translateit.web.request;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+
+import javax.validation.constraints.*;
 
 public class VerifyCodeRequest {
 
     @NotNull
-    @Pattern(regexp = "[a-zA-Z0-9+._%+-]+@[a-zA-Z0-9.]+")
+    @Email
     private String email;
+    @NotNull
+    @Max(1800000000000L)
+    @Min(1500000000000L)
     private long timestamp;
     @NotNull
+    @Pattern(regexp = "[A-Za-Z0-9]{32}")
     private String sign;
 
     public VerifyCodeRequest() {
     }
 
-    public VerifyCodeRequest(@NotNull @Pattern(regexp = "[a-zA-Z0-9+._%+-]+@[a-zA-Z0-9.]+") String email,
-                             long timestamp,
-                             @NotEmpty String sign) {
+    public VerifyCodeRequest(@NotNull @Email String email,
+                             @NotNull @Max(1800000000000L) @Min(1500000000000L) long timestamp,
+                             @NotNull @Pattern(regexp = "[A-Za-Z0-9]{32}") String sign) {
         this.email = email;
         this.timestamp = timestamp;
         this.sign = sign;

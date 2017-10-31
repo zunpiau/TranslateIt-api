@@ -35,7 +35,10 @@ public class TokenController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Response getToken(@RequestBody LoginRequest request) {
+    public Response getToken(@RequestBody @Valid LoginRequest request, BindingResult result) {
+        if (result.hasErrors()) {
+            return new Response(Response.ResponseCode.INVALID_PARAMETER);
+        }
         logger.debug("user " + request.getName() + " login");
         User user = userService.getUserFromLoginRequest(request);
         if (user == null) {
@@ -55,7 +58,7 @@ public class TokenController {
         if (result.hasErrors() || !tokenService.verifyToken(token)) {
             return new Response(Response.ResponseCode.BAD_TOKEN);
         }
-        Token newToken = tokenService.getNewToken(token);
+        Token newToken = tokenService.refreshToken(token);
         if (newToken == null)
             return new Response(Response.ResponseCode.RE_LOGIN);
         return new Response<>(newToken);

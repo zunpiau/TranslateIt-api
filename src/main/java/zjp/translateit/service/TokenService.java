@@ -24,9 +24,9 @@ public class TokenService {
     }
 
     @Transactional
-    public Token getNewToken(Token oldToken) {
+    public Token refreshToken(Token oldToken) {
         Token token = generateToken(oldToken.getUid());
-        int i = repository.replaceToken(oldToken, token);
+        int i = repository.updateToken(oldToken, token);
         if (i == 1)
             return token;
         else {

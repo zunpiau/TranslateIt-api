@@ -163,6 +163,12 @@
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>9.4.6.v20170531</version>
                 <configuration>
+                    <systemProperties>
+                        <systemProperty>
+                            <name>org.jboss.logging.provider</name>
+                            <value>slf4j</value>
+                        </systemProperty>
+                    </systemProperties>
                     <webApp>
                         <contextPath>/translateit-api-1.0-SNAPSHOT</contextPath>
                     </webApp>

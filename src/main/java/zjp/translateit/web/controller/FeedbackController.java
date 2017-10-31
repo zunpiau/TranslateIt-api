@@ -1,14 +1,16 @@
 package zjp.translateit.web.controller;
 
-import com.aliyuncs.exceptions.ClientException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import zjp.translateit.service.EmailService;
 import zjp.translateit.service.FeedbackService;
 import zjp.translateit.web.request.FeedbackRequest;
 import zjp.translateit.web.response.Response;
+
+import javax.validation.Valid;
 
 @RestController
 public class FeedbackController {
@@ -27,16 +29,13 @@ public class FeedbackController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Response feedback(@RequestBody FeedbackRequest request, @RequestHeader("User-Agent") String ua) {
-        if (!request.getContent().equals("")) {
-            feedbackService.addFeedback(request, ua);
-            try {
-                emailService.sendFeedbackEmail(request, ua);
-            } catch (ClientException e) {
-                e.printStackTrace();
-            }
-            return new Response(Response.ResponseCode.OK);
-        } else return new Response(Response.ResponseCode.INVALID_PARAMETER);
+    public Response feedback(@RequestBody @Valid FeedbackRequest request, BindingResult result, @RequestHeader("User-Agent") String ua) {
+        if (result.hasErrors()) {
+            return new Response(Response.ResponseCode.INVALID_PARAMETER);
+        }
+        feedbackService.addFeedback(request, ua);
+        emailService.sendFeedbackEmail(request, ua);
+        return new Response(Response.ResponseCode.OK);
     }
 
 }

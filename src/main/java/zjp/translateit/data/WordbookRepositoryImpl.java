@@ -25,8 +25,8 @@ public class WordbookRepositoryImpl implements WordbookRepository {
     }
 
     @Override
-    public void insert(long uid, List<Wordbook> wordbooks) {
-        template.batchUpdate("insert into wordbooks " +
+    public int insert(long uid, List<Wordbook> wordbooks) {
+        return template.batchUpdate("insert into wordbooks " +
                 "(uid,word,phEn,phAm,phEnUrl,phAmUrl,mean,exchange,sentence,note,category)" +
                 "values(?,?,?,?,?,?,?,?,?,?,?)", new BatchPreparedStatementSetter() {
             @Override
@@ -45,17 +45,16 @@ public class WordbookRepositoryImpl implements WordbookRepository {
                 ps.setString(11, wordbook.getCategory());
             }
 
-
             @Override
             public int getBatchSize() {
                 return wordbooks.size();
             }
-        });
+        }).length;
     }
 
     @Override
-    public void update(long uid, List<Wordbook> wordbooks) {
-        template.batchUpdate("update wordbooks " +
+    public int update(long uid, List<Wordbook> wordbooks) {
+        return template.batchUpdate("update wordbooks " +
                 "set phEn = ?, phAm = ?, phEnUrl = ?, phAmUrl = ?, mean = ?, exchange = ?, sentence = ?, note = ?, category = ? " +
                 " where uid = ? and word = ? ", new BatchPreparedStatementSetter() {
             @Override
@@ -78,7 +77,7 @@ public class WordbookRepositoryImpl implements WordbookRepository {
             public int getBatchSize() {
                 return wordbooks.size();
             }
-        });
+        }).length;
     }
 
     @Override
@@ -111,15 +110,15 @@ public class WordbookRepositoryImpl implements WordbookRepository {
                 new WordbookRowMapper());
     }
 
-    public void deleteNotIn(long uid, List<String> words) {
+    public int deleteNotIn(long uid, List<String> words) {
         if (words.isEmpty()) {
-            template.update("delete from wordbooks where uid = ? ", uid);
+            return template.update("delete from wordbooks where uid = ? ", uid);
         } else {
             HashMap<String, Object> param = new HashMap<>(3);
             param.put("uid", uid);
             param.put("words", words);
             NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(template);
-            namedParameterJdbcTemplate.update("delete from wordbooks where uid = :uid and word not in (:words)", param);
+            return namedParameterJdbcTemplate.update("delete from wordbooks where uid = :uid and word not in (:words)", param);
         }
     }
 

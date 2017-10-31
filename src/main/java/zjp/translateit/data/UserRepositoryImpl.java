@@ -1,5 +1,6 @@
 package zjp.translateit.data;
 
+import com.sun.istack.internal.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -26,7 +27,7 @@ CREATE TABLE `user` (
 @Repository
 public class UserRepositoryImpl implements UserRepository {
 
-    private static final String SELECT_USER = "select uid, name, password, email, status from user ";
+    private static final String SELECT_USER = "SELECT uid, name, password, email, status FROM user ";
     private JdbcTemplate template;
 
     @Autowired
@@ -34,10 +35,11 @@ public class UserRepositoryImpl implements UserRepository {
         this.template = template;
     }
 
+    @Nullable
     @Override
     public User findUserByName(String username) {
         try {
-            return template.queryForObject(SELECT_USER + " where name = ? ", new UserRowMapper(), username);
+            return template.queryForObject(SELECT_USER + " WHERE name = ? ", new UserRowMapper(), username);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
@@ -46,23 +48,22 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User findUserByEmail(String email) {
         try {
-            return template.queryForObject(SELECT_USER + " where email = ? ", new UserRowMapper(), email);
+            return template.queryForObject(SELECT_USER + " WHERE email = ? ", new UserRowMapper(), email);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
     }
 
     @Override
-    public int add(User user) {
+    public void add(User user) {
         SimpleJdbcInsert insert = new SimpleJdbcInsert(template).withTableName("user");
-        insert.setGeneratedKeyName("id");
         HashMap<String, Object> args = new HashMap<>();
         args.put("uid", user.getUid());
         args.put("name", user.getName());
         args.put("password", user.getPassword());
         args.put("email", user.getEmail());
         args.put("status", user.getStatus());
-        return insert.executeAndReturnKey(args).intValue();
+        insert.execute(args);
     }
 
     @Override

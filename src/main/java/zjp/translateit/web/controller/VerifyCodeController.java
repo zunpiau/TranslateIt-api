@@ -36,7 +36,7 @@ public class VerifyCodeController {
         logger.debug("email " + request.getEmail() + " request verify");
         if (result.hasErrors())
             return new Response(Response.ResponseCode.INVALID_PARAMETER);
-        if (!userService.checkVerifyCodeSign(request))
+        if (!userService.checkRequestSign(request))
             return new Response(Response.ResponseCode.BAD_SIGN);
         if ((System.currentTimeMillis() - request.getTimestamp()) > REQUEST_EXPIRE)
             return new Response(Response.ResponseCode.REQUIRE_EXPIRED);

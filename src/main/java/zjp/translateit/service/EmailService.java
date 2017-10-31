@@ -33,15 +33,15 @@ public class EmailService {
     private String aliSecret;
     @Value("${ali.emailAccount}")
     private String aliAccount;
-    @Value("${ali.email.reply}")
-    private String aliEmailReply;
+    @Value("${email.reply}")
+    private String emailReply;
     @Value("classpath:email-template.html")
     private Resource emailTemplate;
 
     public void sendVerifyEmail(String mailTo, String verifyCode) {
         try {
             String template = new String(Files.readAllBytes(emailTemplate.getFile().toPath()), StandardCharsets.UTF_8);
-            String content = MessageFormat.format(template, verifyCode, aliEmailReply, aliEmailReply);
+            String content = MessageFormat.format(template, verifyCode, emailReply, emailReply);
             sendEmail(mailTo, "TranslateIt", content);
         } catch (IOException e) {
             e.printStackTrace();
@@ -72,9 +72,9 @@ public class EmailService {
     }
 
     @Async
-    public void sendFeedbackEmail(FeedbackRequest request, String ua) throws ClientException {
+    public void sendFeedbackEmail(FeedbackRequest request, String ua) {
         String emailContent = MessageFormat.format(feedbackTemplate, request.getContent(), ua, request.getContact());
-        sendEmail("tra@shadowland.cn", "Feedback", emailContent);
+        sendEmail(emailReply, "Feedback", emailContent);
     }
 
 }

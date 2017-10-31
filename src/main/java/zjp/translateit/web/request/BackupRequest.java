@@ -6,15 +6,18 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import zjp.translateit.domain.Token;
 import zjp.translateit.domain.Wordbook;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class BackupRequest {
 
     @JsonSerialize(as = Token.class)
     private Token token;
+    @NotNull
     @JsonProperty("wordbooks")
     @JsonSerialize(as = zjp.translateit.domain.Wordbook.class)
     private List<Wordbook> wordbooks;
+    @NotNull
     @JsonProperty("words")
     private List<String> words;
 

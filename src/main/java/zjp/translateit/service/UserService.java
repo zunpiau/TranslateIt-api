@@ -1,5 +1,6 @@
 package zjp.translateit.service;
 
+import com.sun.istack.internal.Nullable;
 import org.apache.commons.text.RandomStringGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +52,7 @@ public class UserService {
         this.inviteCodeService = inviteCodeService;
     }
 
+    @Nullable
     public User getUserFromLoginRequest(LoginRequest request) {
         User user = repository.findUserByName(request.getName());
         if (user == null)
@@ -85,17 +87,13 @@ public class UserService {
         return repository.findUserByEmail(email) != null;
     }
 
-    public boolean checkVerifyCodeSign(VerifyCodeRequest request) {
+    public boolean checkRequestSign(VerifyCodeRequest request) {
         String raw = request.getEmail() + verifySalt + request.getTimestamp();
         String sign = EncryptUtil.hash(EncryptUtil.Algorithm.MD5, raw);
-        logger.debug("email " + request.getEmail());
-        logger.debug("sign " + request.getTimestamp());
-        logger.debug("sign " + request.getSign());
-        logger.debug("sign " + sign);
         return request.getSign().equals(sign);
     }
 
-    public boolean checkVerifyCode(RegisterRequest registerRequest) {
+    public boolean verifyCodeValid(RegisterRequest registerRequest) {
         String verifyCode = redisTemplate.opsForValue().get(VERIFY_CODE_KEY_PREFIX + registerRequest.getEmail());
         return registerRequest.getVerifyCode().equals(verifyCode);
     }

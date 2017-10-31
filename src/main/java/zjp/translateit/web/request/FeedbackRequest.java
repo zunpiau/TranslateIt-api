@@ -1,8 +1,12 @@
 package zjp.translateit.web.request;
 
+import javax.validation.constraints.NotNull;
+
 public class FeedbackRequest {
 
+    @NotNull
     private String content;
+    @NotNull
     private String contact;
 
     public FeedbackRequest() {

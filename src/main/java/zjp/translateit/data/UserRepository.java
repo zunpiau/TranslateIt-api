@@ -9,7 +9,7 @@ public interface UserRepository {
 
     User findUserByEmail(String username);
 
-    int add(User user);
+    void add(User user);
 
     int generateUid();
 

@@ -5,9 +5,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
-import zjp.translateit.util.ProfileHelper;
 
 import java.io.IOException;
 
@@ -73,9 +71,6 @@ public class Response<T> {
 
     public static class ResponseSerializer extends JsonSerializer<Response> {
 
-        @Autowired
-        private ProfileHelper helper;
-
         public ResponseSerializer() {
             SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
         }
@@ -84,8 +79,6 @@ public class Response<T> {
         public void serialize(Response value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
             gen.writeStartObject();
             gen.writeNumberField("code", value.getCode().getStatusCode());
-            if (helper.isDev())
-                gen.writeStringField("message", value.getCode().toString());
             if (value.getData() != null)
                 gen.writeObjectField("data", value.getData());
             gen.writeEndObject();

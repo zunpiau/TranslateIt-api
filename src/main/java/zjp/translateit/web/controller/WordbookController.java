@@ -42,8 +42,7 @@ public class WordbookController {
         Response response = checkParameter(backupRequest.getToken(), result);
         if (response != null)
             return response;
-        wordbookService.backupWordbook(uid, backupRequest.getWords(), backupRequest.getWordbooks());
-        return new Response(Response.ResponseCode.OK);
+        return new Response<>(wordbookService.backup(uid, backupRequest.getWords(), backupRequest.getWordbooks()));
     }
 
     private Response checkParameter(Token token, BindingResult result) {

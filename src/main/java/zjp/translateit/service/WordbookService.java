@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import zjp.translateit.data.WordbookRepository;
 import zjp.translateit.domain.Wordbook;
+import zjp.translateit.dto.BackupResult;
 
 import java.util.List;
 import java.util.Map;
@@ -21,13 +22,15 @@ public class WordbookService {
     }
 
     @Transactional
-    public void backupWordbook(long uid, List<String> words, List<Wordbook> wordbooksModify) {
-        repository.deleteNotIn(uid, words);
+    public BackupResult backup(long uid, List<String> words, List<Wordbook> wordbooksModify) {
+        BackupResult result = new BackupResult();
+        result.setDeleteCount(repository.deleteNotIn(uid, words));
         List<String> wordsHaving = repository.getWords(uid);
         Map<Boolean, List<Wordbook>> contains = wordbooksModify.stream()
                 .collect(Collectors.partitioningBy(wordbook -> wordsHaving.contains(wordbook.getWord())));
-        repository.update(uid, contains.get(true));
-        repository.insert(uid, contains.get(false));
+        result.setUpdateCount(repository.update(uid, contains.get(true)));
+        result.setAddCount(repository.insert(uid, contains.get(false)));
+        return result;
     }
 
     public List<Wordbook> getWordbooksMissing(long uid, List<String> words) {
