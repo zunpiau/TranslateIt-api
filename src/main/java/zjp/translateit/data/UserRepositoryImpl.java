@@ -69,10 +69,10 @@ public class UserRepositoryImpl implements UserRepository {
     public int generateUid() {
         return template.queryForObject("SELECT uid " +
                 "FROM (" +
-                "  SELECT FLOOR(RAND() * 8999999) + 1000000 AS uid " +
+                "  SELECT FLOOR(RAND() * 80000000) + 10000000 AS uid " +
                 "  FROM user " +
                 "  UNION " +
-                "  SELECT FLOOR(RAND() * 9999999) + 1000000 AS uid " +
+                "  SELECT FLOOR(RAND() * 80000000) + 10000000 AS uid " +
                 ") AS ss " +
                 "WHERE uid NOT IN (SELECT uid FROM user) " +
                 "LIMIT 1 ", Integer.TYPE);
