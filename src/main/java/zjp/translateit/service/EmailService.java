@@ -27,8 +27,8 @@ import java.text.MessageFormat;
 public class EmailService {
 
     private static final String feedbackTemplate = "<p>From: {0}</p><p>UA: {1}</p><p>{2}</p>";
-    @Value("${ali.accessKey}")
-    private String aliKey;
+    @Value("${ali.accessKeyID}")
+    private String aliKeyID;
     @Value("${ali.accessSecret}")
     private String aliSecret;
     @Value("${ali.emailAccount}")
@@ -50,7 +50,7 @@ public class EmailService {
     }
 
     private void sendEmail(String mailTo, String subject, String content) {
-        IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", aliKey, aliSecret);
+        IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", aliKeyID, aliSecret);
         IAcsClient client = new DefaultAcsClient(profile);
         SingleSendMailRequest request = new SingleSendMailRequest();
         request.setAccountName(aliAccount);

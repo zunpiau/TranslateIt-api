@@ -29,11 +29,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         StringHttpMessageConverter stringHttpMessageConverter = new StringHttpMessageConverter(Charset.forName("utf-8"));
         stringHttpMessageConverter.setSupportedMediaTypes(
                 Collections.singletonList(
-                        MediaType.parseMediaType(MediaType.TEXT_PLAIN.getType())));
+                        MediaType.parseMediaType(MediaType.TEXT_PLAIN_VALUE)));
         MappingJackson2HttpMessageConverter jackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
         jackson2HttpMessageConverter.setSupportedMediaTypes(
                 Collections.singletonList(
-                        MediaType.parseMediaType(MediaType.APPLICATION_JSON.getType())));
+                        MediaType.parseMediaType(MediaType.APPLICATION_JSON_VALUE)));
         converters.add(stringHttpMessageConverter);
         converters.add(jackson2HttpMessageConverter);
     }
