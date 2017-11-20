@@ -26,7 +26,6 @@ import java.text.MessageFormat;
 @PropertySource(value = "classpath:application-${spring.profiles.active}.properties")
 public class EmailService {
 
-    private static final String feedbackTemplate = "<p>From: {0}</p><p>UA: {1}</p><p>{2}</p>";
     @Value("${ali.accessKeyID}")
     private String aliKeyID;
     @Value("${ali.accessSecret}")
@@ -40,7 +39,8 @@ public class EmailService {
 
     public void sendVerifyEmail(String mailTo, String verifyCode) {
         try {
-            String template = new String(Files.readAllBytes(emailTemplate.getFile().toPath()), StandardCharsets.UTF_8);
+            String template = new String(Files.readAllBytes(emailTemplate.getFile().toPath()),
+                    StandardCharsets.UTF_8);
             String content = MessageFormat.format(template, verifyCode, emailReply, emailReply);
             sendEmail(mailTo, "TranslateIt", content);
         } catch (IOException e) {
@@ -73,7 +73,11 @@ public class EmailService {
 
     @Async
     public void sendFeedbackEmail(FeedbackRequest request, String ua) {
-        String emailContent = MessageFormat.format(feedbackTemplate, request.getContent(), ua, request.getContact());
+        String feedbackTemplate = "<p>From: {0}</p><p>UA: {1}</p><p>{2}</p>";
+        String emailContent = MessageFormat.format(feedbackTemplate,
+                request.getContent(),
+                ua,
+                request.getContact());
         sendEmail(emailReply, "Feedback", emailContent);
     }
 

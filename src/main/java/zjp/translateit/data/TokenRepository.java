@@ -15,7 +15,7 @@ public class TokenRepository {
         this.template = template;
     }
 
-    public void addToken(Token token) {
+    public void saveToken(Token token) {
         template.update("INSERT INTO token (uid, time, sign, used) VALUE (?, ?, ?, ?)",
                 token.getUid(),
                 token.getTimestamp(),
@@ -25,14 +25,14 @@ public class TokenRepository {
 
     public int updateToken(Token oldToken, Token newToken) {
         return template.update("UPDATE token SET sign = ? , time = ? " +
-                        "  WHERE uid = ? AND sign = ? AND used = false ",
+                               " WHERE uid = ? AND sign = ? AND used = false ",
                 newToken.getSign(),
                 newToken.getTimestamp(),
                 oldToken.getUid(),
                 oldToken.getSign());
     }
 
-    public void setAllTokenUsed(long uid) {
+    public void setTokenUsed(long uid) {
         template.update("UPDATE token SET used = ? WHERE uid = ? ",
                 true,
                 uid);

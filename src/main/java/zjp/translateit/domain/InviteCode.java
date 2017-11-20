@@ -1,12 +1,9 @@
 package zjp.translateit.domain;
 
-import java.util.Date;
-
 public class InviteCode {
 
     private int uid;
     private int code;
-    private Date timeModified;
     private int user;
 
     public InviteCode() {
@@ -17,10 +14,9 @@ public class InviteCode {
         this.code = code;
     }
 
-    public InviteCode(int uid, int code, Date time, int user) {
+    public InviteCode(int uid, int code, int user) {
         this.uid = uid;
         this.code = code;
-        this.timeModified = time;
         this.user = user;
     }
 
@@ -38,14 +34,6 @@ public class InviteCode {
 
     public void setCode(int code) {
         this.code = code;
-    }
-
-    public Date getTimeModified() {
-        return timeModified;
-    }
-
-    public void setTimeModified(Date timeModified) {
-        this.timeModified = timeModified;
     }
 
     public int getUser() {

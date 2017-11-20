@@ -9,13 +9,13 @@ public interface InviteCodeRepository {
 
     int generateCode();
 
-    void batchAdd(List<InviteCode> inviteCodes);
+    void saveInviteCode(List<InviteCode> inviteCodes);
 
-    List<InviteCodeDto> getInviteCode(int uid);
+    List<InviteCodeDto> listInviteCode(int uid);
 
-    InviteCode findInviteCode(int code);
+    InviteCode getInviteCode(int code);
 
-    int setInviteCodeUser(int code, int user);
+    int updateInviteCode(int code, int user);
 
     boolean isInviteCodeUsed(int code);
 

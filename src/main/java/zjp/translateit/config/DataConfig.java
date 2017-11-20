@@ -48,8 +48,9 @@ public class DataConfig {
     public DataSource dataSource(ProfileHelper helper) {
         org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3006/" + database +
-                "?useSSL=false&characterEncoding=UTF-8&useUnicode=yes&nullNamePatternMatchesAll=true");
+        dataSource.setUrl("jdbc:mysql://localhost:3006/" +
+                          database +
+                          "?useSSL=false&characterEncoding=UTF-8&useUnicode=yes");
         dataSource.setUsername(user);
         dataSource.setPassword(password);
         dataSource.setInitialSize(4);
@@ -60,7 +61,8 @@ public class DataConfig {
         dataSource.setRemoveAbandoned(true);
         dataSource.setValidationQuery("SELECT 1");
         if (helper.isDev()) {
-            DatabasePopulatorUtils.execute(new ResourceDatabasePopulator(schemaScript, dataScript), dataSource);
+            DatabasePopulatorUtils.execute(new ResourceDatabasePopulator(schemaScript, dataScript),
+                    dataSource);
         }
         return dataSource;
     }

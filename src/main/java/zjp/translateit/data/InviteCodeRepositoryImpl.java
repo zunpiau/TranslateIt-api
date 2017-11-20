@@ -26,66 +26,71 @@ public class InviteCodeRepositoryImpl implements InviteCodeRepository {
     @Override
     public int generateCode() {
         return template.queryForObject("SELECT code " +
-                "FROM (" +
-                "  SELECT FLOOR(RAND() * 80000000) + 10000000 AS code " +
-                "  FROM invite_code " +
-                "  UNION " +
-                "  SELECT FLOOR(RAND() * 80000000) + 10000000 AS code " +
-                ") AS ss " +
-                "WHERE code NOT IN (SELECT code FROM invite_code) " +
-                "LIMIT 1 ", Integer.TYPE);
+                                       " FROM (" +
+                                       "  SELECT FLOOR(RAND() * 80000000) + 10000000 AS code " +
+                                       "  FROM invite_code " +
+                                       "  UNION " +
+                                       "  SELECT FLOOR(RAND() * 80000000) + 10000000 AS code " +
+                                       " ) AS ss " +
+                                       " WHERE code NOT IN (SELECT code FROM invite_code) " +
+                                       " LIMIT 1 ",
+                Integer.TYPE);
     }
 
     @Override
-    public void batchAdd(List<InviteCode> inviteCodes) {
-        template.batchUpdate("INSERT INTO invite_code (uid, code) VALUES (?, ? )", new BatchPreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement ps, int i) throws SQLException {
-                ps.setInt(1, inviteCodes.get(i).getUid());
-                ps.setInt(2, inviteCodes.get(i).getCode());
-            }
+    public void saveInviteCode(List<InviteCode> inviteCodes) {
+        template.batchUpdate("INSERT INTO invite_code (uid, code) VALUE (?, ? )",
+                new BatchPreparedStatementSetter() {
+                    @Override
+                    public void setValues(PreparedStatement ps, int i) throws SQLException {
+                        ps.setInt(1, inviteCodes.get(i).getUid());
+                        ps.setInt(2, inviteCodes.get(i).getCode());
+                    }
 
-            @Override
-            public int getBatchSize() {
-                return inviteCodes.size();
-            }
-        });
+                    @Override
+                    public int getBatchSize() {
+                        return inviteCodes.size();
+                    }
+                });
     }
 
-    public List<InviteCodeDto> getInviteCode(int uid) {
+    @Override
+    public List<InviteCodeDto> listInviteCode(int uid) {
         return template.query("SELECT code, time_modified, user FROM invite_code WHERE uid = ? ",
                 new RowMapper<InviteCodeDto>() {
                     @Override
                     public InviteCodeDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return new InviteCodeDto(
-                                rs.getInt("code"),
+                        return new InviteCodeDto(rs.getInt("code"),
                                 rs.getDate("time_modified"),
                                 (0 != rs.getInt("user")));
                     }
-                }, uid
+                },
+                uid
         );
     }
 
-    public InviteCode findInviteCode(int code) {
+    @Override
+    public InviteCode getInviteCode(int code) {
         return template.queryForObject("SELECT uid, code,time_modified, user FROM invite_code WHERE code = ?",
                 new RowMapper<InviteCode>() {
-
                     @Override
                     public InviteCode mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return new InviteCode(
-                                rs.getInt("uid"),
+                        return new InviteCode(rs.getInt("uid"),
                                 rs.getInt("code"),
-                                rs.getDate("time_modified"),
                                 rs.getInt("user"));
                     }
-                }, code);
+                },
+                code);
     }
 
-    public int setInviteCodeUser(int code, int user) {
+    @Override
+    public int updateInviteCode(int code, int user) {
         return template.update("UPDATE invite_code SET user = ? WHERE code = ? AND user = 0 ",
-                user, code);
+                user,
+                code);
     }
 
+    @Override
     public boolean isInviteCodeUsed(int code) {
         return 0 == template.queryForObject("SELECT count(id) FROM invite_code WHERE code = ? AND user = 0 ",
                 Integer.TYPE,

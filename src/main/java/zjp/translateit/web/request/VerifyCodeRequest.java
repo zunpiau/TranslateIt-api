@@ -20,8 +20,8 @@ public class VerifyCodeRequest {
     }
 
     public VerifyCodeRequest(@NotNull @Email String email,
-                             @NotNull @Max(1800000000000L) @Min(1500000000000L) long timestamp,
-                             @NotNull @Pattern(regexp = "[A-Za-Z0-9]{32}") String sign) {
+            @NotNull @Max(1800000000000L) @Min(1500000000000L) long timestamp,
+            @NotNull @Pattern(regexp = "[A-Za-Z0-9]{32}") String sign) {
         this.email = email;
         this.timestamp = timestamp;
         this.sign = sign;

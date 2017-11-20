@@ -22,7 +22,7 @@ public class Wordbook {
     }
 
     public Wordbook(String word, String phEn, String phAm, String phEnUrl,
-                    String phAmUrl, String mean, String exchange, String sentence, String note, String category) {
+            String phAmUrl, String mean, String exchange, String sentence, String note, String category) {
         this.word = word;
         this.phEn = phEn;
         this.phAm = phAm;

@@ -24,17 +24,17 @@ public class WordbookService {
     @Transactional
     public BackupResult backup(long uid, List<String> words, List<Wordbook> wordbooksModify) {
         BackupResult result = new BackupResult();
-        result.setDeleteCount(repository.deleteNotIn(uid, words));
-        List<String> wordsHaving = repository.getWords(uid);
+        result.setDeleteCount(repository.removeNotIn(uid, words));
+        List<String> wordsHaving = repository.listWords(uid);
         Map<Boolean, List<Wordbook>> contains = wordbooksModify.stream()
                 .collect(Collectors.partitioningBy(wordbook -> wordsHaving.contains(wordbook.getWord())));
-        result.setUpdateCount(repository.update(uid, contains.get(true)));
-        result.setAddCount(repository.insert(uid, contains.get(false)));
+        result.setUpdateCount(repository.updateWordbook(uid, contains.get(true)));
+        result.setAddCount(repository.saveWordbook(uid, contains.get(false)));
         return result;
     }
 
     public List<Wordbook> getWordbooksMissing(long uid, List<String> words) {
-        return repository.getWordbookNotIn(uid, words);
+        return repository.listWordbookNotIn(uid, words);
     }
 
 }

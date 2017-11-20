@@ -27,7 +27,7 @@ public class InviteCodeService {
         for (int i = 0; i < count; i++) {
             codes.add(new InviteCode(uid, repository.generateCode()));
         }
-        repository.batchAdd(codes);
+        repository.saveInviteCode(codes);
     }
 
     public boolean isInviteCodeUsed(int code) {
@@ -35,11 +35,11 @@ public class InviteCodeService {
     }
 
     public List<InviteCodeDto> getInviteCode(int uid) {
-        return repository.getInviteCode(uid);
+        return repository.listInviteCode(uid);
     }
 
-    public void setInviteCodeUser(int code, int userId) {
-        if (repository.setInviteCodeUser(code, userId) != 1) {
+    public void setInviteCodeUser(int code, int uid) {
+        if (repository.updateInviteCode(code, uid) != 1) {
             throw new InviteCodeUsedException();
         }
     }

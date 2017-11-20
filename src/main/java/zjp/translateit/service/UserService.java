@@ -35,17 +35,15 @@ public class UserService {
     @SuppressWarnings("FieldCanBeLocal")
     private final String EMAIL_KEY_PREFIX = "email:";
     private final String VERIFY_CODE_KEY_PREFIX = "verify.code:";
-
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Value("${salt.verify}")
     private String verifySalt;
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @Autowired
     public UserService(StringRedisTemplate redisTemplate,
-                       UserRepository repository,
-                       EmailService emailService,
-                       InviteCodeService inviteCodeService) {
+            UserRepository repository,
+            EmailService emailService,
+            InviteCodeService inviteCodeService) {
         this.redisTemplate = redisTemplate;
         this.repository = repository;
         this.emailService = emailService;
@@ -54,13 +52,15 @@ public class UserService {
 
     @Nullable
     public User getUserFromLoginRequest(LoginRequest request) {
-        User user = repository.findUserByName(request.getName());
-        if (user == null)
+        User user = repository.getUserByName(request.getName());
+        if (user == null) {
             return null;
-        if (BCrypt.checkpw(request.getPassword(), user.getPassword()))
+        }
+        if (BCrypt.checkpw(request.getPassword(), user.getPassword())) {
             return user;
-        else
+        } else {
             return null;
+        }
     }
 
     @Transactional
@@ -68,7 +68,11 @@ public class UserService {
         String passwordSalted = BCrypt.hashpw(registerRequest.getPassword(), BCrypt.gensalt(10));
         int uid = repository.generateUid();
         try {
-            repository.add(new User(uid, registerRequest.getName(), passwordSalted, registerRequest.getEmail(), User.STATUS.NORMAL));
+            repository.saveUser(new User(uid,
+                    registerRequest.getName(),
+                    passwordSalted,
+                    registerRequest.getEmail(),
+                    User.Status.NORMAL));
         } catch (DuplicateKeyException e) {
             e.printStackTrace();
             throw new UserExistException();
@@ -80,11 +84,11 @@ public class UserService {
     }
 
     public boolean hasUser(String name) {
-        return repository.findUserByName(name) != null;
+        return repository.getUserByName(name) != null;
     }
 
     public boolean emailRegistered(String email) {
-        return repository.findUserByEmail(email) != null;
+        return repository.getUserByEmail(email) != null;
     }
 
     public boolean checkRequestSign(VerifyCodeRequest request) {
@@ -94,7 +98,9 @@ public class UserService {
     }
 
     public boolean verifyCodeValid(RegisterRequest registerRequest) {
-        String verifyCode = redisTemplate.opsForValue().get(VERIFY_CODE_KEY_PREFIX + registerRequest.getEmail());
+        String verifyCode = redisTemplate
+                .opsForValue()
+                .get(VERIFY_CODE_KEY_PREFIX + registerRequest.getEmail());
         return registerRequest.getVerifyCode().equals(verifyCode);
     }
 

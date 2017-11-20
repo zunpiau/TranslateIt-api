@@ -36,20 +36,26 @@ public class WordbookController {
             method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Response backup(@Valid @RequestBody BackupRequest backupRequest, BindingResult result) {
+    public Response backup(@Valid @RequestBody BackupRequest backupRequest,
+            BindingResult result) {
         Token token = backupRequest.getToken();
         long uid = token.getUid();
         Response response = checkParameter(backupRequest.getToken(), result);
-        if (response != null)
+        if (response != null) {
             return response;
-        return new Response<>(wordbookService.backup(uid, backupRequest.getWords(), backupRequest.getWordbooks()));
+        }
+        return new Response<>(wordbookService.backup(uid,
+                backupRequest.getWords(),
+                backupRequest.getWordbooks()));
     }
 
     private Response checkParameter(Token token, BindingResult result) {
-        if (result.hasErrors() || !tokenService.verifyToken(token))
+        if (result.hasErrors() || !tokenService.verifyToken(token)) {
             return new Response(Response.ResponseCode.BAD_TOKEN);
-        if ((System.currentTimeMillis() - token.getTimestamp()) > TOKEN_EXPIRE)
+        }
+        if ((System.currentTimeMillis() - token.getTimestamp()) > TOKEN_EXPIRE) {
             return new Response(Response.ResponseCode.TOKEN_EXPIRED);
+        }
         return null;
     }
 
@@ -57,10 +63,13 @@ public class WordbookController {
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Response recover(@Valid @RequestBody RecoverRequest requestBody, BindingResult result) {
+    public Response recover(@Valid @RequestBody RecoverRequest requestBody,
+            BindingResult result) {
         Response response = checkParameter(requestBody.getToken(), result);
-        if (response != null)
+        if (response != null) {
             return response;
-        return new Response<>(wordbookService.getWordbooksMissing(requestBody.getToken().getUid(), requestBody.getWords()));
+        }
+        return new Response<>(wordbookService.getWordbooksMissing(requestBody.getToken().getUid(),
+                requestBody.getWords()));
     }
 }

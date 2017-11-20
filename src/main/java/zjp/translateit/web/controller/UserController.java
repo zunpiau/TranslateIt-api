@@ -29,8 +29,8 @@ public class UserController {
 
     @Autowired
     public UserController(UserService userService,
-                          InviteCodeService inviteCodeService,
-                          TokenService tokenService) {
+            InviteCodeService inviteCodeService,
+            TokenService tokenService) {
         this.userService = userService;
         this.inviteCodeService = inviteCodeService;
         this.tokenService = tokenService;
@@ -42,8 +42,9 @@ public class UserController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Response getInviteCode(@Valid @RequestBody Token token, BindingResult result) {
-        if (result.hasErrors())
+        if (result.hasErrors()) {
             return new Response(Response.ResponseCode.INVALID_PARAMETER);
+        }
         if (!tokenService.verifyToken(token)) {
             return new Response(Response.ResponseCode.BAD_TOKEN);
         }
@@ -54,16 +55,21 @@ public class UserController {
     @RequestMapping(method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Response register(@Valid @RequestBody RegisterRequest registerRequest, BindingResult result) {
+    public Response register(@Valid @RequestBody RegisterRequest registerRequest,
+            BindingResult result) {
         logger.debug("email " + registerRequest.getEmail() + " register");
-        if (result.hasErrors())
+        if (result.hasErrors()) {
             return new Response(Response.ResponseCode.INVALID_PARAMETER);
-        if (!userService.verifyCodeValid(registerRequest))
+        }
+        if (!userService.verifyCodeValid(registerRequest)) {
             return new Response(Response.ResponseCode.VERIFY_CODE_USED);
-        if (userService.hasUser(registerRequest.getName()))
+        }
+        if (userService.hasUser(registerRequest.getName())) {
             return new Response(Response.ResponseCode.USERNAME_REGISTERED);
-        if (inviteCodeService.isInviteCodeUsed(registerRequest.getInviteCode()))
+        }
+        if (inviteCodeService.isInviteCodeUsed(registerRequest.getInviteCode())) {
             return new Response(Response.ResponseCode.INVITE_CODE_USED);
+        }
         userService.registerUser(registerRequest);
         return new Response(Response.ResponseCode.OK);
     }

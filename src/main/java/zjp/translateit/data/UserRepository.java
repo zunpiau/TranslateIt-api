@@ -5,11 +5,11 @@ import zjp.translateit.domain.User;
 
 public interface UserRepository {
 
-    User findUserByName(String username);
+    User getUserByName(String username);
 
-    User findUserByEmail(String username);
+    User getUserByEmail(String email);
 
-    void add(User user);
+    void saveUser(User user);
 
     int generateUid();
 

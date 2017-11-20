@@ -27,10 +27,10 @@ public class TokenService {
     public Token refreshToken(Token oldToken) {
         Token token = generateToken(oldToken.getUid());
         int i = repository.updateToken(oldToken, token);
-        if (i == 1)
+        if (i == 1) {
             return token;
-        else {
-            repository.setAllTokenUsed(oldToken.getUid());
+        } else {
+            repository.setTokenUsed(oldToken.getUid());
             return null;
         }
     }
@@ -43,7 +43,7 @@ public class TokenService {
 
     public Token getNewToken(int uid) {
         Token token = generateToken(uid);
-        repository.addToken(token);
+        repository.saveToken(token);
         return token;
     }
 
@@ -52,7 +52,8 @@ public class TokenService {
     }
 
     public boolean verifyToken(int uid, long timestamp, String sign) {
-        return sign.equals(EncryptUtil.hash(EncryptUtil.Algorithm.SHA256, "" + uid + tokenSalt + timestamp));
+        return sign.equals(EncryptUtil.hash(EncryptUtil.Algorithm.SHA256,
+                "" + uid + tokenSalt + timestamp));
     }
 
 }

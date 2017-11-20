@@ -79,8 +79,9 @@ public class Response<T> {
         public void serialize(Response value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
             gen.writeStartObject();
             gen.writeNumberField("code", value.getCode().getStatusCode());
-            if (value.getData() != null)
+            if (value.getData() != null) {
                 gen.writeObjectField("data", value.getData());
+            }
             gen.writeEndObject();
 
         }

@@ -13,17 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-/*
-CREATE TABLE `user` (
-  id       INTEGER AUTO_INCREMENT,
-  name     VARCHAR(16) UNIQUE,
-  password VARCHAR(128),
-  email    VARCHAR(64),
-  status   TINYINT,
-  PRIMARY KEY (id)
-)
- */
-
 @Repository
 public class UserRepositoryImpl implements UserRepository {
 
@@ -37,27 +26,31 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Nullable
     @Override
-    public User findUserByName(String username) {
+    public User getUserByName(String username) {
         try {
-            return template.queryForObject(SELECT_USER + " WHERE name = ? ", new UserRowMapper(), username);
+            return template.queryForObject(SELECT_USER + " WHERE name = ? ",
+                    new UserRowMapper(),
+                    username);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
     }
 
     @Override
-    public User findUserByEmail(String email) {
+    public User getUserByEmail(String email) {
         try {
-            return template.queryForObject(SELECT_USER + " WHERE email = ? ", new UserRowMapper(), email);
+            return template.queryForObject(SELECT_USER + " WHERE email = ? ",
+                    new UserRowMapper(),
+                    email);
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
     }
 
     @Override
-    public void add(User user) {
+    public void saveUser(User user) {
         SimpleJdbcInsert insert = new SimpleJdbcInsert(template).withTableName("user");
-        HashMap<String, Object> args = new HashMap<>();
+        HashMap<String, Object> args = new HashMap<>(6);
         args.put("uid", user.getUid());
         args.put("name", user.getName());
         args.put("password", user.getPassword());
@@ -69,22 +62,22 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public int generateUid() {
         return template.queryForObject("SELECT uid " +
-                "FROM (" +
-                "  SELECT FLOOR(RAND() * 80000000) + 10000000 AS uid " +
-                "  FROM user " +
-                "  UNION " +
-                "  SELECT FLOOR(RAND() * 80000000) + 10000000 AS uid " +
-                ") AS ss " +
-                "WHERE uid NOT IN (SELECT uid FROM user) " +
-                "LIMIT 1 ", Integer.TYPE);
+                                       " FROM (" +
+                                       "  SELECT FLOOR(RAND() * 80000000) + 10000000 AS uid " +
+                                       "  FROM user " +
+                                       "  UNION " +
+                                       "  SELECT FLOOR(RAND() * 80000000) + 10000000 AS uid " +
+                                       " ) AS ss " +
+                                       " WHERE uid NOT IN (SELECT uid FROM user) " +
+                                       " LIMIT 1 ",
+                Integer.TYPE);
     }
 
     static class UserRowMapper implements RowMapper<User> {
 
         @Override
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new User(
-                    rs.getInt("uid"),
+            return new User(rs.getInt("uid"),
                     rs.getString("name"),
                     rs.getString("password"),
                     rs.getString("email"),

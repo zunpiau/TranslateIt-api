@@ -29,7 +29,9 @@ public class FeedbackController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Response feedback(@RequestBody @Valid FeedbackRequest request, BindingResult result, @RequestHeader("User-Agent") String ua) {
+    public Response feedback(@RequestBody @Valid FeedbackRequest request,
+            BindingResult result,
+            @RequestHeader("User-Agent") String ua) {
         if (result.hasErrors()) {
             return new Response(Response.ResponseCode.INVALID_PARAMETER);
         }

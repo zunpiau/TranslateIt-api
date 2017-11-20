@@ -46,7 +46,7 @@ public class User {
         return uid;
     }
 
-    public interface STATUS {
+    public interface Status {
 
         int NORMAL = 0;
         int DELETE = 1;

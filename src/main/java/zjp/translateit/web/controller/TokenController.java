@@ -44,8 +44,9 @@ public class TokenController {
         if (user == null) {
             return new Response(Response.ResponseCode.INVALID_ACCOUNT);
         }
-        if (user.getStatus() == User.STATUS.DELETE)
+        if (user.getStatus() == User.Status.DELETE) {
             return new Response(Response.ResponseCode.USER_DELETED);
+        }
         return new Response<>(tokenService.getNewToken(user.getUid()));
     }
 
@@ -59,8 +60,9 @@ public class TokenController {
             return new Response(Response.ResponseCode.BAD_TOKEN);
         }
         Token newToken = tokenService.refreshToken(token);
-        if (newToken == null)
+        if (newToken == null) {
             return new Response(Response.ResponseCode.RE_LOGIN);
+        }
         return new Response<>(newToken);
     }
 

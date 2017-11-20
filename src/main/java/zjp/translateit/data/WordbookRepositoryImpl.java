@@ -18,6 +18,8 @@ import java.util.List;
 public class WordbookRepositoryImpl implements WordbookRepository {
 
     private final JdbcTemplate template;
+    private final String ALL_FILED = "word, phEn, phAm, phEnUrl, phAmUrl, mean, exchange, sentence, note, category";
+    private final String SELECT_FROM_WORDBOOK = "SELECT " + ALL_FILED + " FROM wordbook";
 
     @Autowired
     public WordbookRepositoryImpl(JdbcTemplate template) {
@@ -25,105 +27,115 @@ public class WordbookRepositoryImpl implements WordbookRepository {
     }
 
     @Override
-    public int insert(long uid, List<Wordbook> wordbooks) {
-        return template.batchUpdate("insert into wordbooks " +
-                "(uid,word,phEn,phAm,phEnUrl,phAmUrl,mean,exchange,sentence,note,category)" +
-                "values(?,?,?,?,?,?,?,?,?,?,?)", new BatchPreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement ps, int i) throws SQLException {
-                Wordbook wordbook = wordbooks.get(i);
-                ps.setLong(1, uid);
-                ps.setString(2, wordbook.getWord());
-                ps.setString(3, wordbook.getPhEn());
-                ps.setString(4, wordbook.getPhAm());
-                ps.setString(5, wordbook.getPhEnUrl());
-                ps.setString(6, wordbook.getPhAmUrl());
-                ps.setString(7, wordbook.getMean());
-                ps.setString(8, wordbook.getExchange());
-                ps.setString(9, wordbook.getSentence());
-                ps.setString(10, wordbook.getNote());
-                ps.setString(11, wordbook.getCategory());
-            }
+    public int saveWordbook(long uid, List<Wordbook> wordbooks) {
+        return template.batchUpdate("INSERT INTO wordbook (" +
+                                    ALL_FILED +
+                                    " ) VALUE(?,?,?,?,?,?,?,?,?,?,?)",
+                new BatchPreparedStatementSetter() {
+                    @Override
+                    public void setValues(PreparedStatement ps, int i) throws SQLException {
+                        Wordbook wordbook = wordbooks.get(i);
+                        ps.setLong(1, uid);
+                        ps.setString(2, wordbook.getWord());
+                        ps.setString(3, wordbook.getPhEn());
+                        ps.setString(4, wordbook.getPhAm());
+                        ps.setString(5, wordbook.getPhEnUrl());
+                        ps.setString(6, wordbook.getPhAmUrl());
+                        ps.setString(7, wordbook.getMean());
+                        ps.setString(8, wordbook.getExchange());
+                        ps.setString(9, wordbook.getSentence());
+                        ps.setString(10, wordbook.getNote());
+                        ps.setString(11, wordbook.getCategory());
+                    }
 
-            @Override
-            public int getBatchSize() {
-                return wordbooks.size();
-            }
-        }).length;
+                    @Override
+                    public int getBatchSize() {
+                        return wordbooks.size();
+                    }
+                })
+                .length;
     }
 
     @Override
-    public int update(long uid, List<Wordbook> wordbooks) {
-        return template.batchUpdate("update wordbooks " +
-                "set phEn = ?, phAm = ?, phEnUrl = ?, phAmUrl = ?, mean = ?, exchange = ?, sentence = ?, note = ?, category = ? " +
-                " where uid = ? and word = ? ", new BatchPreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement ps, int i) throws SQLException {
-                Wordbook wordbook = wordbooks.get(i);
-                ps.setString(1, wordbook.getPhEn());
-                ps.setString(2, wordbook.getPhAm());
-                ps.setString(3, wordbook.getPhEnUrl());
-                ps.setString(4, wordbook.getPhAmUrl());
-                ps.setString(5, wordbook.getMean());
-                ps.setString(6, wordbook.getExchange());
-                ps.setString(7, wordbook.getSentence());
-                ps.setString(8, wordbook.getNote());
-                ps.setString(9, wordbook.getCategory());
-                ps.setLong(10, uid);
-                ps.setString(11, wordbook.getWord());
-            }
+    public int updateWordbook(long uid, List<Wordbook> wordbooks) {
+        return template.batchUpdate("UPDATE wordbook " +
+                                    " SET phEn = ?, phAm = ?, phEnUrl = ?, phAmUrl = ?, mean = ?, exchange = ?, sentence = ?, note = ?, category = ? " +
+                                    " WHERE uid = ? AND word = ? ",
+                new BatchPreparedStatementSetter() {
+                    @Override
+                    public void setValues(PreparedStatement ps, int i) throws SQLException {
+                        Wordbook wordbook = wordbooks.get(i);
+                        ps.setString(1, wordbook.getPhEn());
+                        ps.setString(2, wordbook.getPhAm());
+                        ps.setString(3, wordbook.getPhEnUrl());
+                        ps.setString(4, wordbook.getPhAmUrl());
+                        ps.setString(5, wordbook.getMean());
+                        ps.setString(6, wordbook.getExchange());
+                        ps.setString(7, wordbook.getSentence());
+                        ps.setString(8, wordbook.getNote());
+                        ps.setString(9, wordbook.getCategory());
+                        ps.setLong(10, uid);
+                        ps.setString(11, wordbook.getWord());
+                    }
 
-            @Override
-            public int getBatchSize() {
-                return wordbooks.size();
-            }
-        }).length;
+                    @Override
+                    public int getBatchSize() {
+                        return wordbooks.size();
+                    }
+                })
+                .length;
     }
 
     @Override
-    public List<Wordbook> getWordbook(long uid, List<String> words) {
+    public List<Wordbook> listWordbook(long uid, List<String> words) {
         HashMap<String, Object> param = new HashMap<>(3);
         param.put("uid", uid);
         param.put("words", words);
         NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(template);
-        return namedParameterJdbcTemplate.query("select word,phEn,phAm,phEnUrl,phAmUrl,mean,exchange,sentence,note, category " +
-                        " from wordbooks where uid = :uid and word in (:words)",
-                param,
-                new WordbookRowMapper());
+        return namedParameterJdbcTemplate
+                .query(SELECT_FROM_WORDBOOK + " WHERE uid = :uid AND word in (:words)",
+                        param,
+                        new WordbookRowMapper());
     }
 
     @Override
-    public List<Wordbook> getWordbookNotIn(long uid, List<String> words) {
+    public List<Wordbook> listWordbookNotIn(long uid, List<String> words) {
         if (words.isEmpty()) {
-            return template.query("select word,phEn,phAm,phEnUrl,phAmUrl,mean,exchange,sentence,note, category " +
-                            "from wordbooks where uid = ? ",
-                    new WordbookRowMapper(),
-                    uid);
+            return template
+                    .query(SELECT_FROM_WORDBOOK + " WHERE uid = ? ",
+                            new WordbookRowMapper(),
+                            uid);
         }
         HashMap<String, Object> param = new HashMap<>(3);
         param.put("uid", uid);
         param.put("words", words);
         NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(template);
-        return namedParameterJdbcTemplate.query("select word,phEn,phAm,phEnUrl,phAmUrl,mean,exchange,sentence,note, category " +
-                        "from wordbooks where uid = :uid and word not in (:words)",
-                param,
-                new WordbookRowMapper());
+        return namedParameterJdbcTemplate
+                .query(SELECT_FROM_WORDBOOK + " WHERE uid = :uid AND word NOT IN (:words)",
+                        param,
+                        new WordbookRowMapper());
     }
 
-    public int deleteNotIn(long uid, List<String> words) {
+    @Override
+    public int removeNotIn(long uid, List<String> words) {
         if (words.isEmpty()) {
-            return template.update("delete from wordbooks where uid = ? ", uid);
+            return template.update("DELETE FROM wordbook WHERE uid = ? ", uid);
         } else {
             HashMap<String, Object> param = new HashMap<>(3);
             param.put("uid", uid);
             param.put("words", words);
             NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(template);
-            return namedParameterJdbcTemplate.update("delete from wordbooks where uid = :uid and word not in (:words)", param);
+            return namedParameterJdbcTemplate
+                    .update("DELETE FROM wordbook WHERE uid = :uid AND word NOT IN (:words)",
+                            param);
         }
     }
 
-    public List<String> getWords(long uid) {
-        return template.queryForList("select word from wordbooks where uid = ? ", new Object[]{uid}, String.class);
+    @Override
+    public List<String> listWords(long uid) {
+        return template.queryForList("SELECT word FROM wordbook WHERE uid = ? ",
+                new Object[]{uid},
+                String.class);
     }
 
     static class WordbookRowMapper implements RowMapper<Wordbook> {

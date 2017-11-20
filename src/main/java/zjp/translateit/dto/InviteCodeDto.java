@@ -5,12 +5,12 @@ import java.util.Date;
 public class InviteCodeDto {
 
     private final int code;
-    private final Date timeModified;
+    private final Date usedTime;
     private final boolean used;
 
-    public InviteCodeDto(int code, Date timeModified, boolean used) {
+    public InviteCodeDto(int code, Date usedTime, boolean used) {
         this.code = code;
-        this.timeModified = timeModified;
+        this.usedTime = usedTime;
         this.used = used;
     }
 
@@ -18,8 +18,8 @@ public class InviteCodeDto {
         return code;
     }
 
-    public Date getTimeModified() {
-        return timeModified;
+    public Date getUsedTime() {
+        return usedTime;
     }
 
     public boolean isUsed() {

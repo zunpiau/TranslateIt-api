@@ -19,7 +19,8 @@ import javax.validation.Valid;
 public class VerifyCodeController {
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final long REQUEST_EXPIRE = 60 * 1000;    //5min
+    // 1 min
+    private final long REQUEST_EXPIRE = 60 * 1000;
     private final UserService userService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -32,18 +33,24 @@ public class VerifyCodeController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Response getVerifyCode(@Valid @RequestBody VerifyCodeRequest request, BindingResult result) {
+    public Response getVerifyCode(@Valid @RequestBody VerifyCodeRequest request,
+            BindingResult result) {
         logger.debug("email " + request.getEmail() + " request verify");
-        if (result.hasErrors())
+        if (result.hasErrors()) {
             return new Response(Response.ResponseCode.INVALID_PARAMETER);
-        if (!userService.checkRequestSign(request))
+        }
+        if (!userService.checkRequestSign(request)) {
             return new Response(Response.ResponseCode.BAD_SIGN);
-        if ((System.currentTimeMillis() - request.getTimestamp()) > REQUEST_EXPIRE)
+        }
+        if ((System.currentTimeMillis() - request.getTimestamp()) > REQUEST_EXPIRE) {
             return new Response(Response.ResponseCode.REQUIRE_EXPIRED);
-        if (userService.forbidGetVerifyCode(request.getEmail()))
+        }
+        if (userService.forbidGetVerifyCode(request.getEmail())) {
             return new Response(Response.ResponseCode.REQUIRE_FRA);
-        if (userService.emailRegistered(request.getEmail()))
+        }
+        if (userService.emailRegistered(request.getEmail())) {
             return new Response(Response.ResponseCode.EMAIL_REGISTERED);
+        }
 
         userService.sendVerifyCode(request);
         return new Response(Response.ResponseCode.OK);

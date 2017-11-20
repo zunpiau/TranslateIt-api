@@ -17,7 +17,7 @@ public class LoginRequest {
     private String password;
 
     public LoginRequest(@NotNull @Size(min = 3, max = 9) @Pattern(regexp = "[a-zA-Z][0-9a-zA-Z_]*") String name,
-                        @NotNull @Size(min = 4, max = 9) @Pattern(regexp = "[0-9a-zA-Z]*") String password) {
+            @NotNull @Size(min = 4, max = 9) @Pattern(regexp = "[0-9a-zA-Z]*") String password) {
         this.name = name;
         this.password = password;
     }
