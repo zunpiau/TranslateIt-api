@@ -1,6 +1,5 @@
 package zjp.translateit.service;
 
-import com.sun.istack.internal.Nullable;
 import org.apache.commons.text.RandomStringGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +19,7 @@ import zjp.translateit.web.request.LoginRequest;
 import zjp.translateit.web.request.RegisterRequest;
 import zjp.translateit.web.request.VerifyCodeRequest;
 
+import javax.annotation.Nullable;
 import java.util.concurrent.TimeUnit;
 
 @Service

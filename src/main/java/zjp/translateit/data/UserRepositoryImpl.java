@@ -1,6 +1,5 @@
 package zjp.translateit.data;
 
-import com.sun.istack.internal.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -9,6 +8,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import zjp.translateit.domain.User;
 
+import javax.annotation.Nullable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
