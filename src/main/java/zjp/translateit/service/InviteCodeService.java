@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import zjp.translateit.data.InviteCodeRepository;
 import zjp.translateit.domain.InviteCode;
 import zjp.translateit.dto.InviteCodeDto;
+import zjp.translateit.util.InviteCodeGenerator;
 import zjp.translateit.web.exception.InviteCodeUsedException;
 
 import java.util.ArrayList;
@@ -15,30 +16,32 @@ import java.util.List;
 public class InviteCodeService {
 
     private final InviteCodeRepository repository;
+    private final InviteCodeGenerator inviteCodeGenerator;
 
     @Autowired
-    public InviteCodeService(InviteCodeRepository repository) {
+    public InviteCodeService(InviteCodeRepository repository, InviteCodeGenerator inviteCodeGenerator) {
         this.repository = repository;
+        this.inviteCodeGenerator = inviteCodeGenerator;
     }
 
     @Transactional
-    public void addInviteCode(int count, int uid) {
+    public void addInviteCode(int count, long uid) {
         ArrayList<InviteCode> codes = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
-            codes.add(new InviteCode(uid, repository.generateCode()));
+            codes.add(new InviteCode(uid, inviteCodeGenerator.generate()));
         }
         repository.saveInviteCode(codes);
     }
 
-    public boolean isInviteCodeUsed(int code) {
+    public boolean isInviteCodeUsed(String code) {
         return repository.isInviteCodeUsed(code);
     }
 
-    public List<InviteCodeDto> getInviteCode(int uid) {
+    public List<InviteCodeDto> getInviteCode(long uid) {
         return repository.listInviteCode(uid);
     }
 
-    public void setInviteCodeUser(int code, int uid) {
+    public void setInviteCodeUser(String code, long uid) {
         if (repository.updateInviteCode(code, uid) != 1) {
             throw new InviteCodeUsedException();
         }

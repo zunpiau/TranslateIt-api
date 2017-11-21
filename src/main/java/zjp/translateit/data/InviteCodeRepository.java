@@ -7,16 +7,14 @@ import java.util.List;
 
 public interface InviteCodeRepository {
 
-    int generateCode();
-
     void saveInviteCode(List<InviteCode> inviteCodes);
 
-    List<InviteCodeDto> listInviteCode(int uid);
+    List<InviteCodeDto> listInviteCode(long uid);
 
-    InviteCode getInviteCode(int code);
+    InviteCode getInviteCode(String code);
 
-    int updateInviteCode(int code, int user);
+    int updateInviteCode(String code, long user);
 
-    boolean isInviteCodeUsed(int code);
+    boolean isInviteCodeUsed(String code);
 
 }

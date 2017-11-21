@@ -35,23 +35,23 @@ public class TokenService {
         }
     }
 
-    private Token generateToken(int uid) {
-        long currentTime = System.currentTimeMillis();
-        String key = EncryptUtil.hash(EncryptUtil.Algorithm.SHA256, uid + tokenSalt + currentTime);
-        return new Token(uid, currentTime, key);
-    }
-
-    public Token getNewToken(int uid) {
+    public Token getNewToken(long uid) {
         Token token = generateToken(uid);
         repository.saveToken(token);
         return token;
+    }
+
+    private Token generateToken(long uid) {
+        long currentTime = System.currentTimeMillis();
+        String key = EncryptUtil.hash(EncryptUtil.Algorithm.SHA256, uid + tokenSalt + currentTime);
+        return new Token(uid, currentTime, key);
     }
 
     public boolean verifyToken(Token token) {
         return verifyToken(token.getUid(), token.getTimestamp(), token.getSign());
     }
 
-    public boolean verifyToken(int uid, long timestamp, String sign) {
+    public boolean verifyToken(long uid, long timestamp, String sign) {
         return sign.equals(EncryptUtil.hash(EncryptUtil.Algorithm.SHA256,
                 "" + uid + tokenSalt + timestamp));
     }

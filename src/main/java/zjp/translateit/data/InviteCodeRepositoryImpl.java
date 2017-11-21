@@ -24,27 +24,13 @@ public class InviteCodeRepositoryImpl implements InviteCodeRepository {
     }
 
     @Override
-    public int generateCode() {
-        return template.queryForObject("SELECT code " +
-                                       " FROM (" +
-                                       "  SELECT FLOOR(RAND() * 80000000) + 10000000 AS code " +
-                                       "  FROM invite_code " +
-                                       "  UNION " +
-                                       "  SELECT FLOOR(RAND() * 80000000) + 10000000 AS code " +
-                                       " ) AS ss " +
-                                       " WHERE code NOT IN (SELECT code FROM invite_code) " +
-                                       " LIMIT 1 ",
-                Integer.TYPE);
-    }
-
-    @Override
     public void saveInviteCode(List<InviteCode> inviteCodes) {
         template.batchUpdate("INSERT INTO invite_code (uid, code) VALUE (?, ? )",
                 new BatchPreparedStatementSetter() {
                     @Override
                     public void setValues(PreparedStatement ps, int i) throws SQLException {
-                        ps.setInt(1, inviteCodes.get(i).getUid());
-                        ps.setInt(2, inviteCodes.get(i).getCode());
+                        ps.setLong(1, inviteCodes.get(i).getUid());
+                        ps.setString(2, inviteCodes.get(i).getCode());
                     }
 
                     @Override
@@ -55,14 +41,14 @@ public class InviteCodeRepositoryImpl implements InviteCodeRepository {
     }
 
     @Override
-    public List<InviteCodeDto> listInviteCode(int uid) {
+    public List<InviteCodeDto> listInviteCode(long uid) {
         return template.query("SELECT code, time_modified, user FROM invite_code WHERE uid = ? ",
                 new RowMapper<InviteCodeDto>() {
                     @Override
                     public InviteCodeDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return new InviteCodeDto(rs.getInt("code"),
-                                rs.getDate("time_modified"),
-                                (0 != rs.getInt("user")));
+                        return new InviteCodeDto(rs.getString("code"),
+                                rs.getTimestamp("time_modified"),
+                                (0 != rs.getLong("user")));
                     }
                 },
                 uid
@@ -70,13 +56,13 @@ public class InviteCodeRepositoryImpl implements InviteCodeRepository {
     }
 
     @Override
-    public InviteCode getInviteCode(int code) {
+    public InviteCode getInviteCode(String code) {
         return template.queryForObject("SELECT uid, code,time_modified, user FROM invite_code WHERE code = ?",
                 new RowMapper<InviteCode>() {
                     @Override
                     public InviteCode mapRow(ResultSet rs, int rowNum) throws SQLException {
                         return new InviteCode(rs.getInt("uid"),
-                                rs.getInt("code"),
+                                rs.getString("code"),
                                 rs.getInt("user"));
                     }
                 },
@@ -84,14 +70,14 @@ public class InviteCodeRepositoryImpl implements InviteCodeRepository {
     }
 
     @Override
-    public int updateInviteCode(int code, int user) {
+    public int updateInviteCode(String code, long user) {
         return template.update("UPDATE invite_code SET user = ? WHERE code = ? AND user = 0 ",
                 user,
                 code);
     }
 
     @Override
-    public boolean isInviteCodeUsed(int code) {
+    public boolean isInviteCodeUsed(String code) {
         return 0 == template.queryForObject("SELECT count(id) FROM invite_code WHERE code = ? AND user = 0 ",
                 Integer.TYPE,
                 code);

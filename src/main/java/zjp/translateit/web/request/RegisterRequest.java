@@ -1,6 +1,11 @@
 package zjp.translateit.web.request;
 
-import javax.validation.constraints.*;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 public class RegisterRequest {
 
@@ -23,9 +28,8 @@ public class RegisterRequest {
     private String email;
 
     @NotNull
-    @Max(90000000)
-    @Min(10000000)
-    private int inviteCode;
+    @Length(max = 8, min = 8)
+    private String inviteCode;
 
     public RegisterRequest() {
     }
@@ -34,7 +38,7 @@ public class RegisterRequest {
             @NotNull @Size(min = 4, max = 9) @Pattern(regexp = "[0-9a-zA-Z]*") String password,
             @NotNull @Pattern(regexp = "[a-z]{9}") String verifyCode,
             @NotNull @Email String email,
-            @NotNull @Max(90000000) @Min(10000000) int inviteCode) {
+            @NotNull @Length(max = 8, min = 8) String inviteCode) {
         this.name = name;
         this.password = password;
         this.verifyCode = verifyCode;
@@ -58,7 +62,7 @@ public class RegisterRequest {
         return verifyCode;
     }
 
-    public int getInviteCode() {
+    public String getInviteCode() {
         return inviteCode;
     }
 }

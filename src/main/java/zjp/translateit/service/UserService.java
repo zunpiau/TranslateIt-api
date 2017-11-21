@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import zjp.translateit.data.UserRepository;
 import zjp.translateit.domain.User;
 import zjp.translateit.util.EncryptUtil;
+import zjp.translateit.util.UidGenerator;
 import zjp.translateit.web.exception.UserExistException;
 import zjp.translateit.web.request.LoginRequest;
 import zjp.translateit.web.request.RegisterRequest;
@@ -32,6 +33,8 @@ public class UserService {
     private final StringRedisTemplate redisTemplate;
     private final EmailService emailService;
     private final InviteCodeService inviteCodeService;
+    private final UidGenerator uidGenerator;
+
     @SuppressWarnings("FieldCanBeLocal")
     private final String EMAIL_KEY_PREFIX = "email:";
     private final String VERIFY_CODE_KEY_PREFIX = "verify.code:";
@@ -43,11 +46,13 @@ public class UserService {
     public UserService(StringRedisTemplate redisTemplate,
             UserRepository repository,
             EmailService emailService,
-            InviteCodeService inviteCodeService) {
+            InviteCodeService inviteCodeService,
+            UidGenerator uidGenerator) {
         this.redisTemplate = redisTemplate;
         this.repository = repository;
         this.emailService = emailService;
         this.inviteCodeService = inviteCodeService;
+        this.uidGenerator = uidGenerator;
     }
 
     @Nullable
@@ -66,7 +71,7 @@ public class UserService {
     @Transactional
     public void registerUser(RegisterRequest registerRequest) {
         String passwordSalted = BCrypt.hashpw(registerRequest.getPassword(), BCrypt.gensalt(10));
-        int uid = repository.generateUid();
+        long uid = uidGenerator.generate();
         try {
             repository.saveUser(new User(uid,
                     registerRequest.getName(),

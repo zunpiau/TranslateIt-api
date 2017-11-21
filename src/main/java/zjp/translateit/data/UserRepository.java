@@ -11,6 +11,4 @@ public interface UserRepository {
 
     void saveUser(User user);
 
-    int generateUid();
-
 }
