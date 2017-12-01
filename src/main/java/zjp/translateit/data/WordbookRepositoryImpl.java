@@ -18,8 +18,9 @@ import java.util.List;
 public class WordbookRepositoryImpl implements WordbookRepository {
 
     private final JdbcTemplate template;
-    private final String ALL_FILED = "word, phEn, phAm, phEnUrl, phAmUrl, mean, exchange, sentence, note, category";
-    private final String SELECT_FROM_WORDBOOK = "SELECT " + ALL_FILED + " FROM wordbook";
+    private final String WORDBOOK_FILED = "word, phEn, phAm, phEnUrl, phAmUrl, mean, exchange, sentence, note, category";
+    private final String ALL_FILED = "uid, " + WORDBOOK_FILED;
+    private final String SELECT_FROM_WORDBOOK = "SELECT " + WORDBOOK_FILED + " FROM wordbook";
 
     @Autowired
     public WordbookRepositoryImpl(JdbcTemplate template) {
@@ -93,7 +94,7 @@ public class WordbookRepositoryImpl implements WordbookRepository {
         param.put("words", words);
         NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(template);
         return namedParameterJdbcTemplate
-                .query(SELECT_FROM_WORDBOOK + " WHERE uid = :uid AND word in (:words)",
+                .query(SELECT_FROM_WORDBOOK + " WHERE uid = :uid AND word IN (:words)",
                         param,
                         new WordbookRowMapper());
     }
