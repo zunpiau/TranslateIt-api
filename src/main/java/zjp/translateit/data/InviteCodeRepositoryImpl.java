@@ -25,7 +25,7 @@ public class InviteCodeRepositoryImpl implements InviteCodeRepository {
 
     @Override
     public void saveInviteCode(List<InviteCode> inviteCodes) {
-        template.batchUpdate("INSERT INTO invite_code (uid, code) VALUE (?, ? )",
+        template.batchUpdate("INSERT INTO invite_code (uid, code) VALUES (?, ? )",
                 new BatchPreparedStatementSetter() {
                     @Override
                     public void setValues(PreparedStatement ps, int i) throws SQLException {

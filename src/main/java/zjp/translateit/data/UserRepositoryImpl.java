@@ -14,7 +14,7 @@ import java.sql.SQLException;
 @Repository
 public class UserRepositoryImpl implements UserRepository {
 
-    private static final String SELECT_USER = "SELECT uid, name, password, email, status FROM user ";
+    private static final String SELECT_USER = "SELECT uid, name, password, email, status FROM account ";
     private JdbcTemplate template;
 
     @Autowired
@@ -47,7 +47,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void saveUser(User user) {
-        template.update("INSERT INTO user (uid, name, password, email, status) VALUE (?, ?, ?, ?, ?)",
+        template.update("INSERT INTO account (uid, name, password, email, status) VALUES (?, ?, ?, ?, ?)",
                 user.getUid(),
                 user.getName(),
                 user.getPassword(),

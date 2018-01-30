@@ -31,7 +31,7 @@ public class WordbookRepositoryImpl implements WordbookRepository {
     public int saveWordbook(long uid, List<Wordbook> wordbooks) {
         return template.batchUpdate("INSERT INTO wordbook (" +
                                     ALL_FILED +
-                                    " ) VALUE(?,?,?,?,?,?,?,?,?,?,?)",
+                                    " ) VALUES(?,?,?,?,?,?,?,?,?,?,?)",
                 new BatchPreparedStatementSetter() {
                     @Override
                     public void setValues(PreparedStatement ps, int i) throws SQLException {

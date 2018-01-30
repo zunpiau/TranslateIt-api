@@ -24,9 +24,6 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 public class DataConfig {
 
-    @Value("classpath:schema.sql")
-    private Resource schemaScript;
-
     @Value("classpath:data.sql")
     private Resource dataScript;
 
@@ -36,8 +33,11 @@ public class DataConfig {
     @Value("${db.password}")
     private String password;
 
-    @Value("${db.name}")
-    private String database;
+    @Value("${db.url}")
+    private String url;
+
+    @Value("${db.driver}")
+    private String driver;
 
     @Bean
     public DataSourceTransactionManager txManager(DataSource dataSource) {
@@ -47,21 +47,18 @@ public class DataConfig {
     @Bean
     public DataSource dataSource(ProfileHelper helper) {
         org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
-        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3006/" +
-                          database +
-                          "?useSSL=false&characterEncoding=UTF-8&useUnicode=yes");
+        dataSource.setDriverClassName(driver);
+        dataSource.setUrl(url);
         dataSource.setUsername(user);
         dataSource.setPassword(password);
         dataSource.setInitialSize(4);
         dataSource.setMinIdle(4);
         dataSource.setMaxIdle(20);
-        dataSource.setInitSQL("SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci");
         dataSource.setTestOnBorrow(true);
         dataSource.setRemoveAbandoned(true);
         dataSource.setValidationQuery("SELECT 1");
         if (helper.isDev()) {
-            DatabasePopulatorUtils.execute(new ResourceDatabasePopulator(schemaScript, dataScript),
+            DatabasePopulatorUtils.execute(new ResourceDatabasePopulator(dataScript),
                     dataSource);
         }
         return dataSource;
