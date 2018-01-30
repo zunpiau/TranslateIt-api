@@ -53,12 +53,11 @@ CREATE TABLE token
     PRIMARY KEY,
   time_create   DATETIME DEFAULT CURRENT_TIMESTAMP,
   time_modified DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  uid           BIGINT      NOT NULL,
-  time          LONG        NOT NULL,
-  sign          VARCHAR(64) NOT NULL,
-  used          BOOL        NOT NULL,
-  INDEX idx_uid(uid),
-  INDEX idx_uid_sign_used(uid, sign, used)
+  uid           BIGINT   NOT NULL,
+  time          LONG     NOT NULL,
+  sign          CHAR(64) NOT NULL,
+  used          BOOL     NOT NULL,
+  INDEX idx_uid(uid)
 )
   ENGINE = InnoDB
   DEFAULT CHARSET utf8mb4
@@ -70,8 +69,8 @@ CREATE TABLE invite_code
     PRIMARY KEY,
   time_create   DATETIME DEFAULT CURRENT_TIMESTAMP,
   time_modified DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  uid           BIGINT     NOT NULL,
-  code          VARCHAR(8) NOT NULL,
+  uid           BIGINT  NOT NULL,
+  code          CHAR(8) NOT NULL,
   user          BIGINT   DEFAULT 0,
   INDEX idx_uid(uid),
   UNIQUE uk_code(code)

@@ -25,7 +25,7 @@ public class TokenRepository {
 
     public int updateToken(Token oldToken, Token newToken) {
         return template.update("UPDATE token SET sign = ? , time = ? " +
-                               " WHERE uid = ? AND sign = ? AND used = false ",
+                               " WHERE uid = ? AND used = false AND sign = ? ",
                 newToken.getSign(),
                 newToken.getTimestamp(),
                 oldToken.getUid(),
