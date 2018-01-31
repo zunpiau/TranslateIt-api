@@ -1,0 +1,9 @@
+.idea/
+target/
+out/
+.git/
+*.properties
+src/test/java/zjp/translateit/util/Generator.java
+src/main/resources/data.sql
+translateit-api.iml
+swagger.yaml
