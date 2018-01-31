@@ -82,7 +82,6 @@ public class DataConfig {
         JedisConnectionFactory connectionFactory = new JedisConnectionFactory();
         connectionFactory.setClientName("translateit");
         connectionFactory.setUsePool(true);
-        connectionFactory.setUsePool(true);
         connectionFactory.setPoolConfig(config);
         return connectionFactory;
     }
