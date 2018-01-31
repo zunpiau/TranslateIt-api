@@ -46,9 +46,10 @@ public class InviteCodeRepositoryImpl implements InviteCodeRepository {
                 new RowMapper<InviteCodeDto>() {
                     @Override
                     public InviteCodeDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        boolean used = 0 != rs.getLong("user_id");
                         return new InviteCodeDto(rs.getString("code"),
-                                rs.getTimestamp("updated_at"),
-                                (0 != rs.getLong("user_id")));
+                                used ? rs.getTimestamp("updated_at") : null,
+                                used);
                     }
                 },
                 uid
