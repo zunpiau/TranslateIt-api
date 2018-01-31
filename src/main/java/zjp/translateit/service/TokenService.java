@@ -47,13 +47,4 @@ public class TokenService {
         return new Token(uid, currentTime, key);
     }
 
-    public boolean verifyToken(Token token) {
-        return verifyToken(token.getUid(), token.getTimestamp(), token.getSign());
-    }
-
-    public boolean verifyToken(long uid, long timestamp, String sign) {
-        return sign.equals(EncryptUtil.hash(EncryptUtil.Algorithm.SHA256,
-                "" + uid + tokenSalt + timestamp));
-    }
-
 }

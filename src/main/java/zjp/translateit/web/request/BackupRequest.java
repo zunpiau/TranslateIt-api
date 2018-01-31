@@ -3,7 +3,6 @@ package zjp.translateit.web.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import zjp.translateit.domain.Token;
 import zjp.translateit.domain.Wordbook;
 
 import javax.validation.constraints.NotNull;
@@ -11,8 +10,6 @@ import java.util.List;
 
 public class BackupRequest {
 
-    @JsonSerialize(as = Token.class)
-    private Token token;
     @NotNull
     @JsonProperty("wordbooks")
     @JsonSerialize(as = zjp.translateit.domain.Wordbook.class)
@@ -21,8 +18,7 @@ public class BackupRequest {
     @JsonProperty("words")
     private List<String> words;
 
-    public BackupRequest(Token token, List<Wordbook> wordbooks, List<String> words) {
-        this.token = token;
+    public BackupRequest(List<Wordbook> wordbooks, List<String> words) {
         this.wordbooks = wordbooks;
         this.words = words;
     }
@@ -37,15 +33,6 @@ public class BackupRequest {
     @JsonSetter("words")
     public void setWords(List<String> words) {
         this.words = words;
-    }
-
-    public Token getToken() {
-        return token;
-    }
-
-    @JsonSetter("token")
-    public void setToken(Token token) {
-        this.token = token;
     }
 
     public List<Wordbook> getWordbooks() {

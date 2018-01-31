@@ -9,7 +9,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import zjp.translateit.domain.Token;
 import zjp.translateit.service.InviteCodeService;
-import zjp.translateit.service.TokenService;
 import zjp.translateit.service.UserService;
 import zjp.translateit.web.exception.InviteCodeUsedException;
 import zjp.translateit.web.exception.UserExistException;
@@ -18,36 +17,29 @@ import zjp.translateit.web.response.Response;
 
 import javax.validation.Valid;
 
+import static zjp.translateit.Constant.ATTRIBUTE_TOKEN;
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
     private final InviteCodeService inviteCodeService;
-    private final TokenService tokenService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public UserController(UserService userService,
-            InviteCodeService inviteCodeService,
-            TokenService tokenService) {
+            InviteCodeService inviteCodeService) {
         this.userService = userService;
         this.inviteCodeService = inviteCodeService;
-        this.tokenService = tokenService;
     }
 
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/inviteCode",
-            method = RequestMethod.POST,
+            method = RequestMethod.GET,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Response getInviteCode(@Valid @RequestBody Token token, BindingResult result) {
-        if (result.hasErrors()) {
-            return new Response(Response.ResponseCode.INVALID_PARAMETER);
-        }
-        if (!tokenService.verifyToken(token)) {
-            return new Response(Response.ResponseCode.BAD_TOKEN);
-        }
+    public Response getInviteCode(@RequestAttribute(name = ATTRIBUTE_TOKEN) Token token) {
         return new Response<>(inviteCodeService.getInviteCode(token.getUid()));
     }
 

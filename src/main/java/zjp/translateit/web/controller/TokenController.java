@@ -16,6 +16,8 @@ import zjp.translateit.web.response.Response;
 
 import javax.validation.Valid;
 
+import static zjp.translateit.Constant.ATTRIBUTE_TOKEN;
+
 @RestController
 @RequestMapping("/token")
 public class TokenController {
@@ -55,10 +57,7 @@ public class TokenController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public Response refreshToken(@RequestBody @Valid Token token, BindingResult result) {
-        if (result.hasErrors() || !tokenService.verifyToken(token)) {
-            return new Response(Response.ResponseCode.BAD_TOKEN);
-        }
+    public Response refreshToken(@RequestAttribute(name = ATTRIBUTE_TOKEN) Token token) {
         Token newToken = tokenService.refreshToken(token);
         if (newToken == null) {
             return new Response(Response.ResponseCode.RE_LOGIN);

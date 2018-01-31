@@ -4,7 +4,6 @@ import org.apache.commons.text.RandomStringGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -13,12 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import zjp.translateit.data.UserRepository;
 import zjp.translateit.domain.User;
-import zjp.translateit.util.EncryptUtil;
 import zjp.translateit.util.UidGenerator;
 import zjp.translateit.web.exception.UserExistException;
 import zjp.translateit.web.request.LoginRequest;
 import zjp.translateit.web.request.RegisterRequest;
-import zjp.translateit.web.request.VerifyCodeRequest;
 
 import javax.annotation.Nullable;
 import java.util.concurrent.TimeUnit;
@@ -39,8 +36,6 @@ public class UserService {
     private final String EMAIL_KEY_PREFIX = "email:";
     private final String VERIFY_CODE_KEY_PREFIX = "verify.code:";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    @Value("${salt.verify}")
-    private String verifySalt;
 
     @Autowired
     public UserService(StringRedisTemplate redisTemplate,
@@ -96,12 +91,6 @@ public class UserService {
         return repository.getUserByEmail(email) != null;
     }
 
-    public boolean checkRequestSign(VerifyCodeRequest request) {
-        String raw = request.getEmail() + verifySalt + request.getTimestamp();
-        String sign = EncryptUtil.hash(EncryptUtil.Algorithm.MD5, raw);
-        return request.getSign().equals(sign);
-    }
-
     public boolean verifyCodeValid(RegisterRequest registerRequest) {
         String verifyCode = redisTemplate
                 .opsForValue()
@@ -110,10 +99,9 @@ public class UserService {
     }
 
     @Transactional
-    public void sendVerifyCode(VerifyCodeRequest request) {
+    public void sendVerifyCode(String email) {
         RandomStringGenerator generator = new RandomStringGenerator.Builder().withinRange('a', 'z').build();
         String verifyCode = generator.generate(9);
-        String email = request.getEmail();
         logger.debug("Send email to " + email + " , verifyCode: " + verifyCode);
         emailService.sendVerifyEmail(email, verifyCode);
         redisTemplate.opsForValue().set(VERIFY_CODE_KEY_PREFIX + email, verifyCode, 30, TimeUnit.MINUTES);

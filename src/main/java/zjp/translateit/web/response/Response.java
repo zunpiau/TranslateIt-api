@@ -36,12 +36,8 @@ public class Response<T> {
 
         OK(200),
 
-        BAD_SIGN(300),
-        BAD_TOKEN(301),
-        REQUIRE_EXPIRED(303),
         REQUIRE_FRA(304),
         INVALID_ACCOUNT(305),
-        TOKEN_EXPIRED(306),
         RE_LOGIN(307),
 
         INVALID_PARAMETER(400),
