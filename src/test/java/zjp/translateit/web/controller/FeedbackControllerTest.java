@@ -2,27 +2,19 @@ package zjp.translateit.web.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import zjp.translateit.config.RootConfig;
+import zjp.translateit.SpringMvcTest;
 import zjp.translateit.service.EmailService;
 import zjp.translateit.service.FeedbackService;
 import zjp.translateit.web.request.FeedbackRequest;
 
 import static org.mockito.Mockito.mock;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@WebAppConfiguration
-@ContextConfiguration(classes = RootConfig.class)
-@ActiveProfiles("dev")
+@SpringMvcTest
 public class FeedbackControllerTest {
 
     private FeedbackController controller = new FeedbackController(mock(FeedbackService.class), mock(EmailService.class));
