@@ -42,13 +42,13 @@ public class InviteCodeRepositoryImpl implements InviteCodeRepository {
 
     @Override
     public List<InviteCodeDto> listInviteCode(long uid) {
-        return template.query("SELECT code, time_modified, user FROM invite_code WHERE uid = ? ",
+        return template.query("SELECT code, updated_at, user_id FROM invite_code WHERE uid = ? ",
                 new RowMapper<InviteCodeDto>() {
                     @Override
                     public InviteCodeDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                         return new InviteCodeDto(rs.getString("code"),
-                                rs.getTimestamp("time_modified"),
-                                (0 != rs.getLong("user")));
+                                rs.getTimestamp("updated_at"),
+                                (0 != rs.getLong("user_id")));
                     }
                 },
                 uid
@@ -57,28 +57,28 @@ public class InviteCodeRepositoryImpl implements InviteCodeRepository {
 
     @Override
     public InviteCode getInviteCode(String code) {
-        return template.queryForObject("SELECT uid, code,time_modified, user FROM invite_code WHERE code = ?",
+        return template.queryForObject("SELECT uid, code,updated_at, user_id FROM invite_code WHERE code = ?",
                 new RowMapper<InviteCode>() {
                     @Override
                     public InviteCode mapRow(ResultSet rs, int rowNum) throws SQLException {
                         return new InviteCode(rs.getInt("uid"),
                                 rs.getString("code"),
-                                rs.getInt("user"));
+                                rs.getInt("user_id"));
                     }
                 },
                 code);
     }
 
     @Override
-    public int updateInviteCode(String code, long user) {
-        return template.update("UPDATE invite_code SET user = ? WHERE code = ? AND user = 0 ",
-                user,
+    public int updateInviteCode(String code, long userId) {
+        return template.update("UPDATE invite_code SET user_id = ? WHERE code = ? AND user_id = 0 ",
+                userId,
                 code);
     }
 
     @Override
     public boolean isInviteCodeUsed(String code) {
-        return 0 == template.queryForObject("SELECT count(id) FROM invite_code WHERE code = ? AND user = 0 ",
+        return 0 == template.queryForObject("SELECT count(id) FROM invite_code WHERE code = ? AND user_id = 0 ",
                 Integer.TYPE,
                 code);
     }

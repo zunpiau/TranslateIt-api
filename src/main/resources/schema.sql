@@ -64,7 +64,7 @@ CREATE TABLE token
   create_at  TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
   uid        BIGINT   NOT NULL,
-  time       INT      NOT NULL,
+  time       BIGINT   NOT NULL,
   sign       CHAR(64) NOT NULL,
   used       BOOLEAN  NOT NULL,
   FOREIGN KEY (uid) REFERENCES account (uid)
@@ -82,7 +82,7 @@ CREATE TABLE invite_code
   updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
   uid        BIGINT  NOT NULL,
   code       CHAR(8) NOT NULL,
-  userid     BIGINT      DEFAULT 0,
+  user_id    BIGINT      DEFAULT 0,
   UNIQUE (code),
   FOREIGN KEY (uid) REFERENCES account (uid)
 );
