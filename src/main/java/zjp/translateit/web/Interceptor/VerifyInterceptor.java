@@ -7,12 +7,13 @@ import zjp.translateit.util.EncryptUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.Instant;
 
 import static zjp.translateit.Constant.*;
 
 public class VerifyInterceptor extends HandlerInterceptorAdapter {
 
-    private final static long REQUEST_EXPIRE = 60 * 1000;
+    private final static long REQUEST_EXPIRE = 60;
     private String verifySalt;
 
     public VerifyInterceptor(String verifySalt) {
@@ -32,7 +33,7 @@ public class VerifyInterceptor extends HandlerInterceptorAdapter {
             httpServletResponse.setStatus(HttpStatus.FORBIDDEN.value());
             return false;
         }
-        if ((System.currentTimeMillis() - Long.parseLong(timestamp)) > REQUEST_EXPIRE) {
+        if ((Instant.now().getEpochSecond() - Integer.parseInt(timestamp)) > REQUEST_EXPIRE) {
             httpServletResponse.setStatus(HttpStatus.BAD_REQUEST.value());
             return false;
         }

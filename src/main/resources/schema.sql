@@ -64,7 +64,7 @@ CREATE TABLE token
   create_at  TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
   uid        BIGINT   NOT NULL,
-  time       BIGINT   NOT NULL,
+  time       INTEGER  NOT NULL,
   sign       CHAR(64) NOT NULL,
   used       BOOLEAN  NOT NULL,
   FOREIGN KEY (uid) REFERENCES account (uid)

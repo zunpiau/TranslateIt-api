@@ -7,17 +7,18 @@ import zjp.translateit.domain.Token;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.Instant;
 
 import static zjp.translateit.Constant.ATTRIBUTE_TOKEN;
 
 public class LoginInterceptor extends HandlerInterceptorAdapter {
 
-    private final static long TOKEN_EXPIRE = 2 * 60 * 1000;
+    private final static long TOKEN_EXPIRE = 2 * 60;
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler) throws Exception {
         LoggerFactory.getLogger(LoginInterceptor.class).info("LoginInterceptor.preHandle()");
-        if ((System.currentTimeMillis() - ((Token) httpServletRequest.getAttribute(ATTRIBUTE_TOKEN)).getTimestamp()) > TOKEN_EXPIRE) {
+        if ((Instant.now().getEpochSecond() - ((Token) httpServletRequest.getAttribute(ATTRIBUTE_TOKEN)).getTimestamp()) > TOKEN_EXPIRE) {
             httpServletResponse.setStatus(HttpStatus.BAD_REQUEST.value());
             return false;
         } else {

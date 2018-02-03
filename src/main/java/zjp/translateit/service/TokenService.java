@@ -9,6 +9,8 @@ import zjp.translateit.data.TokenRepository;
 import zjp.translateit.domain.Token;
 import zjp.translateit.util.EncryptUtil;
 
+import java.time.Instant;
+
 @Service
 @PropertySource(value = "classpath:application.properties")
 @PropertySource(value = "classpath:application-${spring.profiles.active}.properties")
@@ -42,7 +44,7 @@ public class TokenService {
     }
 
     private Token generateToken(long uid) {
-        long currentTime = System.currentTimeMillis();
+        long currentTime = Instant.now().getEpochSecond();
         String key = EncryptUtil.hash(EncryptUtil.Algorithm.SHA256, uid + tokenSalt + currentTime);
         return new Token(uid, currentTime, key);
     }
