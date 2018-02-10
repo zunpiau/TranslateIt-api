@@ -25,7 +25,6 @@ public class VerifyCodeController {
     }
 
     @RequestMapping(method = RequestMethod.GET,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Response getVerifyCode(@RequestHeader(name = HEADER_EMAIL) String email) {

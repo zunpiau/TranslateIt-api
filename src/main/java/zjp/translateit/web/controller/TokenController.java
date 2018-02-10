@@ -32,7 +32,7 @@ public class TokenController {
         this.tokenService = tokenService;
     }
 
-    @RequestMapping(value = "/get",
+    @RequestMapping(value = "",
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -52,9 +52,8 @@ public class TokenController {
         return new Response<>(tokenService.getNewToken(user.getUid()));
     }
 
-    @RequestMapping(value = "/refresh",
+    @RequestMapping(value = "",
             method = RequestMethod.PUT,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Response refreshToken(@RequestAttribute(name = ATTRIBUTE_TOKEN) Token token) {

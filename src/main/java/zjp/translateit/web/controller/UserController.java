@@ -37,7 +37,6 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/inviteCode",
             method = RequestMethod.GET,
-            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Response getInviteCode(@RequestAttribute(name = ATTRIBUTE_TOKEN) Token token) {
         return new Response<>(inviteCodeService.getInviteCode(token.getUid()));
