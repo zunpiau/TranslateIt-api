@@ -11,6 +11,6 @@ import zjp.translateit.config.RootConfig;
 @WebAppConfiguration
 @ContextConfiguration(classes = RootConfig.class)
 @ActiveProfiles("dev")
-public @interface SpringMvcTest {
+public abstract class SpringMvcBaseTest {
 
 }

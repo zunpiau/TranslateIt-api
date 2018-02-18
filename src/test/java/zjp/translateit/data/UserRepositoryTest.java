@@ -4,14 +4,13 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import zjp.translateit.SpringMvcTest;
+import zjp.translateit.SpringMvcBaseTest;
 import zjp.translateit.domain.User;
 
 import static org.junit.Assert.assertEquals;
 
-@SpringMvcTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class UserRepositoryTest {
+public class UserRepositoryTest extends SpringMvcBaseTest {
 
     @Autowired
     UserRepository repository;
