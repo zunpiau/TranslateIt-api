@@ -53,10 +53,7 @@ public class UserService {
     @Nullable
     public User getUserFromLoginRequest(LoginRequest request) {
         User user = repository.getUserByAccount(request.getAccount());
-        if (user == null) {
-            return null;
-        }
-        if (BCrypt.checkpw(request.getPassword(), user.getPassword())) {
+        if (user != null && BCrypt.checkpw(request.getPassword(), user.getPassword())) {
             return user;
         } else {
             return null;
