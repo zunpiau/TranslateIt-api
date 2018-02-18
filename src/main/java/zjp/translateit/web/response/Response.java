@@ -51,7 +51,8 @@ public class Response<T> {
         INVITE_CODE_USED(408),
         USER_DELETED(409),
 
-        INNER_EXCEPTION(500);
+        INNER_EXCEPTION(500),
+        EMAIL_SEND_FAILED(501);
 
         private final int statusCode;
 
