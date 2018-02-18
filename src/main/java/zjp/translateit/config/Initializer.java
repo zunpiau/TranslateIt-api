@@ -4,6 +4,7 @@ import ch.qos.logback.ext.spring.web.LogbackConfigListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+import zjp.translateit.web.WebConfig;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;

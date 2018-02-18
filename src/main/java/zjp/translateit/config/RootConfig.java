@@ -10,7 +10,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @Import({DataConfig.class, LogbackConfig.class})
 @ComponentScan(basePackages = {"zjp.translateit"},
         excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX,
-                pattern = {"zjp.translateit.web.controller.*"}))
+                pattern = {"zjp.translateit.web"}))
 public class RootConfig {
 
     @Bean

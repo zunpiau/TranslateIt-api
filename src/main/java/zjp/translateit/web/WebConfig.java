@@ -1,4 +1,4 @@
-package zjp.translateit.config;
+package zjp.translateit.web;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
@@ -8,6 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -23,7 +25,8 @@ import java.util.List;
 @EnableWebMvc
 @Configuration
 @PropertySource(value = "classpath:application.properties")
-@ComponentScan(basePackages = {"zjp.translateit.web.controller"})
+@ComponentScan(basePackages = "zjp.translateit.web",
+        includeFilters = @ComponentScan.Filter({RestControllerAdvice.class, RestController.class}))
 public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Value("${salt.token}")
