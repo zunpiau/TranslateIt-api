@@ -24,6 +24,19 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Nullable
     @Override
+    public User getUserByAccount(String account) {
+        try {
+            return template.queryForObject(SELECT_USER + " WHERE email = ? OR name = ?",
+                    new UserRowMapper(),
+                    account,
+                    account);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    @Nullable
+    @Override
     public User getUserByName(String username) {
         try {
             return template.queryForObject(SELECT_USER + " WHERE name = ? ",

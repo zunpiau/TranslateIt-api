@@ -41,7 +41,7 @@ public class TokenController {
         if (result.hasErrors()) {
             return new Response(Response.ResponseCode.INVALID_PARAMETER);
         }
-        logger.debug("user " + request.getName() + " login");
+        logger.debug("user " + request.getAccount() + " login");
         User user = userService.getUserFromLoginRequest(request);
         if (user == null) {
             return new Response(Response.ResponseCode.INVALID_ACCOUNT);

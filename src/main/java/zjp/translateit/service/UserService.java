@@ -52,7 +52,7 @@ public class UserService {
 
     @Nullable
     public User getUserFromLoginRequest(LoginRequest request) {
-        User user = repository.getUserByName(request.getName());
+        User user = repository.getUserByAccount(request.getAccount());
         if (user == null) {
             return null;
         }
