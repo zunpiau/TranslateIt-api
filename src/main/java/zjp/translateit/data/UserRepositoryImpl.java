@@ -14,11 +14,10 @@ import java.sql.SQLException;
 @Repository
 public class UserRepositoryImpl implements UserRepository {
 
-    private static final String SELECT_USER = "SELECT uid, name, password, email, status FROM account ";
-    private JdbcTemplate template;
+    private final JdbcTemplate template;
 
     @Autowired
-    public void setTemplate(JdbcTemplate template) {
+    public UserRepositoryImpl(JdbcTemplate template) {
         this.template = template;
     }
 
@@ -26,7 +25,8 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User getUserByAccount(String account) {
         try {
-            return template.queryForObject(SELECT_USER + " WHERE email = ? OR name = ?",
+            return template.queryForObject("SELECT uid, name, password, email, status FROM account "
+                                           + " WHERE email = ? OR name = ?",
                     new UserRowMapper(),
                     account,
                     account);
@@ -35,32 +35,17 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
-    @Nullable
     @Override
-    public User getUserByName(String username) {
-        try {
-            return template.queryForObject(SELECT_USER + " WHERE name = ? ",
-                    new UserRowMapper(),
-                    username);
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
-    }
-
-    @Override
-    public User getUserByEmail(String email) {
-        try {
-            return template.queryForObject(SELECT_USER + " WHERE email = ? ",
-                    new UserRowMapper(),
-                    email);
-        } catch (EmptyResultDataAccessException e) {
-            return null;
-        }
+    public boolean hasEmail(String email) {
+        return template.queryForObject("SELECT COUNT(id) FROM account WHERE email = ? ",
+                Integer.class,
+                email) == 1;
     }
 
     @Override
     public void saveUser(User user) {
-        template.update("INSERT INTO account (uid, name, password, email, status) VALUES (?, ?, ?, ?, ?)",
+        template.update("INSERT INTO account (uid, name, password, email, status)" +
+                        " VALUES (?, ?, ?, ?, ?)",
                 user.getUid(),
                 user.getName(),
                 user.getPassword(),

@@ -15,6 +15,4 @@ public interface InviteCodeRepository {
 
     int updateInviteCode(String code, long user);
 
-    boolean isInviteCodeUsed(String code);
-
 }

@@ -27,11 +27,10 @@ public class TokenService {
     @Transactional
     public Token refreshToken(Token oldToken) {
         Token token = generateToken(oldToken.getUid());
-        int i = repository.updateToken(oldToken, token);
-        if (i == 1) {
+        if (repository.updateToken(oldToken, token) == 1) {
             return token;
         } else {
-            repository.setTokenUsed(oldToken.getUid());
+            repository.setAllTokenUsed(oldToken.getUid());
             return null;
         }
     }

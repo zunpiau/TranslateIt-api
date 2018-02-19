@@ -7,9 +7,7 @@ public interface UserRepository {
 
     User getUserByAccount(String account);
 
-    User getUserByName(String username);
-
-    User getUserByEmail(String email);
+    boolean hasEmail(String email);
 
     void saveUser(User user);
 

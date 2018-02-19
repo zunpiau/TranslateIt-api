@@ -77,11 +77,4 @@ public class InviteCodeRepositoryImpl implements InviteCodeRepository {
                 code);
     }
 
-    @Override
-    public boolean isInviteCodeUsed(String code) {
-        return 0 == template.queryForObject("SELECT count(id) FROM invite_code WHERE code = ? AND user_id = 0 ",
-                Integer.TYPE,
-                code);
-    }
-
 }

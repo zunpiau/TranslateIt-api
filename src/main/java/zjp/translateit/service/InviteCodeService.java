@@ -33,10 +33,6 @@ public class InviteCodeService {
         repository.saveInviteCode(codes);
     }
 
-    public boolean isInviteCodeUsed(String code) {
-        return repository.isInviteCodeUsed(code);
-    }
-
     public List<InviteCodeDto> getInviteCode(long uid) {
         return repository.listInviteCode(uid);
     }

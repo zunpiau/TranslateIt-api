@@ -1,18 +1,12 @@
 package zjp.translateit.web.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import java.io.IOException;
-
-@JsonSerialize(using = Response.ResponseSerializer.class)
 public class Response<T> {
 
     private final ResponseCode code;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;
 
     public Response(ResponseCode code) {
@@ -41,10 +35,6 @@ public class Response<T> {
         RE_LOGIN(307),
 
         INVALID_PARAMETER(400),
-        INVALID_EMAIL(401),
-        INVALID_PASSWORD(402),
-        INVALID_USERNAME(403),
-        INVALID_VERIFY_CODE(404),
         EMAIL_REGISTERED(405),
         USERNAME_REGISTERED(406),
         VERIFY_CODE_USED(407),
@@ -63,24 +53,6 @@ public class Response<T> {
         @JsonValue
         public int getStatusCode() {
             return statusCode;
-        }
-    }
-
-    public static class ResponseSerializer extends JsonSerializer<Response> {
-
-        public ResponseSerializer() {
-            SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
-        }
-
-        @Override
-        public void serialize(Response value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-            gen.writeStartObject();
-            gen.writeNumberField("code", value.getCode().getStatusCode());
-            if (value.getData() != null) {
-                gen.writeObjectField("data", value.getData());
-            }
-            gen.writeEndObject();
-
         }
     }
 }

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
@@ -14,9 +15,9 @@ import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import redis.clients.jedis.JedisPoolConfig;
-import zjp.translateit.util.ProfileHelper;
 
 import javax.sql.DataSource;
+import java.util.Arrays;
 
 @Configuration
 @PropertySource(value = "classpath:application.yaml")
@@ -45,7 +46,7 @@ public class DataConfig {
     }
 
     @Bean
-    public DataSource dataSource(ProfileHelper helper) {
+    public DataSource dataSource(Environment env) {
         org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
         dataSource.setDriverClassName(driver);
         dataSource.setUrl(url);
@@ -57,7 +58,7 @@ public class DataConfig {
         dataSource.setTestOnBorrow(true);
         dataSource.setRemoveAbandoned(true);
         dataSource.setValidationQuery("SELECT 1");
-        if (helper.isDev()) {
+        if (Arrays.asList(env.getActiveProfiles()).contains("dev")) {
             DatabasePopulatorUtils.execute(new ResourceDatabasePopulator(dataScript),
                     dataSource);
         }

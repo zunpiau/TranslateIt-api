@@ -28,7 +28,7 @@ public class VerifyCodeController {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public Response getVerifyCode(@RequestHeader(name = HEADER_EMAIL) String email) {
-        logger.debug("email " + email + " request verify");
+        logger.debug("email [{}] request verify code", email);
         if (userService.forbidGetVerifyCode(email)) {
             return new Response(Response.ResponseCode.REQUIRE_FRA);
         }

@@ -1,6 +1,5 @@
 package zjp.translateit.web.Interceptor;
 
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import zjp.translateit.domain.Token;
@@ -13,15 +12,14 @@ import static zjp.translateit.Constant.*;
 
 public class TokenInterceptor extends HandlerInterceptorAdapter {
 
-    private String tokenSalt;
+    private final String tokenSalt;
 
     public TokenInterceptor(String tokenSalt) {
         this.tokenSalt = tokenSalt;
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler) throws Exception {
-        LoggerFactory.getLogger(TokenInterceptor.class).info("TokenInterceptor.preHandle()");
+    public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler) {
         String uid = httpServletRequest.getHeader(HEADER_UID);
         String timestamp = httpServletRequest.getHeader(HEADER_TIMESTAMP);
         String sign = httpServletRequest.getHeader(HEADER_SIGN);

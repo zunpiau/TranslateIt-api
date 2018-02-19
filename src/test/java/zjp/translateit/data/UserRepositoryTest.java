@@ -26,12 +26,8 @@ public class UserRepositoryTest extends SpringMvcBaseTest {
     }
 
     @Test
-    public void testFindUserByName() {
-        assertEquals(user, repository.getUserByName("xxx"));
-    }
-
-    @Test
     public void testFindUserByEmail() {
-        assertEquals(user, repository.getUserByEmail("xxx@test.com"));
+        assertEquals(true, repository.hasEmail("xxx@test.com"));
+        assertEquals(false, repository.hasEmail("non-exist@test.com"));
     }
 }

@@ -7,7 +7,7 @@ public class InviteCodeGenerator {
 
     private static final int RADIX = 58;
     private final char[] alphabet = "rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz".toCharArray();
-    private UidGenerator uidGenerator;
+    private final UidGenerator uidGenerator;
 
     public InviteCodeGenerator() {
         uidGenerator = new UidGenerator();

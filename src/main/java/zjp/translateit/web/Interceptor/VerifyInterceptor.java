@@ -1,6 +1,5 @@
 package zjp.translateit.web.Interceptor;
 
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import zjp.translateit.util.EncryptUtil;
@@ -14,7 +13,7 @@ import static zjp.translateit.Constant.*;
 public class VerifyInterceptor extends HandlerInterceptorAdapter {
 
     private final long REQUEST_EXPIRE;
-    private String verifySalt;
+    private final String verifySalt;
 
     public VerifyInterceptor(long requestExpire, String verifySalt) {
         REQUEST_EXPIRE = requestExpire;
@@ -22,8 +21,7 @@ public class VerifyInterceptor extends HandlerInterceptorAdapter {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler) throws Exception {
-        LoggerFactory.getLogger(VerifyInterceptor.class).info("VerifyInterceptor.preHandle()");
+    public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler) {
         String email = httpServletRequest.getHeader(HEADER_EMAIL);
         String timestamp = httpServletRequest.getHeader(HEADER_TIMESTAMP);
         String sign = httpServletRequest.getHeader(HEADER_SIGN);

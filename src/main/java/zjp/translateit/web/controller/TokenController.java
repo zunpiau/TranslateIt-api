@@ -41,7 +41,7 @@ public class TokenController {
         if (result.hasErrors()) {
             return new Response(Response.ResponseCode.INVALID_PARAMETER);
         }
-        logger.debug("user " + request.getAccount() + " login");
+        logger.debug("user [{}] login", request.getAccount());
         User user = userService.getUserFromLoginRequest(request);
         if (user == null) {
             return new Response(Response.ResponseCode.INVALID_ACCOUNT);
@@ -52,7 +52,7 @@ public class TokenController {
         return new Response<>(tokenService.getNewToken(user.getUid()));
     }
 
-    @RequestMapping(value = "",
+    @RequestMapping(value = "/refresh",
             method = RequestMethod.PUT,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)

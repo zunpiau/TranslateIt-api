@@ -24,17 +24,16 @@ import java.util.concurrent.TimeUnit;
 @PropertySource(value = "classpath:application.yaml")
 public class UserService {
 
-
     private final UserRepository repository;
     private final StringRedisTemplate redisTemplate;
     private final EmailService emailService;
     private final InviteCodeService inviteCodeService;
     private final UidGenerator uidGenerator;
 
-    @SuppressWarnings("FieldCanBeLocal")
     private final String EMAIL_KEY_PREFIX = "email:";
     private final String VERIFY_CODE_KEY_PREFIX = "verify.code:";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final RandomStringGenerator generator;
 
     @Autowired
     public UserService(StringRedisTemplate redisTemplate,
@@ -47,6 +46,7 @@ public class UserService {
         this.emailService = emailService;
         this.inviteCodeService = inviteCodeService;
         this.uidGenerator = uidGenerator;
+        generator = new RandomStringGenerator.Builder().withinRange('a', 'z').build();
     }
 
     @Nullable
@@ -70,7 +70,7 @@ public class UserService {
                     registerRequest.getEmail(),
                     User.Status.NORMAL));
         } catch (DuplicateKeyException e) {
-            e.printStackTrace();
+            logger.debug(e.getMessage());
             throw new UserExistException();
         }
         inviteCodeService.setInviteCodeUser(registerRequest.getInviteCode(), uid);
@@ -79,12 +79,8 @@ public class UserService {
         redisTemplate.delete(EMAIL_KEY_PREFIX + registerRequest.getEmail());
     }
 
-    public boolean hasUser(String name) {
-        return repository.getUserByName(name) != null;
-    }
-
     public boolean emailRegistered(String email) {
-        return repository.getUserByEmail(email) != null;
+        return repository.hasEmail(email);
     }
 
     public boolean verifyCodeValid(RegisterRequest registerRequest) {
@@ -96,16 +92,15 @@ public class UserService {
 
     @Transactional
     public void sendVerifyCode(String email) {
-        RandomStringGenerator generator = new RandomStringGenerator.Builder().withinRange('a', 'z').build();
         String verifyCode = generator.generate(9);
-        logger.debug("Send email to " + email + " , verifyCode: " + verifyCode);
+        logger.debug("Send verify code to [{}]", email);
         emailService.sendVerifyEmail(email, verifyCode);
         redisTemplate.opsForValue().set(VERIFY_CODE_KEY_PREFIX + email, verifyCode, 30, TimeUnit.MINUTES);
         redisTemplate.opsForValue().set(EMAIL_KEY_PREFIX + email, "", 1, TimeUnit.MINUTES);
     }
 
     public boolean forbidGetVerifyCode(String email) {
-        return redisTemplate.opsForValue().get(EMAIL_KEY_PREFIX + email) != null;
+        return redisTemplate.hasKey(EMAIL_KEY_PREFIX + email);
     }
 
 }

@@ -25,14 +25,14 @@ public class TokenRepository {
 
     public int updateToken(Token oldToken, Token newToken) {
         return template.update("UPDATE token SET sign = ? , time = ? " +
-                               " WHERE uid = ? AND used = false AND sign = ? ",
+                               " WHERE uid = ? AND used = false AND time = ? ",
                 newToken.getSign(),
                 newToken.getTimestamp(),
                 oldToken.getUid(),
-                oldToken.getSign());
+                oldToken.getTimestamp());
     }
 
-    public void setTokenUsed(long uid) {
+    public void setAllTokenUsed(long uid) {
         template.update("UPDATE token SET used = ? WHERE uid = ? ",
                 true,
                 uid);
