@@ -24,7 +24,7 @@ import java.util.List;
 
 @EnableWebMvc
 @Configuration
-@PropertySource(value = "classpath:application.properties")
+@PropertySource(value = "classpath:application.yaml")
 @ComponentScan(basePackages = "zjp.translateit.web",
         includeFilters = @ComponentScan.Filter({RestControllerAdvice.class, RestController.class}))
 public class WebConfig extends WebMvcConfigurerAdapter {
@@ -34,6 +34,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Value("${salt.verify}")
     private String verifySalt;
+    @Value("${expire.verify}")
+    private long verifyExpire;
+    @Value("${expire.token}")
+    private long tokenExpire;
 
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
@@ -58,9 +62,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new TokenInterceptor(tokenSalt))
                 .addPathPatterns("/wordbook", "/wordbook/*", "/user/inviteCode", "/token/refresh");
-        registry.addInterceptor(new LoginInterceptor())
+        registry.addInterceptor(new LoginInterceptor(tokenExpire))
                 .addPathPatterns("/wordbook", "/wordbook/*", "/user/inviteCode");
-        registry.addInterceptor(new VerifyInterceptor(verifySalt))
+        registry.addInterceptor(new VerifyInterceptor(verifyExpire, verifySalt))
                 .addPathPatterns("/verifyCode");
         super.addInterceptors(registry);
     }

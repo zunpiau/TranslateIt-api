@@ -19,7 +19,7 @@ import zjp.translateit.util.ProfileHelper;
 import javax.sql.DataSource;
 
 @Configuration
-@PropertySource(value = "classpath:application.properties")
+@PropertySource(value = "classpath:application.yaml")
 @PropertySource(value = "classpath:application-${spring.profiles.active}.properties")
 @EnableTransactionManagement
 public class DataConfig {

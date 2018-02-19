@@ -1,0 +1,12 @@
+spring.profiles.active:
+spring.liveBeansView.mbeanDomain:
+salt.token:
+salt.verify:
+ali.accessKeyID:
+ali.accessSecret:
+ali.emailAccount:
+email.reply:
+email.subject.verify:
+log.fileNamePattern:
+expire.token:
+expire.verify:

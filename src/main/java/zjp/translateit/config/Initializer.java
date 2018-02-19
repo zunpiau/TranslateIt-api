@@ -9,7 +9,7 @@ import zjp.translateit.web.WebConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
-@PropertySource(value = "classpath:application.properties")
+@PropertySource(value = "classpath:application.yaml")
 public class Initializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     @Value("${spring.profiles.active}")

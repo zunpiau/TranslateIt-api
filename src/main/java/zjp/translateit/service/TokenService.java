@@ -12,8 +12,7 @@ import zjp.translateit.util.EncryptUtil;
 import java.time.Instant;
 
 @Service
-@PropertySource(value = "classpath:application.properties")
-@PropertySource(value = "classpath:application-${spring.profiles.active}.properties")
+@PropertySource(value = "classpath:application.yaml")
 public class TokenService {
 
     private final TokenRepository repository;

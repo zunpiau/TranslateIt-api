@@ -21,8 +21,7 @@ import javax.annotation.Nullable;
 import java.util.concurrent.TimeUnit;
 
 @Service
-@PropertySource(value = "classpath:application.properties")
-@PropertySource(value = "classpath:application-${spring.profiles.active}.properties")
+@PropertySource(value = "classpath:application.yaml")
 public class UserService {
 
 

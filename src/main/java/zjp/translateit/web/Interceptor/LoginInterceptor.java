@@ -13,7 +13,11 @@ import static zjp.translateit.Constant.ATTRIBUTE_TOKEN;
 
 public class LoginInterceptor extends HandlerInterceptorAdapter {
 
-    private final static long TOKEN_EXPIRE = 2 * 60;
+    private final long TOKEN_EXPIRE;
+
+    public LoginInterceptor(long tokenExpire) {
+        TOKEN_EXPIRE = tokenExpire;
+    }
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler) throws Exception {

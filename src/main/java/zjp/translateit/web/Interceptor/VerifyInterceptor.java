@@ -13,10 +13,11 @@ import static zjp.translateit.Constant.*;
 
 public class VerifyInterceptor extends HandlerInterceptorAdapter {
 
-    private final static long REQUEST_EXPIRE = 60;
+    private final long REQUEST_EXPIRE;
     private String verifySalt;
 
-    public VerifyInterceptor(String verifySalt) {
+    public VerifyInterceptor(long requestExpire, String verifySalt) {
+        REQUEST_EXPIRE = requestExpire;
         this.verifySalt = verifySalt;
     }
 
