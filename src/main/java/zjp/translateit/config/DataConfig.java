@@ -1,10 +1,12 @@
 package zjp.translateit.config;
 
+import org.apache.tomcat.jdbc.pool.DataSourceFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
@@ -17,48 +19,35 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import redis.clients.jedis.JedisPoolConfig;
 
 import javax.sql.DataSource;
-import java.util.Arrays;
+import java.text.MessageFormat;
+import java.util.Properties;
 
 @Configuration
 @PropertySource(value = "classpath:application.yaml")
-@PropertySource(value = "classpath:application-${spring.profiles.active}.properties")
 @EnableTransactionManagement
 public class DataConfig {
 
-    @Value("classpath:data.sql")
-    private Resource dataScript;
-
-    @Value("${db.user}")
-    private String user;
-
-    @Value("${db.password}")
-    private String password;
-
-    @Value("${db.url}")
-    private String url;
-
-    @Value("${db.driver}")
-    private String driver;
+    @Value("${spring.profiles.active}")
+    private String profile;
 
     @Bean
     public DataSourceTransactionManager txManager(DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
     }
 
+    @Bean(name = "jdbcProperties")
+    public PropertiesFactoryBean jdbcProperties() {
+        PropertiesFactoryBean bean = new PropertiesFactoryBean();
+        bean.setLocations(new ClassPathResource(
+                MessageFormat.format("jdbc-{0}.properties", profile)));
+        return bean;
+    }
+
     @Bean
-    public DataSource dataSource(Environment env) {
-        org.apache.tomcat.jdbc.pool.DataSource dataSource = new org.apache.tomcat.jdbc.pool.DataSource();
-        dataSource.setDriverClassName(driver);
-        dataSource.setUrl(url);
-        dataSource.setUsername(user);
-        dataSource.setPassword(password);
-        dataSource.setInitialSize(4);
-        dataSource.setMinIdle(4);
-        dataSource.setMaxIdle(20);
-        dataSource.setTestOnBorrow(true);
-        dataSource.setRemoveAbandoned(true);
-        dataSource.setValidationQuery("SELECT 1");
-        if (Arrays.asList(env.getActiveProfiles()).contains("dev")) {
+    public DataSource dataSource(Properties jdbcProperties,
+            @Value("classpath:data.sql") Resource dataScript) throws Exception {
+        DataSource dataSource = new DataSourceFactory().createDataSource(jdbcProperties);
+        if ("dev".equals(profile)) {
             DatabasePopulatorUtils.execute(new ResourceDatabasePopulator(dataScript),
                     dataSource);
         }
@@ -80,10 +69,8 @@ public class DataConfig {
 
     @Bean
     public RedisConnectionFactory connectionFactory(JedisPoolConfig config) {
-        JedisConnectionFactory connectionFactory = new JedisConnectionFactory();
+        JedisConnectionFactory connectionFactory = new JedisConnectionFactory(config);
         connectionFactory.setClientName("translateit");
-        connectionFactory.setUsePool(true);
-        connectionFactory.setPoolConfig(config);
         return connectionFactory;
     }
 
