@@ -66,7 +66,6 @@ CREATE TABLE token
   uid        BIGINT   NOT NULL,
   time       INTEGER  NOT NULL,
   sign       CHAR(64) NOT NULL,
-  used       BOOLEAN  NOT NULL,
   FOREIGN KEY (uid) REFERENCES account (uid)
 );
 CREATE INDEX ON token (uid);

@@ -30,7 +30,7 @@ public class TokenService {
         if (repository.updateToken(oldToken, token) == 1) {
             return token;
         } else {
-            repository.setAllTokenUsed(oldToken.getUid());
+            repository.removeAll(oldToken.getUid());
             return null;
         }
     }

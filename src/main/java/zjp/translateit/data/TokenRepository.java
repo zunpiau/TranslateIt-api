@@ -16,25 +16,22 @@ public class TokenRepository {
     }
 
     public void saveToken(Token token) {
-        template.update("INSERT INTO token (uid, time, sign, used) VALUES (?, ?, ?, ?)",
+        template.update("INSERT INTO token (uid, time, sign) VALUES (?, ?, ?)",
                 token.getUid(),
                 token.getTimestamp(),
-                token.getSign(),
-                false);
+                token.getSign());
     }
 
     public int updateToken(Token oldToken, Token newToken) {
         return template.update("UPDATE token SET sign = ? , time = ? " +
-                               " WHERE uid = ? AND used = false AND time = ? ",
+                               " WHERE uid = ? AND time = ? ",
                 newToken.getSign(),
                 newToken.getTimestamp(),
                 oldToken.getUid(),
                 oldToken.getTimestamp());
     }
 
-    public void setAllTokenUsed(long uid) {
-        template.update("UPDATE token SET used = ? WHERE uid = ? ",
-                true,
-                uid);
+    public void removeAll(long uid) {
+        template.update("DELETE FROM token WHERE uid = ? ", uid);
     }
 }
