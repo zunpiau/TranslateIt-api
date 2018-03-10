@@ -4,8 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import zjp.translateit.domain.Wordbook;
+import zjp.translateit.dto.ModifyWordbook;
 import zjp.translateit.service.WordbookService;
-import zjp.translateit.web.request.BackupRequest;
 import zjp.translateit.web.response.Response;
 
 import javax.validation.Valid;
@@ -24,18 +25,35 @@ public class WordbookController {
         this.wordbookService = wordbookService;
     }
 
-    @RequestMapping(value = "/backup",
+    @RequestMapping(value = "/delete",
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Response delete(@RequestHeader(name = HEADER_UID) long uid, @RequestBody List<String> words) {
+        return new Response<>(wordbookService.deleteWordbook(uid, words));
+    }
+
+    @RequestMapping(value = "/update",
             method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Response backup(@RequestHeader(name = HEADER_UID) long uid, @Valid @RequestBody BackupRequest backupRequest,
-            BindingResult result) {
-        if (result.hasErrors()) {
-            return new Response(Response.ResponseCode.INVALID_PARAMETER);
-        }
-        return new Response<>(wordbookService.backup(uid,
-                backupRequest.getWords(),
-                backupRequest.getWordbooks()));
+    public Response update(@RequestHeader(name = HEADER_UID) long uid, @RequestBody List<ModifyWordbook> wordbooks) {
+        return new Response<>(wordbookService.updateWordbook(uid, wordbooks));
+    }
+
+    @RequestMapping(value = "/add",
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Response add(@RequestHeader(name = HEADER_UID) long uid, @RequestBody List<Wordbook> wordbooks) {
+        return new Response<>(wordbookService.addWordbook(uid, wordbooks));
+    }
+
+    @RequestMapping(value = "/words",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Response getWords(@RequestHeader(name = HEADER_UID) long uid) {
+        return new Response<>(wordbookService.getWords(uid));
     }
 
     @RequestMapping(value = "/recover",
