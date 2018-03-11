@@ -42,8 +42,8 @@ public class EmailService {
                 StandardCharsets.UTF_8);
     }
 
-    public void sendVerifyEmail(String mailTo, String verifyCode) {
-        sendEmail(mailTo, verifyEmailSubject, MessageFormat.format(verifyTemplate, verifyCode));
+    public void sendVerifyEmail(String mailTo, String verifyCode, String inviteCode) {
+        sendEmail(mailTo, verifyEmailSubject, MessageFormat.format(verifyTemplate, verifyCode, inviteCode));
     }
 
     private void sendEmail(String mailTo, String subject, String content) {

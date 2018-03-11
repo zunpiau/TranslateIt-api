@@ -25,12 +25,13 @@ public class InviteCodeService {
     }
 
     @Transactional
-    public void addInviteCode(int count, long uid) {
-        ArrayList<InviteCode> codes = new ArrayList<>(count);
+    public List<InviteCode> addInviteCode(int count, long uid) {
+        List<InviteCode> codes = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
             codes.add(new InviteCode(uid, inviteCodeGenerator.generate()));
         }
         repository.saveInviteCode(codes);
+        return codes;
     }
 
     public List<InviteCodeDto> getInviteCode(long uid) {

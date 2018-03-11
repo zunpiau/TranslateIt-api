@@ -4,6 +4,7 @@ import org.apache.commons.text.RandomStringGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import zjp.translateit.data.UserRepository;
+import zjp.translateit.domain.InviteCode;
 import zjp.translateit.domain.User;
 import zjp.translateit.util.UidGenerator;
 import zjp.translateit.web.exception.UserExistException;
@@ -18,6 +20,7 @@ import zjp.translateit.web.request.LoginRequest;
 import zjp.translateit.web.request.RegisterRequest;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -34,6 +37,8 @@ public class UserService {
     private final String VERIFY_CODE_KEY_PREFIX = "verify.code:";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final RandomStringGenerator generator;
+    @Value("${manager.uid}")
+    private long managerUid;
 
     @Autowired
     public UserService(StringRedisTemplate redisTemplate,
@@ -94,7 +99,8 @@ public class UserService {
     public void sendVerifyCode(String email) {
         String verifyCode = generator.generate(9);
         logger.debug("Send verify code to [{}]", email);
-        emailService.sendVerifyEmail(email, verifyCode);
+        List<InviteCode> codes = inviteCodeService.addInviteCode(1, managerUid);
+        emailService.sendVerifyEmail(email, verifyCode, codes.get(0).getCode());
         redisTemplate.opsForValue().set(VERIFY_CODE_KEY_PREFIX + email, verifyCode, 30, TimeUnit.MINUTES);
         redisTemplate.opsForValue().set(EMAIL_KEY_PREFIX + email, "", 1, TimeUnit.MINUTES);
     }
