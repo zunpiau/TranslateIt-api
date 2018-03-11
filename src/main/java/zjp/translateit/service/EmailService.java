@@ -20,7 +20,7 @@ import java.nio.file.Files;
 import java.text.MessageFormat;
 
 @Service
-@PropertySource(value = "classpath:application.yaml")
+@PropertySource(value = "classpath:application.properties", encoding = "UTF-8")
 public class EmailService {
 
     private final static String feedbackTemplate = "<p>From: {0}</p><p>UA: {1}</p><p>{2}</p>";

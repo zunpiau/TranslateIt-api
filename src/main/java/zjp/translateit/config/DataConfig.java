@@ -23,7 +23,7 @@ import java.text.MessageFormat;
 import java.util.Properties;
 
 @Configuration
-@PropertySource(value = "classpath:application.yaml")
+@PropertySource(value = "classpath:application.properties")
 @EnableTransactionManagement
 public class DataConfig {
 

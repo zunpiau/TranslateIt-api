@@ -1,26 +1,18 @@
 package zjp.translateit.config;
 
 import ch.qos.logback.ext.spring.web.LogbackConfigListener;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 import zjp.translateit.web.WebConfig;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
-@PropertySource(value = "classpath:application.yaml")
-public class Initializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
-    @Value("${spring.profiles.active}")
-    private String env;
+public class Initializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
         super.onStartup(servletContext);
-        servletContext.setInitParameter("spring.profiles.active", env);
-        servletContext.setInitParameter("spring.profiles.default", env);
-        servletContext.setInitParameter("spring.liveBeansView.mbeanDomain", env);
         servletContext.addListener(LogbackConfigListener.class);
     }
 

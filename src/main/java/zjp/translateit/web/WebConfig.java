@@ -24,14 +24,13 @@ import java.util.List;
 
 @EnableWebMvc
 @Configuration
-@PropertySource(value = "classpath:application.yaml")
+@PropertySource(value = "classpath:application.properties")
 @ComponentScan(basePackages = "zjp.translateit.web",
         includeFilters = @ComponentScan.Filter({RestControllerAdvice.class, RestController.class}))
 public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Value("${salt.token}")
     private String tokenSalt;
-
     @Value("${salt.verify}")
     private String verifySalt;
     @Value("${expire.verify}")

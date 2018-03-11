@@ -12,7 +12,7 @@ import zjp.translateit.util.EncryptUtil;
 import java.time.Instant;
 
 @Service
-@PropertySource(value = "classpath:application.yaml")
+@PropertySource(value = "classpath:application.properties")
 public class TokenService {
 
     private final TokenRepository repository;

@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
 import java.util.concurrent.TimeUnit;
 
 @Service
-@PropertySource(value = "classpath:application.yaml")
+@PropertySource(value = "classpath:application.properties")
 public class UserService {
 
     private final UserRepository repository;
