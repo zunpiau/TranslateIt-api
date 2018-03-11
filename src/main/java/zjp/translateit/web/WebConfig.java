@@ -18,7 +18,7 @@ import zjp.translateit.web.Interceptor.LoginInterceptor;
 import zjp.translateit.web.Interceptor.TokenInterceptor;
 import zjp.translateit.web.Interceptor.VerifyInterceptor;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
@@ -44,20 +44,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     }
 
     @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        StringHttpMessageConverter stringHttpMessageConverter = new StringHttpMessageConverter(Charset.forName("utf-8"));
-        stringHttpMessageConverter.setSupportedMediaTypes(
-                Collections.singletonList(
-                        MediaType.parseMediaType(MediaType.TEXT_PLAIN_VALUE)));
-        MappingJackson2HttpMessageConverter jackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
-        jackson2HttpMessageConverter.setSupportedMediaTypes(
-                Collections.singletonList(
-                        MediaType.parseMediaType(MediaType.APPLICATION_JSON_VALUE)));
-        converters.add(stringHttpMessageConverter);
-        converters.add(jackson2HttpMessageConverter);
-    }
-
-    @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new TokenInterceptor(tokenSalt))
                 .addPathPatterns("/wordbook", "/wordbook/*", "/user/inviteCode", "/token/refresh");
@@ -66,5 +52,15 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         registry.addInterceptor(new VerifyInterceptor(verifyExpire, verifySalt))
                 .addPathPatterns("/verifyCode");
         super.addInterceptors(registry);
+    }
+
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        StringHttpMessageConverter stringHttpMessageConverter = new StringHttpMessageConverter(StandardCharsets.UTF_8);
+        stringHttpMessageConverter.setSupportedMediaTypes(Collections.singletonList(MediaType.TEXT_PLAIN));
+        MappingJackson2HttpMessageConverter jackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
+        jackson2HttpMessageConverter.setSupportedMediaTypes(Collections.singletonList(MediaType.APPLICATION_JSON));
+        converters.add(stringHttpMessageConverter);
+        converters.add(jackson2HttpMessageConverter);
     }
 }
