@@ -96,6 +96,7 @@ CREATE TABLE feedback
   id         SERIAL PRIMARY KEY,
   create_at  TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+  version    CHAR(5),
   content    VARCHAR(1024),
   contact    VARCHAR(64),
   ua         VARCHAR(512)

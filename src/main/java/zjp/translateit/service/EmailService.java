@@ -23,9 +23,9 @@ import java.text.MessageFormat;
 @PropertySource(value = "classpath:application.properties", encoding = "UTF-8")
 public class EmailService {
 
-    private final static String feedbackTemplate = "<p>From: {0}</p><p>UA: {1}</p><p>{2}</p>";
     private final IAcsClient client;
     private final String verifyTemplate;
+    private String feedbackTemplate;
     @Value("${ali.emailAccount}")
     private String aliAccount;
     @Value("${email.reply}")
@@ -38,18 +38,12 @@ public class EmailService {
         client = new DefaultAcsClient(DefaultProfile.getProfile("cn-hangzhou", keyID, secret));
         verifyTemplate = new String(Files.readAllBytes(new ClassPathResource("email-template.html").getFile().toPath()),
                 StandardCharsets.UTF_8);
+        feedbackTemplate = new String(Files.readAllBytes(new ClassPathResource("email-feedback.html").getFile().toPath()),
+                StandardCharsets.UTF_8);
     }
 
     public void sendVerifyEmail(String mailTo, String verifyCode) {
         sendEmail(mailTo, verifyEmailSubject, MessageFormat.format(verifyTemplate, verifyCode));
-    }
-
-    @Async
-    public void sendFeedbackEmail(FeedbackRequest request, String ua) {
-        sendEmail(emailReply, "Feedback", MessageFormat.format(feedbackTemplate,
-                request.getContact(),
-                ua,
-                request.getContent()));
     }
 
     private void sendEmail(String mailTo, String subject, String content) {
@@ -70,6 +64,15 @@ public class EmailService {
             e.printStackTrace();
             throw new EmailSendException();
         }
+    }
+
+    @Async
+    public void sendFeedbackEmail(FeedbackRequest request, String ua) {
+        sendEmail(emailReply, "Feedback", MessageFormat.format(feedbackTemplate,
+                request.getVersion(),
+                request.getContact(),
+                request.getContent(),
+                ua));
     }
 
 }

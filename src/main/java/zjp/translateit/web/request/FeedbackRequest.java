@@ -8,13 +8,19 @@ public class FeedbackRequest {
     private String content;
     @NotNull
     private String contact;
+    private String version;
 
     public FeedbackRequest() {
     }
 
-    public FeedbackRequest(String content, String contact) {
+    public FeedbackRequest(String content, String contact, String version) {
         this.content = content;
         this.contact = contact;
+        this.version = version;
+    }
+
+    public String getVersion() {
+        return version;
     }
 
     public String getContent() {

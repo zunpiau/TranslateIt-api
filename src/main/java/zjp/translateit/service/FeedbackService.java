@@ -16,8 +16,11 @@ public class FeedbackService {
     }
 
     public void addFeedback(FeedbackRequest request, String ua) {
-        template.update("INSERT INTO feedback (content, contact, ua) VALUE (?, ? , ?) ",
-                request.getContent(), request.getContact(), ua);
+        template.update("INSERT INTO feedback (version, content, contact, ua) VALUES (?, ?, ?, ?) ",
+                request.getVersion(),
+                request.getContent(),
+                request.getContact(),
+                ua);
     }
 
 }

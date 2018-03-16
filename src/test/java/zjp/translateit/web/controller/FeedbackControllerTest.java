@@ -21,7 +21,7 @@ public class FeedbackControllerTest extends SpringMvcBaseTest {
     @Test
     public void feedback() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
-        FeedbackRequest request = new FeedbackRequest("content", "contact");
+        FeedbackRequest request = new FeedbackRequest("content", "contact", "");
         String ua = "SpringJUnit4ClassRunner";
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(controller)
                 .build();
