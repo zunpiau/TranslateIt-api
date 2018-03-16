@@ -7,14 +7,12 @@ import java.sql.Timestamp;
 public class InviteCodeDto {
 
     private final String code;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Asia/Shanghai")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm", timezone = "Asia/Shanghai")
     private final Timestamp usedTime;
-    private final boolean used;
 
-    public InviteCodeDto(String code, Timestamp usedTime, boolean used) {
+    public InviteCodeDto(String code, Timestamp usedTime) {
         this.code = code;
         this.usedTime = usedTime;
-        this.used = used;
     }
 
     public String getCode() {
@@ -25,7 +23,4 @@ public class InviteCodeDto {
         return usedTime;
     }
 
-    public boolean isUsed() {
-        return used;
-    }
 }
