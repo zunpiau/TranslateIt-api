@@ -14,11 +14,12 @@ public class Initializer extends AbstractAnnotationConfigDispatcherServletInitia
     public void onStartup(ServletContext servletContext) throws ServletException {
         super.onStartup(servletContext);
         servletContext.addListener(LogbackConfigListener.class);
+        servletContext.setInitParameter("webAppRootKey", "TranslateIt");
     }
 
     @Override
     protected String[] getServletMappings() {
-        return new String[]{"/api/*"};
+        return new String[]{"/*"};
     }
 
     @Override
