@@ -2,15 +2,15 @@ package zjp.translateit.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class InviteCodeDto {
 
     private final String code;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm", timezone = "Asia/Shanghai")
-    private final Timestamp usedTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm")
+    private final LocalDateTime usedTime;
 
-    public InviteCodeDto(String code, Timestamp usedTime) {
+    public InviteCodeDto(String code, LocalDateTime usedTime) {
         this.code = code;
         this.usedTime = usedTime;
     }
@@ -19,7 +19,7 @@ public class InviteCodeDto {
         return code;
     }
 
-    public Timestamp getUsedTime() {
+    public LocalDateTime getUsedTime() {
         return usedTime;
     }
 
