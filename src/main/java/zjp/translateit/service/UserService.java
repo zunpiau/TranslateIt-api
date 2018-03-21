@@ -12,7 +12,6 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import zjp.translateit.data.UserRepository;
-import zjp.translateit.domain.InviteCode;
 import zjp.translateit.domain.User;
 import zjp.translateit.util.UidGenerator;
 import zjp.translateit.web.exception.UserExistException;
@@ -99,8 +98,8 @@ public class UserService {
     public void sendVerifyCode(String email) {
         String verifyCode = generator.generate(9);
         logger.debug("Send verify code to [{}]", email);
-        List<InviteCode> codes = inviteCodeService.addInviteCode(1, managerUid);
-        emailService.sendVerifyEmail(email, verifyCode, codes.get(0).getCode());
+        List<String> codes = inviteCodeService.addInviteCode(1, managerUid);
+        emailService.sendVerifyEmail(email, verifyCode, codes.get(0));
         redisTemplate.opsForValue().set(VERIFY_CODE_KEY_PREFIX + email, verifyCode, 30, TimeUnit.MINUTES);
         redisTemplate.opsForValue().set(EMAIL_KEY_PREFIX + email, "", 1, TimeUnit.MINUTES);
     }

@@ -9,6 +9,8 @@ public interface InviteCodeRepository {
 
     void saveInviteCode(List<InviteCode> inviteCodes);
 
+    void saveInviteCode(List<String> inviteCodes, long uid);
+
     List<InviteCodeDto> listInviteCode(long uid);
 
     InviteCode getInviteCode(String code);

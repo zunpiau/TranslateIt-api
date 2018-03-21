@@ -40,6 +40,22 @@ public class InviteCodeRepositoryImpl implements InviteCodeRepository {
                 });
     }
 
+    public void saveInviteCode(List<String> inviteCodes, long uid) {
+        template.batchUpdate("INSERT INTO invite_code (uid, code) VALUES (?, ? )",
+                new BatchPreparedStatementSetter() {
+                    @Override
+                    public void setValues(PreparedStatement ps, int i) throws SQLException {
+                        ps.setLong(1, uid);
+                        ps.setString(2, inviteCodes.get(i));
+                    }
+
+                    @Override
+                    public int getBatchSize() {
+                        return inviteCodes.size();
+                    }
+                });
+    }
+
     @Override
     public List<InviteCodeDto> listInviteCode(long uid) {
         return template.query("SELECT code, updated_at, user_id FROM invite_code WHERE uid = ? ",

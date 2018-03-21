@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import zjp.translateit.data.InviteCodeRepository;
-import zjp.translateit.domain.InviteCode;
 import zjp.translateit.dto.InviteCodeDto;
 import zjp.translateit.util.InviteCodeGenerator;
 import zjp.translateit.web.exception.InviteCodeUsedException;
@@ -25,12 +24,12 @@ public class InviteCodeService {
     }
 
     @Transactional
-    public List<InviteCode> addInviteCode(int count, long uid) {
-        List<InviteCode> codes = new ArrayList<>(count);
+    public List<String> addInviteCode(int count, long uid) {
+        List<String> codes = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
-            codes.add(new InviteCode(uid, inviteCodeGenerator.generate()));
+            codes.add(inviteCodeGenerator.generate());
         }
-        repository.saveInviteCode(codes);
+        repository.saveInviteCode(codes, uid);
         return codes;
     }
 
