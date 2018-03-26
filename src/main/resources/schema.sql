@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS token;
 DROP TABLE IF EXISTS invite_code;
 DROP TABLE IF EXISTS feedback;
 DROP TABLE IF EXISTS account;
+CREATE EXTENSION IF NOT EXISTS citext;
 
 CREATE OR REPLACE FUNCTION set_to_now()
   RETURNS TRIGGER LANGUAGE plpgsql
@@ -19,9 +20,9 @@ CREATE TABLE account
   create_at  TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
   uid        BIGINT       NOT NULL,
-  name       VARCHAR(16)  NOT NULL,
+  name       CITEXT       NOT NULL,
   password   VARCHAR(128) NOT NULL,
-  email      VARCHAR(32)  NOT NULL,
+  email      CITEXT       NOT NULL,
   status     SMALLINT     NOT NULL,
   UNIQUE (uid),
   UNIQUE (NAME),
