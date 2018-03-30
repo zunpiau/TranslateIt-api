@@ -5,7 +5,6 @@ import java.util.List;
 public class SystemCounter {
 
     private final long user;
-    private final long inviteCode;
     private final long wordbook;
     private final List<DateCounter> refresh;
     private final List<DateCounter> login;
@@ -13,14 +12,12 @@ public class SystemCounter {
     private final List<DateTimeCounter> refreshHourly;
 
     public SystemCounter(long user,
-            long inviteCode,
             long wordbook,
             List<DateCounter> refresh,
             List<DateCounter> login,
             List<DateCounter> register,
             List<DateTimeCounter> refreshHourly) {
         this.user = user;
-        this.inviteCode = inviteCode;
         this.wordbook = wordbook;
         this.refresh = refresh;
         this.login = login;
@@ -30,10 +27,6 @@ public class SystemCounter {
 
     public long getUser() {
         return user;
-    }
-
-    public long getInviteCode() {
-        return inviteCode;
     }
 
     public List<DateCounter> getRefresh() {

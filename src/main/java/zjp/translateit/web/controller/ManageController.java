@@ -30,12 +30,6 @@ public class ManageController {
         return new Response<>(service.getSystemCounter());
     }
 
-    @ResponseBody
-    @PostMapping("/invite_code")
-    public Response addInviteCode(@RequestParam int amount) {
-        return new Response<>(service.addManagerInviteCode(Math.min(20, amount)));
-    }
-
     @RequestMapping(value = "/token", method = RequestMethod.POST)
     public RedirectView login(@RequestParam String name, @RequestParam String password, HttpServletResponse response) {
         String tokenString = service.login(name, password);

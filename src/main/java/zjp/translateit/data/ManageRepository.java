@@ -71,12 +71,6 @@ public class ManageRepository {
         return template.queryForObject("SELECT COUNT(*) FROM wordbook", long.class);
     }
 
-    public long countInviteCode(long uid) {
-        return template.queryForObject("SELECT COUNT(*) FROM invite_code WHERE uid = ? AND user_id = 0",
-                long.class,
-                uid);
-    }
-
     private static class DateCounterRowMapper implements RowMapper<DateCounter> {
 
         @Override

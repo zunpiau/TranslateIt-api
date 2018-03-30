@@ -38,7 +38,6 @@ public class Response<T> {
         EMAIL_REGISTERED(405),
         USERNAME_REGISTERED(406),
         VERIFY_CODE_USED(407),
-        INVITE_CODE_USED(408),
         USER_DELETED(409),
 
         INNER_EXCEPTION(500),

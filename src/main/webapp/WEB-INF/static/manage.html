@@ -8,7 +8,6 @@
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <script src="jquery.cookie.js"></script>
     <title>Manage</title>
     <style>
         .footer {
@@ -59,17 +58,6 @@
             margin-top: 20px;
         }
 
-        #div-amount {
-            flex: 0 0 50%;
-            max-width: 50%;
-        }
-
-        @media (min-width: 576px) {
-            #div-amount {
-                flex: 0 0 33.3%;
-                max-width: 33.3%;
-            }
-        }
     </style>
 </head>
 <body>
@@ -104,36 +92,7 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="modal-inviteCode" tabindex="-1" role="dialog" aria-labelledby="Invite Code"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modal-inviteCode-title">邀请码</h5>
-                </div>
-                <div class="modal-body">
-                    <ul class="list-group row" id="ul-inviteCode">
-                    </ul>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
     <table class="table table-hover">
-        <tr>
-            <td>邀请码</td>
-            <td id="td-invite-code">-</td>
-            <td>
-                <div id="div-amount" class="input-group input-group-sm d-inline-flex">
-                    <input type="number" value="10" name="amount" placeholder="数量" max="20" min="5"
-                           class="form-control" id="input-amount">
-                </div>
-
-                <button id="btn-invite-code" class="btn btn-primary btn-sm">添加</button>
-            </td>
-        </tr>
         <tr>
             <td>注册量</td>
             <td id="td-user">-</td>
@@ -173,32 +132,6 @@
                 'X-token': token
             }
         });
-        const inupt = $('#input-amount');
-        const tdInviteCode = $('#td-invite-code');
-        const modalInviteCode = $('#modal-inviteCode');
-        const ul = $('#ul-inviteCode');
-        $('#btn-invite-code').click(function () {
-            let amount = inupt.val();
-            $.post("/manage/invite_code?amount=" + amount, function (result, status) {
-                console.log(result);
-                if (status === "success" && result.code === 200) {
-                    tdInviteCode.html(Number.parseInt(amount) + Number.parseInt(tdInviteCode.html()));
-                    const codes = result.data;
-                    for (let i = 0; i < codes.length; i++) {
-                        let li = $('<li></li>');
-                        li.addClass("list-group-item");
-                        li.addClass("col-xs-6");
-                        li.html(codes[i]);
-                        console.log(codes[i]);
-                        ul.append(li);
-                    }
-                    modalInviteCode.modal();
-                } else {
-                    console.log(status + result.code);
-                }
-            }, "json")
-        });
-
         function refreshData() {
             $.getJSON("/manage/count", function (result, status) {
                 console.log(result);
@@ -206,7 +139,6 @@
                     const data = result.data;
                     $("#td-user").text(data.user);
                     $("#td-wordbook").text(data.wordbook);
-                    tdInviteCode.text(data.inviteCode);
                     const refresh = data.refresh;
                     const register = data.register;
                     const login = data.login;

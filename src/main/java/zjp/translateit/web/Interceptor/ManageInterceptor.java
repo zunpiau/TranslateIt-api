@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import zjp.translateit.util.EncryptUtil;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
@@ -27,19 +26,6 @@ public class ManageInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         String tokenString = request.getHeader(AUTH_TOKEN);
-        if (tokenString == null) {
-            Cookie[] cookies = request.getCookies();
-            if (cookies == null) {
-                response.setStatus(HttpStatus.FORBIDDEN.value());
-                return false;
-            }
-            for (Cookie cookie : cookies) {
-                if (AUTH_TOKEN.equals(cookie.getName())) {
-                    tokenString = cookie.getValue();
-                    break;
-                }
-            }
-        }
         if (tokenString == null) {
             response.setStatus(HttpStatus.FORBIDDEN.value());
             return false;

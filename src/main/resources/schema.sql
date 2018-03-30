@@ -1,6 +1,5 @@
 DROP TABLE IF EXISTS wordbook;
 DROP TABLE IF EXISTS token;
-DROP TABLE IF EXISTS invite_code;
 DROP TABLE IF EXISTS feedback;
 DROP TABLE IF EXISTS account;
 CREATE EXTENSION IF NOT EXISTS citext;
@@ -73,23 +72,6 @@ CREATE INDEX ON token (uid);
 CREATE TRIGGER token_updated
   BEFORE UPDATE
   ON token
-  FOR EACH ROW EXECUTE PROCEDURE set_to_now();
-
-CREATE TABLE invite_code
-(
-  id         SERIAL PRIMARY KEY,
-  create_at  TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-  uid        BIGINT  NOT NULL,
-  code       CHAR(8) NOT NULL,
-  user_id    BIGINT      DEFAULT 0,
-  UNIQUE (code),
-  FOREIGN KEY (uid) REFERENCES account (uid)
-);
-CREATE INDEX ON invite_code (uid);
-CREATE TRIGGER invite_code_updated
-  BEFORE UPDATE
-  ON invite_code
   FOR EACH ROW EXECUTE PROCEDURE set_to_now();
 
 CREATE TABLE feedback

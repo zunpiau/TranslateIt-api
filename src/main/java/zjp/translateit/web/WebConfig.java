@@ -52,9 +52,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new TokenInterceptor(tokenSalt))
-                .addPathPatterns("/wordbook", "/wordbook/*", "/user/inviteCode", "/token/refresh");
+                .addPathPatterns("/wordbook", "/wordbook/*", "/token/refresh");
         registry.addInterceptor(new LoginInterceptor(tokenExpire))
-                .addPathPatterns("/wordbook", "/wordbook/*", "/user/inviteCode");
+                .addPathPatterns("/wordbook", "/wordbook/*");
         registry.addInterceptor(new VerifyInterceptor(verifyExpire, verifySalt))
                 .addPathPatterns("/verifyCode");
         registry.addInterceptor(new ManageInterceptor(rootExpire, rootSalt))
