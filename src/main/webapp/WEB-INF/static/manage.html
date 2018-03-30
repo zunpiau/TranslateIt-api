@@ -80,11 +80,11 @@
                     <h5 class="modal-title">登录</h5>
                 </div>
                 <div class="modal-body">
-                    <form class="form-signin" action="/manage/token" method="post">
+                    <form class="form-signin">
                         <input id="inputName" type="text" class="form-control" placeholder="Name" name="name" required>
                         <input id="inputPassword" type="password" class="form-control" placeholder="Password"
                                name="password" required>
-                        <button id="btnSubmit" type="submit" class="btn btn-lg btn-primary btn-block">Sign in</button>
+                        <button id="btnSubmit" type="button" class="btn btn-lg btn-primary btn-block">Sign in</button>
                         <button type="button" class="btn btn-secondary  btn-lg btn-block" data-dismiss="modal">Close
                         </button>
                     </form>
@@ -113,28 +113,22 @@
 </footer>
 <script>
     $(document).ready(function () {
-        $('#btn-login').click(function () {
-            modalLogin.modal();
-        });
-        const token = $.cookie("X-token");
         const modalLogin = $('#modal-login');
-        if (token === undefined) {
-            modalLogin.modal();
-            return;
-        }
-        const stamp = window.atob(token).split(".")[1];
-        if (Date.now() / 1000 - Number.parseInt(stamp) > 60 * 29) {
-            modalLogin.modal();
-            return;
-        }
-        $.ajaxSetup({
-            headers: {
-                'X-token': token
-            }
-        });
+        const countDown = $('#span-countDown');
+        modalLogin.modal();
+        let token;
+
         function refreshData() {
+            if (token === undefined) {
+                modalLogin.modal();
+                return;
+            }
+            $.ajaxSetup({
+                headers: {
+                    'X-token': token
+                }
+            });
             $.getJSON("/manage/count", function (result, status) {
-                console.log(result);
                 if (status === "success" && result.code === 200) {
                     const data = result.data;
                     $("#td-user").text(data.user);
@@ -174,6 +168,15 @@
                             refreshData[index] = refresh[i].count;
                         }
                     }
+                    const option = {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
+                    };
                     new Chart($("#chart-daily"), {
                         type: 'line',
                         data: {
@@ -192,15 +195,7 @@
                                 data: refreshData
                             }]
                         },
-                        options: {
-                            scales: {
-                                yAxes: [{
-                                    ticks: {
-                                        beginAtZero: true
-                                    }
-                                }]
-                            }
-                        }
+                        option
                     });
 
                     const refreshHourly = data.refreshHourly;
@@ -231,15 +226,7 @@
                                 data: refreshHourlyData
                             }]
                         },
-                        options: {
-                            scales: {
-                                yAxes: [{
-                                    ticks: {
-                                        beginAtZero: true
-                                    }
-                                }]
-                            }
-                        }
+                        option
                     });
                 } else {
                     console.log(status + result.code);
@@ -247,10 +234,32 @@
             });
         }
 
-        refreshData();
-        $('#btn-refresh').click(refreshData);
+        $('#btnSubmit').click(function () {
+            $.ajax({
+                    method: "POST",
+                    url: "/manage/token",
+                    data: $('.form-signin').serialize(),
+                    dataType: "text",
+                    statusCode: {
+                        403: function () {
+                            alert("403 FORBIDDEN");
+                        }
+                    }
+                }
+            ).done(function (data, status) {
+                if (status === 'success') {
+                    token = data;
+                    refreshData();
+                    modalLogin.modal('hide');
+                    countDown.html(Number.parseInt("30 " + countDown.html().split(" ")[1]));
+                }
+            });
 
-        const countDown = $('#span-countDown');
+        });
+        $('#btn-refresh').click(refreshData);
+        $('#btn-login').click(function () {
+            modalLogin.modal();
+        });
         setInterval(function () {
             let text = countDown.html().split(" ");
             if (Number.parseInt(text[0]) <= 1) {
@@ -259,7 +268,6 @@
             }
             countDown.html(Number.parseInt(text[0]) - 1 + " " + text[1]);
         }, 1000 * 60);
-
     });
 
     function formatDate(date) {
