@@ -5,25 +5,30 @@ import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.rolling.RollingFileAppender;
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.env.Environment;
+import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @Profile("prod")
+@PropertySource(value = "classpath:application.properties")
 public class LogbackConfigProd {
 
     @Bean(initMethod = "start", destroyMethod = "stop")
-    public static RollingFileAppender<ILoggingEvent> appender(LoggerContext ctx, PatternLayoutEncoder encoder, Environment env) {
+    public static RollingFileAppender<ILoggingEvent> appender(LoggerContext ctx,
+            PatternLayoutEncoder encoder,
+            @Value("${log.history}") int history,
+            @Value("${log.fileNamePattern}") String parretn) {
         RollingFileAppender<ILoggingEvent> appender = new RollingFileAppender<>();
         appender.setContext(ctx);
         TimeBasedRollingPolicy rollingPolicy = new TimeBasedRollingPolicy();
-        rollingPolicy.setMaxHistory(3);
+        rollingPolicy.setMaxHistory(history);
         rollingPolicy.setParent(appender);
         rollingPolicy.setContext(ctx);
         rollingPolicy.setCleanHistoryOnStart(true);
-        rollingPolicy.setFileNamePattern(env.getProperty("log.fileNamePattern"));
+        rollingPolicy.setFileNamePattern(parretn);
         rollingPolicy.start();
         appender.setRollingPolicy(rollingPolicy);
         appender.setEncoder(encoder);
