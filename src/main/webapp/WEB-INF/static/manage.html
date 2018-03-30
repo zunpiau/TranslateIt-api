@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>Manage</title>
+    <style>
+        .footer {
+            bottom: 0;
+            width: 100%;
+            height: 60px;
+            line-height: 60px;
+            background-color: #f5f5f5;
+        }
+
+        .material-icons.md-light {
+            color: rgba(255, 255, 255, 1);
+        }
+
+        #btn-login {
+            margin-left: 10px;
+        }
+
+        .form-signin .form-control {
+            position: relative;
+            box-sizing: border-box;
+            height: auto;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .form-signin {
+            margin: 30px auto;
+        }
+
+        .form-signin .form-control:focus {
+            z-index: 2;
+        }
+
+        .form-signin input[type="text"] {
+            margin-bottom: -1px;
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .form-signin input[type="password"] {
+            margin-bottom: 10px;
+            border-top-right-radius: 0;
+            border-top-left-radius: 0;
+        }
+
+        .form-signin button {
+            margin-top: 20px;
+        }
+
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4  justify-content-between">
+    <span class="navbar-brand mb-0 h1">Translate It</span>
+
+    <div class="d-line align-middle">
+        <i class="material-icons md-light align-middle">schedule</i>
+        <span id="span-countDown" class="text-light align-middle">30 min</span>
+        <button id="btn-login" class="btn btn-outline-primary my-2 my-sm-0 align-middle" type="button">登录</button>
+        <button id="btn-refresh" class="btn btn-outline-light my-2 my-sm-0 align-middle" type="button">刷新</button>
+    </div>
+</nav>
+<div class="container">
+    <div class="modal fade" id="modal-login" tabindex="-1" role="dialog" aria-labelledby="Invite Code"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">登录</h5>
+                </div>
+                <div class="modal-body">
+                    <form class="form-signin">
+                        <input id="inputName" type="text" class="form-control" placeholder="Name" name="name" required>
+                        <input id="inputPassword" type="password" class="form-control" placeholder="Password"
+                               name="password" required>
+                        <button id="btnSubmit" type="button" class="btn btn-lg btn-primary btn-block">Sign in</button>
+                        <button type="button" class="btn btn-secondary  btn-lg btn-block" data-dismiss="modal">Close
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table table-hover">
+        <tr>
+            <td>注册量</td>
+            <td id="td-user">-</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>生词本</td>
+            <td id="td-wordbook">-</td>
+            <td></td>
+        </tr>
+    </table>
+    <canvas id="chart-daily" width="400" height="120"></canvas>
+    <canvas class="mb-4" id="chart-hourly" width="400" height="120"></canvas>
+
+</div>
+<footer class="footer text-center">
+    <p class="text-muted mb-0">since 2018-03</p>
+</footer>
+<script>
+    $(document).ready(function () {
+        const modalLogin = $('#modal-login');
+        const countDown = $('#span-countDown');
+        modalLogin.modal();
+        let token;
+
+        function refreshData() {
+            if (token === undefined) {
+                modalLogin.modal();
+                return;
+            }
+            $.ajaxSetup({
+                headers: {
+                    'X-token': token
+                }
+            });
+            $.getJSON("/manage/count", function (result, status) {
+                if (status === "success" && result.code === 200) {
+                    const data = result.data;
+                    $("#td-user").text(data.user);
+                    $("#td-wordbook").text(data.wordbook);
+                    const refresh = data.refresh;
+                    const register = data.register;
+                    const login = data.login;
+                    const today = new Date();
+                    let dateArray = new Array(7);
+                    dateArray[6] = formatDate(today);
+                    for (let i = 1; i < 7; i++) {
+                        let otherDate = new Date();
+                        otherDate.setDate(today.getDate() - i);
+                        dateArray[6 - i] = formatDate(otherDate);
+                    }
+                    let registerData = new Array(7);
+                    registerData.fill(0);
+                    for (let i = 0; i < register.length; i++) {
+                        let index = dateArray.findIndex((e) => (e === register[i].date));
+                        if (index >= 0) {
+                            registerData[index] = register[i].count;
+                        }
+                    }
+                    let loginData = new Array(7);
+                    loginData.fill(0);
+                    for (let i = 0; i < login.length; i++) {
+                        let index = dateArray.findIndex((e) => (e === login[i].date));
+                        if (index >= 0) {
+                            loginData[index] = login[i].count;
+                        }
+                    }
+                    let refreshData = new Array(7);
+                    refreshData.fill(0);
+                    for (let i = 0; i < refresh.length; i++) {
+                        let index = dateArray.findIndex((e) => (e === refresh[i].date));
+                        if (index >= 0) {
+                            refreshData[index] = refresh[i].count;
+                        }
+                    }
+                    const option = {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
+                    };
+                    new Chart($("#chart-daily"), {
+                        type: 'line',
+                        data: {
+                            labels: dateArray,
+                            datasets: [{
+                                backgroundColor: "#feffb0",
+                                label: "注册",
+                                data: registerData
+                            }, {
+                                backgroundColor: "#a9b9ff",
+                                label: "登录",
+                                data: loginData
+                            }, {
+                                backgroundColor: "#aaffa8",
+                                label: "刷新",
+                                data: refreshData
+                            }]
+                        },
+                        option
+                    });
+
+                    const refreshHourly = data.refreshHourly;
+                    const hourNow = new Date().getHours();
+                    let hourArray = new Array(24);
+                    for (let i = 1; i + hourNow < 24; i++) {
+                        hourArray[i - 1] = i + hourNow + "";
+                    }
+                    for (let i = hourNow; i >= 0; i--) {
+                        hourArray[24 - (hourNow - i) - 1] = "" + i;
+                    }
+                    let refreshHourlyData = new Array(24);
+                    refreshHourlyData.fill(0);
+                    for (let i = 0; i < refreshHourly.length; i++) {
+                        let index = hourArray.findIndex((e) => (e === refreshHourly[i].time));
+                        if (index >= 0) {
+                            refreshHourlyData[index] = refreshHourly[i].count;
+                        }
+                    }
+
+                    new Chart($("#chart-hourly"), {
+                        type: 'line',
+                        data: {
+                            labels: hourArray,
+                            datasets: [{
+                                backgroundColor: "#aaffa8",
+                                label: "刷新",
+                                data: refreshHourlyData
+                            }]
+                        },
+                        option
+                    });
+                } else {
+                    console.log(status + result.code);
+                }
+            });
+        }
+
+        $('#btnSubmit').click(function () {
+            $.ajax({
+                    method: "POST",
+                    url: "/manage/token",
+                    data: $('.form-signin').serialize(),
+                    dataType: "text",
+                    statusCode: {
+                        403: function () {
+                            alert("403 FORBIDDEN");
+                        }
+                    }
+                }
+            ).done(function (data, status) {
+                if (status === 'success') {
+                    token = data;
+                    refreshData();
+                    modalLogin.modal('hide');
+                    countDown.html(Number.parseInt("30 " + countDown.html().split(" ")[1]));
+                }
+            });
+
+        });
+        $('#btn-refresh').click(refreshData);
+        $('#btn-login').click(function () {
+            modalLogin.modal();
+        });
+        setInterval(function () {
+            let text = countDown.html().split(" ");
+            if (Number.parseInt(text[0]) <= 1) {
+                modalLogin.modal();
+                return;
+            }
+            countDown.html(Number.parseInt(text[0]) - 1 + " " + text[1]);
+        }, 1000 * 60);
+    });
+
+    function formatDate(date) {
+        return date.toISOString().substr(5, 5)
+    }
+</script>
+</body>
+</html>

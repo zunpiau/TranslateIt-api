@@ -1,6 +1,7 @@
 package zjp.translateit.web;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -8,17 +9,18 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import zjp.translateit.web.Interceptor.LoginInterceptor;
+import zjp.translateit.web.Interceptor.ManageInterceptor;
 import zjp.translateit.web.Interceptor.TokenInterceptor;
 import zjp.translateit.web.Interceptor.VerifyInterceptor;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,7 +28,7 @@ import java.util.List;
 @Configuration
 @PropertySource(value = "classpath:application.properties")
 @ComponentScan(basePackages = "zjp.translateit.web",
-        includeFilters = @ComponentScan.Filter({RestControllerAdvice.class, RestController.class}))
+        includeFilters = @ComponentScan.Filter({ControllerAdvice.class, Controller.class}))
 public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Value("${salt.token}")
@@ -37,6 +39,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     private long verifyExpire;
     @Value("${expire.token}")
     private long tokenExpire;
+    @Value("${salt.token.manager}")
+    private String rootSalt;
+    @Value("${expire.manager}")
+    private long rootExpire;
 
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
@@ -46,21 +52,42 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new TokenInterceptor(tokenSalt))
-                .addPathPatterns("/wordbook", "/wordbook/*", "/user/inviteCode", "/token/refresh");
+                .addPathPatterns("/wordbook", "/wordbook/*", "/token/refresh");
         registry.addInterceptor(new LoginInterceptor(tokenExpire))
-                .addPathPatterns("/wordbook", "/wordbook/*", "/user/inviteCode");
+                .addPathPatterns("/wordbook", "/wordbook/*");
         registry.addInterceptor(new VerifyInterceptor(verifyExpire, verifySalt))
                 .addPathPatterns("/verifyCode");
+        registry.addInterceptor(new ManageInterceptor(rootExpire, rootSalt))
+                .addPathPatterns("/manage", "/manage/*")
+                .excludePathPatterns("/manage/token");
         super.addInterceptors(registry);
     }
 
     @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/view/*.js")
+                .addResourceLocations("/js/");
+        registry.addResourceHandler("/view/*.html")
+                .addResourceLocations("/WEB-INF/static/")
+//                .setCacheControl(CacheControl.maxAge(1000, TimeUnit.SECONDS))
+        ;
+    }
+
+    @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        ArrayList<MediaType> mediaTypes = new ArrayList<>(2);
+        mediaTypes.add(new MediaType(MediaType.TEXT_PLAIN, StandardCharsets.UTF_8));
+        mediaTypes.add(new MediaType(MediaType.TEXT_HTML, StandardCharsets.UTF_8));
         StringHttpMessageConverter stringHttpMessageConverter = new StringHttpMessageConverter(StandardCharsets.UTF_8);
-        stringHttpMessageConverter.setSupportedMediaTypes(Collections.singletonList(MediaType.TEXT_PLAIN));
+        stringHttpMessageConverter.setSupportedMediaTypes(mediaTypes);
         MappingJackson2HttpMessageConverter jackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
         jackson2HttpMessageConverter.setSupportedMediaTypes(Collections.singletonList(MediaType.APPLICATION_JSON));
         converters.add(stringHttpMessageConverter);
         converters.add(jackson2HttpMessageConverter);
+    }
+
+    @Bean
+    public ViewResolver viewResolver() {
+        return new InternalResourceViewResolver("/WEB-INF/static/", ".html");
     }
 }

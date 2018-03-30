@@ -7,39 +7,25 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import zjp.translateit.domain.Token;
-import zjp.translateit.service.InviteCodeService;
+import zjp.translateit.domain.User;
 import zjp.translateit.service.UserService;
-import zjp.translateit.web.exception.InviteCodeUsedException;
 import zjp.translateit.web.exception.UserExistException;
+import zjp.translateit.web.request.PasswordModifyRequest;
 import zjp.translateit.web.request.RegisterRequest;
 import zjp.translateit.web.response.Response;
 
 import javax.validation.Valid;
-
-import static zjp.translateit.Constant.ATTRIBUTE_TOKEN;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
-    private final InviteCodeService inviteCodeService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public UserController(UserService userService,
-            InviteCodeService inviteCodeService) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.inviteCodeService = inviteCodeService;
-    }
-
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/inviteCode",
-            method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    public Response getInviteCode(@RequestAttribute(name = ATTRIBUTE_TOKEN) Token token) {
-        return new Response<>(inviteCodeService.getInviteCode(token.getUid()));
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -59,14 +45,27 @@ public class UserController {
         return new Response(Response.ResponseCode.OK);
     }
 
+    @PostMapping(value = "password_modify",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Response modifyPassword(@RequestBody @Valid PasswordModifyRequest request, BindingResult result) {
+        if (result.hasErrors()) {
+            return new Response(Response.ResponseCode.INVALID_PARAMETER);
+        }
+        logger.debug("user [{}] request modify password", request.getAccount());
+        User user = userService.getUser(request.getAccount(), request.getOldPassword());
+        if (user == null) {
+            return new Response(Response.ResponseCode.INVALID_ACCOUNT);
+        }
+        if (user.getStatus() == User.Status.DELETE) {
+            return new Response(Response.ResponseCode.USER_DELETED);
+        }
+        return new Response<>(userService.modifyPassword(user.getUid(), request.getNewPassword()));
+    }
+
     @ExceptionHandler(UserExistException.class)
     public Response usernameRegister() {
         return new Response(Response.ResponseCode.USERNAME_REGISTERED);
-    }
-
-    @ExceptionHandler(InviteCodeUsedException.class)
-    public Response inviteCodeUsed() {
-        return new Response(Response.ResponseCode.INVITE_CODE_USED);
     }
 
 }

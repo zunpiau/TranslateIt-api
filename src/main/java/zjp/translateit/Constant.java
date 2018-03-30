@@ -8,5 +8,6 @@ public final class Constant {
     public static final String HEADER_UID = "X-uid";
 
     public static final String ATTRIBUTE_TOKEN = "attr_token";
+    public static final String AUTH_TOKEN = "X-token";
 
 }

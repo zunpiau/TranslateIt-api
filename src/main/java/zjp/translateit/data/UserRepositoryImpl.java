@@ -53,6 +53,11 @@ public class UserRepositoryImpl implements UserRepository {
                 user.getStatus());
     }
 
+    @Override
+    public int modifyPassword(long uid, String passwordSalted) {
+        return template.update("UPDATE account SET password = ? WHERE uid = ? ", passwordSalted, uid);
+    }
+
     static class UserRowMapper implements RowMapper<User> {
 
         @Override
