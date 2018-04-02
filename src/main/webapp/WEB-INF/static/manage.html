@@ -7,7 +7,6 @@
     <script src="https://cdn.bootcss.com/Chart.js/2.7.2/Chart.bundle.min.js"></script>
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <title>Manage</title>
     <style>
         .footer {
@@ -16,10 +15,6 @@
             height: 60px;
             line-height: 60px;
             background-color: #f5f5f5;
-        }
-
-        .material-icons.md-light {
-            color: rgba(255, 255, 255, 1);
         }
 
         #btn-login {
@@ -65,7 +60,12 @@
     <span class="navbar-brand mb-0 h1">Translate It</span>
 
     <div class="d-line align-middle">
-        <i class="material-icons md-light align-middle">schedule</i>
+        <svg class="align-middle" fill="#FFFFFF" height="24" viewBox="0 0 24 24" width="24"
+             xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
+            <path d="M0 0h24v24H0z" fill="none"/>
+            <path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+        </svg>
         <span id="span-countDown" class="text-light align-middle">30 min</span>
         <button id="btn-login" class="btn btn-outline-primary my-2 my-sm-0 align-middle" type="button">登录</button>
         <button id="btn-refresh" class="btn btn-outline-light my-2 my-sm-0 align-middle" type="button">刷新</button>
@@ -123,13 +123,15 @@
                 modalLogin.modal();
                 return;
             }
-            $.ajaxSetup({
+            $.ajax({
+                url: "/manage/count",
                 headers: {
                     'X-token': token
-                }
-            });
-            $.getJSON("/manage/count", function (result, status) {
-                if (status === "success" && result.code === 200) {
+                },
+                method: 'GET',
+                dataType: "json",
+            }).done(function (result, status) {
+                if (result.code === 200) {
                     const data = result.data;
                     $("#td-user").text(data.user);
                     $("#td-wordbook").text(data.wordbook);
@@ -229,8 +231,10 @@
                         option
                     });
                 } else {
-                    console.log(status + result.code);
+                    alert(status + result.code);
                 }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                modalLogin.modal();
             });
         }
 
@@ -240,19 +244,14 @@
                     url: "/manage/token",
                     data: $('.form-signin').serialize(),
                     dataType: "text",
-                    statusCode: {
-                        403: function () {
-                            alert("403 FORBIDDEN");
-                        }
-                    }
                 }
             ).done(function (data, status) {
-                if (status === 'success') {
-                    token = data;
-                    refreshData();
-                    modalLogin.modal('hide');
-                    countDown.html(Number.parseInt("30 " + countDown.html().split(" ")[1]));
-                }
+                token = data;
+                refreshData();
+                modalLogin.modal('hide');
+                countDown.html("30 " + countDown.html().split(" ")[1]);
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                alert(errorThrown);
             });
 
         });
@@ -261,12 +260,13 @@
             modalLogin.modal();
         });
         setInterval(function () {
-            let text = countDown.html().split(" ");
-            if (Number.parseInt(text[0]) <= 1) {
+            const text = countDown.html().split(" ");
+            const remain = Number.parseInt(text[0]);
+            if (remain <= 1) {
                 modalLogin.modal();
                 return;
             }
-            countDown.html(Number.parseInt(text[0]) - 1 + " " + text[1]);
+            countDown.html(remain - 1 + " " + text[1]);
         }, 1000 * 60);
     });
 
