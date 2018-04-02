@@ -34,8 +34,9 @@ public class EmailService {
     private String verifyEmailSubject;
 
     public EmailService(@Value("${ali.accessKeyID}") String keyID,
-            @Value("${ali.accessSecret}") String secret) throws IOException {
+            @Value("${ali.accessSecret}") String secret) throws IOException, ClientException {
         client = new DefaultAcsClient(DefaultProfile.getProfile("cn-hangzhou", keyID, secret));
+        DefaultProfile.addEndpoint("dm.aliyuncs.com", "cn-hangzhou", "Dm", "dm.aliyuncs.com");
         verifyTemplate = new String(Files.readAllBytes(new ClassPathResource("email-template.html").getFile().toPath()),
                 StandardCharsets.UTF_8);
         feedbackTemplate = new String(Files.readAllBytes(new ClassPathResource("email-feedback.html").getFile().toPath()),
