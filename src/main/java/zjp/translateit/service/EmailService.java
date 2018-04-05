@@ -6,6 +6,8 @@ import com.aliyuncs.dm.model.v20151123.SingleSendMailRequest;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.http.HttpResponse;
 import com.aliyuncs.profile.DefaultProfile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
@@ -25,6 +27,7 @@ public class EmailService {
 
     private final IAcsClient client;
     private final String verifyTemplate;
+    private final Logger logger;
     private String feedbackTemplate;
     @Value("${ali.emailAccount}")
     private String aliAccount;
@@ -41,6 +44,7 @@ public class EmailService {
                 StandardCharsets.UTF_8);
         feedbackTemplate = new String(Files.readAllBytes(new ClassPathResource("email-feedback.html").getFile().toPath()),
                 StandardCharsets.UTF_8);
+        logger = LoggerFactory.getLogger(getClass());
     }
 
     public void sendVerifyEmail(String mailTo, String verifyCode) {
@@ -58,11 +62,12 @@ public class EmailService {
         request.setHtmlBody(content);
         try {
             HttpResponse response = client.doAction(request, true, 2);
+            logger.debug("send email to [{}] status [{}]", mailTo, response.getStatus());
             if (!response.isSuccess()) {
                 throw new EmailSendException();
             }
         } catch (ClientException e) {
-            e.printStackTrace();
+            logger.error(mailTo, e);
             throw new EmailSendException();
         }
     }
