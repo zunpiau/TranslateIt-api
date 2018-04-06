@@ -12,7 +12,10 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import zjp.translateit.web.Interceptor.LoginInterceptor;
 import zjp.translateit.web.Interceptor.ManageInterceptor;
@@ -64,16 +67,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     }
 
     @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/view/*.js")
-                .addResourceLocations("/js/");
-        registry.addResourceHandler("/view/*.html")
-                .addResourceLocations("/WEB-INF/static/")
-//                .setCacheControl(CacheControl.maxAge(1000, TimeUnit.SECONDS))
-        ;
-    }
-
-    @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         ArrayList<MediaType> mediaTypes = new ArrayList<>(2);
         mediaTypes.add(new MediaType(MediaType.TEXT_PLAIN, StandardCharsets.UTF_8));
@@ -88,6 +81,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public ViewResolver viewResolver() {
-        return new InternalResourceViewResolver("/WEB-INF/static/", ".html");
+        return new InternalResourceViewResolver("/view/", ".html");
     }
 }
