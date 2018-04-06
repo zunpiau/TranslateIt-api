@@ -1,9 +1,11 @@
 package zjp.translateit.config;
 
 import ch.qos.logback.ext.spring.web.LogbackConfigListener;
+import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 import zjp.translateit.web.WebConfig;
 
+import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
@@ -20,6 +22,11 @@ public class Initializer extends AbstractAnnotationConfigDispatcherServletInitia
     @Override
     protected String[] getServletMappings() {
         return new String[]{"/*"};
+    }
+
+    @Override
+    protected Filter[] getServletFilters() {
+        return new Filter[]{new CharacterEncodingFilter("UTF-8", true)};
     }
 
     @Override
