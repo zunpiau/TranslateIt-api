@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <title>英语 ✓</title>
+    <style>
+
+        main.container {
+            margin-bottom: 30px;
+        }
+
+        .navbar {
+            background: #3f9fb5;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.20);
+        }
+
+        h3 {
+            margin-top: 1.5rem;
+        }
+
+        a:hover {
+            color: #3f9fb5;
+            text-decoration: underline;
+        }
+
+        a {
+            color: #212529;
+            text-decoration: none;
+        }
+
+        .comment {
+            max-width: 36ch;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+
+        @media (max-width: 576px) {
+            .name {
+                max-width: 12ch;
+            }
+        }
+
+        .name {
+            min-width: 8ch;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+
+        .icon {
+            display: inline-block;
+            text-align: center;
+        }
+
+        .icon-wrapper {
+            position: relative;
+            display: inline-block;
+            border-radius: 4px;
+            margin-right: 10px;
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+            transition: 0.3s;
+            margin-bottom: 10px;
+        }
+
+        .icon-wrapper:hover {
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.20);
+        }
+
+        div.icon-bottom {
+            color: white;
+            display: none;
+            background-color: #3c3c3c4d;
+            position: absolute;
+            z-index: 1;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+
+        #btn-load {
+            border: unset;
+            background: white;
+        }
+
+        #btn-load:disabled, #btn-load:disabled:hover {
+            color: gray;
+        }
+
+        #btn-load:hover {
+            color: #3f9fb5;
+        }
+
+        button:focus {
+            outline: 1px #3f9fb5;
+        }
+
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-dark mb-4 justify-content-between">
+    <div class="container">
+        <span class="navbar-brand mb-0 h1">英语 ✓</span>
+    </div>
+</nav>
+<main class="container">
+    <a name="key"></a>
+    <h3>Key 申请</h3>
+    <ul>
+        <li>
+            <a data-toggle="collapse" href="#collapseDetail" role="button" aria-expanded="false"
+               aria-controls="collapseExample">
+                译云翻译
+            </a>
+
+            <div class="collapse" id="collapseDetail">
+                <div class="card card-body">
+                    注册 <a href="http://api.yeekit.com/index.php">http://api.yeekit.com/index.php</a>
+                    <br>申请 <a href="http://api.yeekit.com/request.php">http://api.yeekit.com/request.php</a>
+                </div>
+            </div>
+        </li>
+    </ul>
+    <a name="icon"></a>
+    <h3>图标</h3>
+    <div class="icons">
+        <div class="icon">
+            <div class="icon-wrapper">
+                <img class="img-fluid" onfocus="" src="/images/ic_launcher_atony.png">
+                <div class="icon-bottom text-center">
+                    <a href="/asserts/ic_launcher_round_atony.zip" target="_self">
+                        <svg class="align-middle" fill="#FFFFFF" height="24" viewBox="0 0 24 24" width="24"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                            <path d="M0 0h24v24H0z" fill="none"/>
+                        </svg>
+                    </a>
+
+                </div>
+            </div>
+            <p>By atony@<a href="https://www.coolapk.com/u/474222" target="_blank">coolapk</a></p>
+        </div>
+        <div class="icon">
+            <div class="icon-wrapper">
+                <img class="img-fluid" src="/images/ic_launcher_2.png">
+                <div class="icon-bottom text-center">
+                    <a href="/asserts/ic_launcher_round_2.zip" target="_self">
+                        <svg class="align-middle" fill="#FFFFFF" height="24" viewBox="0 0 24 24" width="24"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                            <path d="M0 0h24v24H0z" fill="none"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <p>By 多巴胺</p>
+        </div>
+    </div>
+    <a name="thank"></a>
+    <h3>致谢</h3>
+    <div>
+        <table class="table table-hover table-sm">
+            <thead>
+            <tr>
+                <th scope="col">时间</th>
+                <th scope="col">支付宝ID</th>
+                <th scope="col">金额</th>
+                <th scope="col">留言</th>
+            </tr>
+            </thead>
+            <tbody id="tbody-donation">
+
+            </tbody>
+            <tfoot>
+            <tr>
+                <td class="text-center" id="td-load" colspan="4">
+                    <button type="button" id="btn-load">显示更多</button>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+    <script>
+        $(document).ready(function () {
+            const tbodyDonation = $('#tbody-donation');
+            const btnLoad = $('#btn-load');
+            $('.icon-wrapper').hover(
+                function () {
+                    $(this).children('.icon-bottom').fadeIn(300);
+                }, function () {
+                    $(this).children('.icon-bottom').fadeOut(300);
+                }
+            );
+
+            function load() {
+                $.ajax({
+                    method: 'GET',
+                    url: "/donation",
+                    dataType: 'json',
+                    data: {
+                        offset: tbodyDonation.children().length
+                    }
+                }).done(function (result, status) {
+                    const data = result.data;
+                    const length = data.length;
+                    if (length < 15) {
+                        btnLoad.prop('disabled', true);
+                        btnLoad.html("没有更多");
+                    }
+                    if (length > 0) {
+                        var insert = $();
+                        for (var i in data) {
+                            var element = data[i];
+                            var tr = "<td>" + element.time + "</td>" +
+                                "<td class=\"name\">" + element.name + "</td>" +
+                                "<td>" + element.amount / 100 + "</td>" +
+                                "<td class='comment'>" + element.comment + "</td>";
+                            insert = insert.add("<tr>" + tr + "</tr>")
+                        }
+                        tbodyDonation.append(insert);
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    console.log(jqXHR);
+                });
+            }
+
+            load();
+            btnLoad.click(load);
+        })
+    </script>
+</main>
+</body>
+</html>

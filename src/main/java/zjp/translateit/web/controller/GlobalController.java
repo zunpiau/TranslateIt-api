@@ -15,6 +15,10 @@ public class GlobalController {
         return "404";
     }
 
+    @RequestMapping(value = "/")
+    public String home() {
+        return "index";
+    }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

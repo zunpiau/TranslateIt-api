@@ -88,3 +88,13 @@ CREATE TRIGGER feedback_updated
   BEFORE UPDATE
   ON feedback
   FOR EACH ROW EXECUTE PROCEDURE set_to_now();
+
+CREATE TABLE donation (
+  id      SMALLSERIAL PRIMARY KEY,
+  trade   CHAR(32) UNIQUE,
+  time    TIMESTAMPTZ,
+  name    TEXT,
+  amount  INT,
+  comment TEXT
+);
+CREATE INDEX ON donation (time);
