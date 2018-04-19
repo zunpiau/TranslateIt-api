@@ -21,7 +21,7 @@
             margin-left: 10px;
         }
 
-        .form-signin .form-control {
+        #form-login .input-login {
             position: relative;
             box-sizing: border-box;
             height: auto;
@@ -29,28 +29,28 @@
             font-size: 16px;
         }
 
-        .form-signin {
-            margin: 30px auto;
-        }
-
-        .form-signin .form-control:focus {
+        form input:focus {
             z-index: 2;
         }
 
-        .form-signin input[type="text"] {
+        #form-login input[type="text"] {
             margin-bottom: -1px;
             border-bottom-right-radius: 0;
             border-bottom-left-radius: 0;
         }
 
-        .form-signin input[type="password"] {
+        #form-login input[type="password"] {
             margin-bottom: 10px;
             border-top-right-radius: 0;
             border-top-left-radius: 0;
         }
 
-        .form-signin button {
+        form button {
             margin-top: 20px;
+        }
+
+        #form-donation input {
+            margin: 5px auto;
         }
 
     </style>
@@ -80,11 +80,39 @@
                     <h5 class="modal-title">登录</h5>
                 </div>
                 <div class="modal-body">
-                    <form class="form-signin">
-                        <input id="inputName" type="text" class="form-control" placeholder="Name" name="name" required>
-                        <input id="inputPassword" type="password" class="form-control" placeholder="Password"
+                    <form id="form-login">
+                        <input id="inputName" type="text" class="form-control input-login" placeholder="Name"
+                               name="name" required>
+                        <input id="inputPassword" type="password" class="form-control input-login"
+                               placeholder="Password"
                                name="password" required>
-                        <button id="btnSubmit" type="button" class="btn btn-lg btn-primary btn-block">Sign in</button>
+                        <button id="btnLogin" type="button" class="btn btn-lg btn-primary btn-block">Sign in</button>
+                        <button type="button" class="btn btn-secondary  btn-lg btn-block" data-dismiss="modal">Close
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-donation" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">捐赠</h5>
+                </div>
+                <div class="modal-body">
+                    <form id="form-donation">
+                        <input id="inputTrade" type="text" class="form-control" placeholder="订单号" name="trade"
+                               minlength="32" maxlength="32" required>
+                        <input id="inputTime" type="text" class="form-control" placeholder="YYYY-DD-MM HH:mm:ss"
+                               minlength="19" maxlength="19" name="time" required>
+                        <input id="inputDonor" type="text" class="form-control" placeholder="支付宝ID" name="name"
+                               required>
+                        <input id="inputAmount" type="text" class="form-control" placeholder="金额/分" name="amount"
+                               required>
+                        <textarea id="inputComment" class="form-control" placeholder="备注" name="comment"
+                                  required></textarea>
+                        <button id="btnDonation" type="button" class="btn btn-lg btn-primary btn-block">添加</button>
                         <button type="button" class="btn btn-secondary  btn-lg btn-block" data-dismiss="modal">Close
                         </button>
                     </form>
@@ -103,6 +131,13 @@
             <td id="td-wordbook">-</td>
             <td></td>
         </tr>
+        <tr>
+            <td>捐赠列表</td>
+            <td>
+                <button class="btn btn-primary btn-sm" id="btn-donation">添加</button>
+            </td>
+            <td></td>
+        </tr>
     </table>
     <canvas id="chart-daily" width="400" height="120"></canvas>
     <canvas class="mb-4" id="chart-hourly" width="400" height="120"></canvas>
@@ -114,6 +149,7 @@
 <script>
     $(document).ready(function () {
         const modalLogin = $('#modal-login');
+        const modalDonation = $('#modal-donation');
         const countDown = $('#span-countDown');
         modalLogin.modal();
         let token;
@@ -238,11 +274,11 @@
             });
         }
 
-        $('#btnSubmit').click(function () {
+        $('#btnLogin').click(function () {
             $.ajax({
                     method: "POST",
                     url: "/manage/token",
-                    data: $('.form-signin').serialize(),
+                data: $('#form-login').serialize(),
                     dataType: "text",
                 }
             ).done(function (data, status) {
@@ -255,9 +291,38 @@
             });
 
         });
+        $('#btnDonation').click(function () {
+            let data = {};
+            $.each($('#modal-donation *'), function (i, v) {
+                let input = $(v);
+                data[input.attr("name")] = input.val();
+                delete data["undefined"];
+            });
+            $.ajax({
+                headers: {
+                    'Content-Type': "application/json",
+                    'X-token': token
+                },
+                method: 'POST',
+                url: '/manage/donation',
+                data: JSON.stringify(data),
+                dataType: 'json'
+            }).done(function (data, status) {
+                if (data.code === 200) {
+                    modalDonation.modal('hide');
+                } else {
+                    alert(data.code);
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                alert(errorThrown);
+            });
+        });
         $('#btn-refresh').click(refreshData);
         $('#btn-login').click(function () {
             modalLogin.modal();
+        });
+        $('#btn-donation').click(function () {
+            modalDonation.modal();
         });
         setInterval(function () {
             const text = countDown.html().split(" ");

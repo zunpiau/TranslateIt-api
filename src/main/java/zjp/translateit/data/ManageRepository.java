@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import zjp.translateit.domain.Donation;
 import zjp.translateit.dto.DateCounter;
 import zjp.translateit.dto.DateTimeCounter;
 
@@ -69,6 +70,15 @@ public class ManageRepository {
 
     public long countWordbook() {
         return template.queryForObject("SELECT COUNT(*) FROM wordbook", long.class);
+    }
+
+    public int saveDonation(Donation donation) {
+        return template.update("INSERT INTO donation(trade, time, name, amount, comment) VALUES(?, ?, ?, ?, ?)",
+                donation.getTrade(),
+                donation.getTime(),
+                donation.getName(),
+                donation.getAmount(),
+                donation.getComment());
     }
 
     private static class DateCounterRowMapper implements RowMapper<DateCounter> {

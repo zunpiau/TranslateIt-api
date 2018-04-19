@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import zjp.translateit.data.ManageRepository;
+import zjp.translateit.domain.Donation;
 import zjp.translateit.dto.SystemCounter;
 import zjp.translateit.util.EncryptUtil;
 
@@ -58,4 +59,9 @@ public class ManageService {
         String key = EncryptUtil.hash(EncryptUtil.Algorithm.SHA256, name + tokenSalt + currentTime);
         return Base64.getEncoder().encodeToString((name + "." + currentTime + "." + key).getBytes());
     }
+
+    public void addDonation(Donation donation) {
+        repository.saveDonation(donation);
+    }
+
 }
