@@ -7,7 +7,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @Configuration
 @EnableAsync
-@Import({DataConfig.class, LogbackConfig.class})
+@Import({DataConfig.class, LogbackConfig.class, CacheConfig.class})
 @ComponentScan(basePackages = {"zjp.translateit"},
         excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX,
                 pattern = {"zjp\\.translateit\\.web\\..*"}))

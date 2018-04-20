@@ -10,4 +10,6 @@ public final class Constant {
     public static final String ATTRIBUTE_TOKEN = "attr_token";
     public static final String AUTH_TOKEN = "X-token";
 
+    public static final String CACHE_NAME_DONATION = "cache_donation";
+
 }

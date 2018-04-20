@@ -1,6 +1,7 @@
 package zjp.translateit.data;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -11,6 +12,8 @@ import zjp.translateit.dto.DateTimeCounter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
+import static zjp.translateit.Constant.CACHE_NAME_DONATION;
 
 @Repository
 public class ManageRepository {
@@ -72,6 +75,7 @@ public class ManageRepository {
         return template.queryForObject("SELECT COUNT(*) FROM wordbook", long.class);
     }
 
+    @CacheEvict(cacheNames = CACHE_NAME_DONATION, allEntries = true)
     public int saveDonation(Donation donation) {
         return template.update("INSERT INTO donation(trade, time, name, amount, comment) VALUES(?, ?, ?, ?, ?)",
                 donation.getTrade(),
