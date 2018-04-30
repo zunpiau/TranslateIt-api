@@ -60,17 +60,14 @@ public class DataConfig {
     }
 
     @Bean
-    public JedisPoolConfig jedisPoolConfig() {
+    public RedisConnectionFactory connectionFactory() {
         JedisPoolConfig config = new JedisPoolConfig();
-        config.setMaxIdle(10);
+        config.setMaxIdle(4);
         config.setMinIdle(2);
-        return config;
-    }
-
-    @Bean
-    public RedisConnectionFactory connectionFactory(JedisPoolConfig config) {
         JedisConnectionFactory connectionFactory = new JedisConnectionFactory(config);
         connectionFactory.setClientName("translateit");
+        connectionFactory.setHostName("127.0.0.1");
+        connectionFactory.setPort(6379);
         return connectionFactory;
     }
 
