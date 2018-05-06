@@ -15,7 +15,7 @@ import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import zjp.translateit.web.Interceptor.LoginInterceptor;
 import zjp.translateit.web.Interceptor.ManageInterceptor;
@@ -32,7 +32,7 @@ import java.util.List;
 @PropertySource(value = "classpath:application.properties")
 @ComponentScan(basePackages = "zjp.translateit.web",
         includeFilters = @ComponentScan.Filter({ControllerAdvice.class, Controller.class}))
-public class WebConfig extends WebMvcConfigurerAdapter {
+public class WebConfig implements WebMvcConfigurer {
 
     @Value("${salt.token}")
     private String tokenSalt;
@@ -63,7 +63,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         registry.addInterceptor(new ManageInterceptor(rootExpire, rootSalt))
                 .addPathPatterns("/manage", "/manage/*")
                 .excludePathPatterns("/manage/token");
-        super.addInterceptors(registry);
     }
 
     @Override

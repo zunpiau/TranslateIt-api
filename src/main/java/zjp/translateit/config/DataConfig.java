@@ -1,5 +1,6 @@
 package zjp.translateit.config;
 
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.apache.tomcat.jdbc.pool.DataSourceFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
@@ -9,14 +10,15 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettucePoolingClientConfiguration;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import redis.clients.jedis.JedisPoolConfig;
 
 import javax.sql.DataSource;
 import java.text.MessageFormat;
@@ -61,14 +63,17 @@ public class DataConfig {
 
     @Bean
     public RedisConnectionFactory connectionFactory() {
-        JedisPoolConfig config = new JedisPoolConfig();
-        config.setMaxIdle(4);
-        config.setMinIdle(2);
-        JedisConnectionFactory connectionFactory = new JedisConnectionFactory(config);
-        connectionFactory.setClientName("translateit");
-        connectionFactory.setHostName("127.0.0.1");
-        connectionFactory.setPort(6379);
-        return connectionFactory;
+        RedisStandaloneConfiguration standaloneConfiguration = new RedisStandaloneConfiguration("localhost", 6379);
+        standaloneConfiguration.setDatabase(0);
+        GenericObjectPoolConfig poolConfig = new GenericObjectPoolConfig();
+        poolConfig.setMinIdle(1);
+        poolConfig.setMaxIdle(2);
+        poolConfig.setTestWhileIdle(true);
+        poolConfig.setTestOnBorrow(true);
+        LettucePoolingClientConfiguration clientConfiguration = LettucePoolingClientConfiguration.builder()
+                .poolConfig(poolConfig)
+                .build();
+        return new LettuceConnectionFactory(standaloneConfiguration, clientConfiguration);
     }
 
     @Bean
