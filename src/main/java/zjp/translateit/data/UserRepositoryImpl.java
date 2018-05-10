@@ -8,13 +8,17 @@ import org.springframework.stereotype.Repository;
 import zjp.translateit.domain.User;
 
 import javax.annotation.Nullable;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
 
     private final JdbcTemplate template;
+    private final RowMapper<User> userRowMapper = (rs, rowNum) ->
+            new User(rs.getLong("uid"),
+                    rs.getString("name"),
+                    rs.getString("password"),
+                    rs.getString("email"),
+                    rs.getInt("status"));
 
     @Autowired
     public UserRepositoryImpl(JdbcTemplate template) {
@@ -27,7 +31,7 @@ public class UserRepositoryImpl implements UserRepository {
         try {
             return template.queryForObject("SELECT uid, name, password, email, status FROM account "
                                            + " WHERE email = ? OR name = ?",
-                    new UserRowMapper(),
+                    userRowMapper,
                     account,
                     account);
         } catch (EmptyResultDataAccessException e) {
@@ -35,6 +39,7 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public boolean hasEmail(String email) {
         return template.queryForObject("SELECT COUNT(id) FROM account WHERE email = ? ::citext",
@@ -58,15 +63,4 @@ public class UserRepositoryImpl implements UserRepository {
         return template.update("UPDATE account SET password = ? WHERE uid = ? ", passwordSalted, uid);
     }
 
-    static class UserRowMapper implements RowMapper<User> {
-
-        @Override
-        public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new User(rs.getLong("uid"),
-                    rs.getString("name"),
-                    rs.getString("password"),
-                    rs.getString("email"),
-                    rs.getInt("status"));
-        }
-    }
 }

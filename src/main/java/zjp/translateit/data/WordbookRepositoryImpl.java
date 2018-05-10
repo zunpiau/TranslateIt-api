@@ -10,7 +10,6 @@ import zjp.translateit.domain.Wordbook;
 import zjp.translateit.dto.ModifyWordbook;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +21,19 @@ public class WordbookRepositoryImpl implements WordbookRepository {
     private final String WORDBOOK_FILED = "word, phEn, phAm, phEnUrl, phAmUrl, mean, exchange, sentence, note, category";
     @SuppressWarnings("FieldCanBeLocal")
     private final String SELECT_FROM_WORDBOOK = "SELECT " + WORDBOOK_FILED + " FROM wordbook";
+    private final RowMapper<Wordbook> wordbookRowMapper = (rs, rowNum) ->
+            new Wordbook(
+                    rs.getString("word"),
+                    rs.getString("phEn"),
+                    rs.getString("phAm"),
+                    rs.getString("phEnUrl"),
+                    rs.getString("phAmUrl"),
+                    rs.getString("mean"),
+                    rs.getString("exchange"),
+                    rs.getString("sentence"),
+                    rs.getString("note"),
+                    rs.getString("category")
+            );
 
     @Autowired
     public WordbookRepositoryImpl(JdbcTemplate template) {
@@ -62,7 +74,7 @@ public class WordbookRepositoryImpl implements WordbookRepository {
         if (words.isEmpty()) {
             return template
                     .query(SELECT_FROM_WORDBOOK + " WHERE uid = ? ",
-                            new WordbookRowMapper(),
+                            wordbookRowMapper,
                             uid);
         }
         HashMap<String, Object> param = new HashMap<>(3);
@@ -72,7 +84,7 @@ public class WordbookRepositoryImpl implements WordbookRepository {
         return namedParameterJdbcTemplate
                 .query(SELECT_FROM_WORDBOOK + " WHERE uid = :uid AND word NOT IN (:words)",
                         param,
-                        new WordbookRowMapper());
+                        wordbookRowMapper);
     }
 
     public int update(long uid, List<ModifyWordbook> wordbooks) {
@@ -112,22 +124,4 @@ public class WordbookRepositoryImpl implements WordbookRepository {
                 String.class);
     }
 
-    static class WordbookRowMapper implements RowMapper<Wordbook> {
-
-        @Override
-        public Wordbook mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new Wordbook(
-                    rs.getString("word"),
-                    rs.getString("phEn"),
-                    rs.getString("phAm"),
-                    rs.getString("phEnUrl"),
-                    rs.getString("phAmUrl"),
-                    rs.getString("mean"),
-                    rs.getString("exchange"),
-                    rs.getString("sentence"),
-                    rs.getString("note"),
-                    rs.getString("category")
-            );
-        }
-    }
 }

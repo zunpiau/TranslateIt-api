@@ -97,6 +97,7 @@ public class UserService {
         redisTemplate.opsForValue().set(EMAIL_KEY_PREFIX + email, "", 1, TimeUnit.MINUTES);
     }
 
+    @SuppressWarnings("ConstantConditions")
     public boolean forbidGetVerifyCode(String email) {
         return redisTemplate.hasKey(EMAIL_KEY_PREFIX + email);
     }

@@ -50,6 +50,6 @@ public class ManageInterceptor extends HandlerInterceptorAdapter {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return false;
         }
-        return true;
+        return super.preHandle(request, response, handler);
     }
 }

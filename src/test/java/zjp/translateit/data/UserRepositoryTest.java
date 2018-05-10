@@ -4,13 +4,14 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import zjp.translateit.SpringMvcBaseTest;
 import zjp.translateit.domain.User;
+import zjp.translateit.test.SpringJdbcTest;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class UserRepositoryTest extends SpringMvcBaseTest {
+public class UserRepositoryTest extends SpringJdbcTest {
 
     @Autowired
     UserRepository repository;
@@ -27,7 +28,8 @@ public class UserRepositoryTest extends SpringMvcBaseTest {
 
     @Test
     public void testFindUserByEmail() {
-        assertEquals(true, repository.hasEmail("xxx@test.com"));
-        assertEquals(false, repository.hasEmail("non-exist@test.com"));
+        testAdd();
+        assertTrue(repository.hasEmail("xxx@test.com"));
+        assertFalse(repository.hasEmail("non-exist@test.com"));
     }
 }

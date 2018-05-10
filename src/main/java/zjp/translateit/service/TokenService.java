@@ -9,6 +9,7 @@ import zjp.translateit.data.TokenRepository;
 import zjp.translateit.domain.Token;
 import zjp.translateit.util.EncryptUtil;
 
+import javax.annotation.Nullable;
 import java.time.Instant;
 
 @Service
@@ -24,6 +25,7 @@ public class TokenService {
         this.repository = repository;
     }
 
+    @Nullable
     @Transactional
     public Token refreshToken(Token oldToken) {
         Token token = generateToken(oldToken.getUid());

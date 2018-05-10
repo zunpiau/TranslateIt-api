@@ -19,6 +19,7 @@ public class StatusController {
         this.template = template;
     }
 
+    @SuppressWarnings("ConstantConditions")
     @RequestMapping(value = "", method = {RequestMethod.GET, RequestMethod.HEAD})
     public ResponseEntity status() {
         return (template.queryForObject("SELECT 1", Integer.TYPE) == 1)

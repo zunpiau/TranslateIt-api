@@ -9,11 +9,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import zjp.translateit.SpringMvcBaseTest;
+import zjp.translateit.test.SpringMvcTest;
 
 import static zjp.translateit.Constant.*;
 
-public class TokenInterceptorTest extends SpringMvcBaseTest {
+public class TokenInterceptorTest extends SpringMvcTest {
 
     @Autowired
     private WebApplicationContext context;

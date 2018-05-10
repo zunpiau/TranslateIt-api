@@ -11,8 +11,7 @@ public class EncryptUtil {
             MessageDigest md = MessageDigest.getInstance(algorithm.toString());
             return new BigInteger(1, md.digest(str.getBytes())).toString(16);
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException(e);
         }
     }
 
