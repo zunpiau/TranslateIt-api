@@ -6,7 +6,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.redis.connection.RedisStringCommands;
+import org.springframework.data.redis.connection.StringRedisConnection;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.types.Expiration;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +22,6 @@ import zjp.translateit.web.exception.UserExistException;
 import zjp.translateit.web.request.RegisterRequest;
 
 import javax.annotation.Nullable;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @PropertySource(value = "classpath:application.properties")
@@ -73,8 +76,12 @@ public class UserService {
             logger.debug(e.getMessage());
             throw new UserExistException();
         }
-        redisTemplate.delete(VERIFY_CODE_KEY_PREFIX + registerRequest.getEmail());
-        redisTemplate.delete(EMAIL_KEY_PREFIX + registerRequest.getEmail());
+        redisTemplate.executePipelined((RedisCallback<Object>) connection -> {
+            ((StringRedisConnection) connection).del(VERIFY_CODE_KEY_PREFIX + registerRequest.getEmail(),
+                    EMAIL_KEY_PREFIX + registerRequest.getEmail());
+            return null;
+        });
+
     }
 
     public boolean emailRegistered(String email) {
@@ -93,8 +100,12 @@ public class UserService {
         String verifyCode = generator.generate(9);
         logger.debug("Send verify code to [{}]", email);
         emailService.sendVerifyEmail(email, verifyCode);
-        redisTemplate.opsForValue().set(VERIFY_CODE_KEY_PREFIX + email, verifyCode, 30, TimeUnit.MINUTES);
-        redisTemplate.opsForValue().set(EMAIL_KEY_PREFIX + email, "", 1, TimeUnit.MINUTES);
+        redisTemplate.executePipelined((RedisCallback<Object>) connection -> {
+            StringRedisConnection stringRedisConn = (StringRedisConnection) connection;
+            stringRedisConn.set(VERIFY_CODE_KEY_PREFIX + email, verifyCode, Expiration.seconds(1800), RedisStringCommands.SetOption.UPSERT);
+            stringRedisConn.set(EMAIL_KEY_PREFIX + email, "", Expiration.seconds(60), RedisStringCommands.SetOption.UPSERT);
+            return null;
+        });
     }
 
     @SuppressWarnings("ConstantConditions")
