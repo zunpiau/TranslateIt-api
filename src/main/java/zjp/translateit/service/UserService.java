@@ -1,6 +1,5 @@
 package zjp.translateit.service;
 
-import org.apache.commons.text.RandomStringGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import zjp.translateit.data.TokenRepository;
 import zjp.translateit.data.UserRepository;
 import zjp.translateit.domain.User;
+import zjp.translateit.util.RandomStringGenerator;
 import zjp.translateit.util.UidGenerator;
 import zjp.translateit.web.exception.UserExistException;
 import zjp.translateit.web.request.RegisterRequest;
@@ -32,24 +32,25 @@ public class UserService {
     private final StringRedisTemplate redisTemplate;
     private final EmailService emailService;
     private final UidGenerator uidGenerator;
+    private final RandomStringGenerator generator;
 
     private final String EMAIL_KEY_PREFIX = "email:";
     private final String VERIFY_CODE_KEY_PREFIX = "verify.code:";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final RandomStringGenerator generator;
 
     @Autowired
     public UserService(StringRedisTemplate redisTemplate,
             UserRepository repository,
             TokenRepository tokenRepository,
             EmailService emailService,
-            UidGenerator uidGenerator) {
+            UidGenerator uidGenerator,
+            RandomStringGenerator generator) {
         this.redisTemplate = redisTemplate;
         this.repository = repository;
         this.tokenRepository = tokenRepository;
         this.emailService = emailService;
         this.uidGenerator = uidGenerator;
-        generator = new RandomStringGenerator.Builder().withinRange('a', 'z').build();
+        this.generator = generator;
     }
 
     @Nullable
