@@ -28,7 +28,7 @@ public class DonationRepository {
         this.template = template;
     }
 
-    @Cacheable(cacheNames = CACHE_NAME_DONATION)
+    @Cacheable(cacheNames = CACHE_NAME_DONATION, unless = "#result == null || #result.size() == 0")
     public List<Donation> listDonation(int offset) {
         try {
             return template.query("SELECT time, name, amount, comment FROM donation ORDER BY time DESC LIMIT 15 OFFSET ?",
