@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -16,8 +15,6 @@ import org.springframework.data.redis.connection.lettuce.LettucePoolingClientCon
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
@@ -29,16 +26,13 @@ import java.util.Properties;
 @EnableTransactionManagement
 public class DataConfig {
 
-    @Value("${spring.profiles.active}")
-    private String profile;
-
     @Bean
     public DataSourceTransactionManager txManager(DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
     }
 
     @Bean(name = "jdbcProperties")
-    public PropertiesFactoryBean jdbcProperties() {
+    public PropertiesFactoryBean jdbcProperties(@Value("${spring.profiles.active}") String profile) {
         PropertiesFactoryBean bean = new PropertiesFactoryBean();
         bean.setLocations(new ClassPathResource(
                 MessageFormat.format("jdbc-{0}.properties", profile)));
@@ -46,14 +40,8 @@ public class DataConfig {
     }
 
     @Bean
-    public DataSource dataSource(Properties jdbcProperties,
-            @Value("classpath:data.sql") Resource dataScript) throws Exception {
-        DataSource dataSource = new DataSourceFactory().createDataSource(jdbcProperties);
-        if ("dev".equals(profile)) {
-            DatabasePopulatorUtils.execute(new ResourceDatabasePopulator(dataScript),
-                    dataSource);
-        }
-        return dataSource;
+    public DataSource dataSource(Properties jdbcProperties) throws Exception {
+        return new DataSourceFactory().createDataSource(jdbcProperties);
     }
 
     @Bean

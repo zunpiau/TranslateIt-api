@@ -2,8 +2,6 @@
 target/
 out/
 .git/
-src/test/java/zjp/translateit/util/Generator.java
-src/main/resources/data.sql
 translateit-api.iml
 swagger.yaml
 src/main/webapp/asserts/

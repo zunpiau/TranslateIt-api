@@ -1,35 +1,49 @@
 package zjp.translateit.data;
 
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.jdbc.JdbcTestUtils;
 import zjp.translateit.domain.User;
 import zjp.translateit.test.SpringJdbcTest;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static zjp.translateit.TestConstant.*;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class UserRepositoryTest extends SpringJdbcTest {
 
     @Autowired
-    UserRepository repository;
-    private User user = new User(14234143336134L,
-            "xxx",
-            "passwd",
-            "xxx@test.com",
-            0);
+    private UserRepository repository;
+    @Autowired
+    private JdbcTemplate template;
+
+    @Test(expected = DuplicateKeyException.class)
+    public void testDuplicateUser() {
+        repository.saveUser(USER);
+    }
 
     @Test
-    public void testAdd() {
-        repository.saveUser(user);
+    public void testAddUser() {
+        int i = JdbcTestUtils.countRowsInTable(template, "account");
+        repository.saveUser(new User(10000000000002L, "other", "password", "other@example", 0));
+        assertEquals(i + 1, JdbcTestUtils.countRowsInTable(template, "account"));
     }
 
     @Test
     public void testFindUserByEmail() {
-        testAdd();
-        assertTrue(repository.hasEmail("xxx@test.com"));
-        assertFalse(repository.hasEmail("non-exist@test.com"));
+        assertTrue(repository.hasEmail(USER_EMAIL));
+        assertFalse(repository.hasEmail("non-exist@example.com"));
+    }
+
+    @Test
+    public void testGetUserByAccount() {
+        assertNull(repository.getUserByAccount("non-exist"));
+        assertEquals(USER, repository.getUserByAccount("test"));
+    }
+
+    @Test
+    public void testModifyPassword() {
+        assertEquals(1, repository.modifyPassword(UID, "password"));
     }
 }
