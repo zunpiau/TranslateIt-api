@@ -3,7 +3,12 @@ package zjp.translateit.util;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.concurrent.*;
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class UidGeneratorTest {
 
@@ -16,8 +21,7 @@ public class UidGeneratorTest {
     @Test
     public void generate() throws InterruptedException {
         ExecutorService executor = Executors.newFixedThreadPool(THREAD_COUNT);
-        ConcurrentMap<Long, Object> map = new ConcurrentHashMap<>(128);
-        Object placeholder = new Object();
+        Set<Long> set = Collections.newSetFromMap(new ConcurrentHashMap<>(THREAD_COUNT));
         for (int i = 0; i < THREAD_COUNT; i++) {
             executor.execute(() -> {
                 generatorLatch.countDown();
@@ -26,12 +30,12 @@ public class UidGeneratorTest {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                map.put(generator.generate(), placeholder);
+                set.add(generator.generate());
                 exitLatch.countDown();
             });
         }
         exitLatch.await();
-        Assert.assertEquals(THREAD_COUNT, map.size());
+        Assert.assertEquals(THREAD_COUNT, set.size());
         executor.shutdown();
     }
 }
