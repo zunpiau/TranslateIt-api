@@ -4,4 +4,3 @@ out/
 .git/
 translateit-api.iml
 swagger.yaml
-src/main/webapp/asserts/

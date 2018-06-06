@@ -5,21 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <title>英语 ✓</title>
     <style>
-
-        main.container {
-            margin-bottom: 30px;
+        html, body {
+            height: 100%;
         }
 
-        .navbar {
-            background: #3f9fb5;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.20);
-        }
-
-        h3 {
-            margin-top: 1.5rem;
+        a {
+            color: #212529;
+            text-decoration: none;
         }
 
         a:hover {
@@ -27,9 +21,8 @@
             text-decoration: underline;
         }
 
-        a {
-            color: #212529;
-            text-decoration: none;
+        .navbar a {
+            color: #fff;
         }
 
         .comment {
@@ -50,118 +43,155 @@
             word-break: break-all;
         }
 
-        .icon {
-            display: inline-block;
-            text-align: center;
-        }
-
-        .icon-wrapper {
-            position: relative;
-            display: inline-block;
-            border-radius: 4px;
-            margin-right: 10px;
-            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-            transition: 0.3s;
-            margin-bottom: 10px;
-        }
-
-        .icon-wrapper:hover {
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.20);
-        }
-
-        div.icon-bottom {
-            color: white;
-            display: none;
-            background-color: #3c3c3c4d;
-            position: absolute;
-            z-index: 1;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            border-bottom-left-radius: 4px;
-            border-bottom-right-radius: 4px;
-        }
-
-        #btn-load {
-            border: unset;
+        button {
+            border: none;
             background: white;
         }
 
-        #btn-load:disabled, #btn-load:disabled:hover {
+        button:disabled, button:disabled:hover {
             color: gray;
         }
 
-        #btn-load:hover {
+        button:hover, button:focus {
             color: #3f9fb5;
         }
 
         button:focus {
-            outline: 1px #3f9fb5;
+            outline: thin dotted;
         }
 
+        .first-page {
+            height: 100%;
+            background: #f5f5f5;
+        }
+
+        .logo {
+            position: absolute;
+            top: 30%;
+            right: 0;
+            left: 0;
+        }
+
+        .function-grid {
+            position: relative;
+            min-width: 10rem;
+            margin-top: 2rem;
+        }
+
+        .function {
+            text-align: center;
+            border-radius: 4px;
+        }
+
+        .function-indigo {
+            background: #4558c9;
+        }
+
+        .function-blue {
+            background: #739ba7;
+        }
+
+        .function-cyan {
+            background: #4bc4d5;
+        }
+
+        .function-orange {
+            background: #fa8861;
+        }
+
+        .mask {
+            position: absolute;
+            background: #fff;
+            z-index: 1;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            opacity: 0;
+            transition: 500ms;
+        }
+
+        .mask:hover {
+            opacity: 0.9;
+        }
+
+        .function-icon {
+            width: 100%;
+            height: 100%;
+            padding: 30%;
+        }
+
+        .function-text {
+            font-size: 24px;
+            margin-bottom: 0;
+        }
+
+        footer {
+            background: #f5f5f5;
+            height: 48px;
+            line-height: 48px;
+        }
     </style>
 </head>
 <body>
-<nav class="navbar navbar-dark mb-4 justify-content-between">
+<nav class="navbar navbar-dark bg-dark justify-content-between">
     <div class="container">
         <span class="navbar-brand mb-0 h1">英语 ✓</span>
+        <a href="#thank">致谢</a>
     </div>
 </nav>
-<main class="container">
-    <a name="key"></a>
-    <h3>Key 申请</h3>
-    <ul>
-        <li>
-            <a data-toggle="collapse" href="#collapseDetail" role="button" aria-expanded="false"
-               aria-controls="collapseExample">
-                译云翻译
-            </a>
-
-            <div class="collapse" id="collapseDetail">
-                <div class="card card-body">
-                    注册 <a href="http://api.yeekit.com/index.php">http://api.yeekit.com/index.php</a>
-                    <br>申请 <a href="http://api.yeekit.com/request.php">http://api.yeekit.com/request.php</a>
+<div class="first-page">
+    <div class="logo container text-center">
+        <img src="/images/launcher.png">
+        <h1>英语 ✓</h1>
+    </div>
+</div>
+<div class="container mt-5 mb-3">
+    <div class="intro row justify-content-center">
+        <div class="function-grid col-md-3 col-sm-6 col-10">
+            <div class="function function-blue">
+                <img class="function-icon"
+                     src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KICAgIDxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0xMi44NyAxNS4wN2wtMi41NC0yLjUxLjAzLS4wM2MxLjc0LTEuOTQgMi45OC00LjE3IDMuNzEtNi41M0gxN1Y0aC03VjJIOHYySDF2MS45OWgxMS4xN0MxMS41IDcuOTIgMTAuNDQgOS43NSA5IDExLjM1IDguMDcgMTAuMzIgNy4zIDkuMTkgNi42OSA4aC0yYy43MyAxLjYzIDEuNzMgMy4xNyAyLjk4IDQuNTZsLTUuMDkgNS4wMkw0IDE5bDUtNSAzLjExIDMuMTEuNzYtMi4wNHpNMTguNSAxMGgtMkwxMiAyMmgybDEuMTItM2g0Ljc1TDIxIDIyaDJsLTQuNS0xMnptLTIuNjIgN2wxLjYyLTQuMzNMMTkuMTIgMTdoLTMuMjR6Ii8+Cjwvc3ZnPgo=">
+                <div class="mask d-flex align-items-center justify-content-center">
+                    <p class="function-text">多翻译源</p>
                 </div>
             </div>
-        </li>
-    </ul>
-    <a name="icon"></a>
-    <h3>图标</h3>
-    <div class="icons">
-        <div class="icon">
-            <div class="icon-wrapper">
-                <img class="img-fluid" onfocus="" src="/images/ic_launcher_atony.png">
-                <div class="icon-bottom text-center">
-                    <a href="/asserts/ic_launcher_round_atony.zip" target="_self">
-                        <svg class="align-middle" fill="#FFFFFF" height="24" viewBox="0 0 24 24" width="24"
-                             xmlns="http://www.w3.org/2000/svg">
-                            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-                            <path d="M0 0h24v24H0z" fill="none"/>
-                        </svg>
-                    </a>
-
-                </div>
-            </div>
-            <p>By atony@<a href="https://www.coolapk.com/u/474222" target="_blank">coolapk</a></p>
         </div>
-        <div class="icon">
-            <div class="icon-wrapper">
-                <img class="img-fluid" src="/images/ic_launcher_2.png">
-                <div class="icon-bottom text-center">
-                    <a href="/asserts/ic_launcher_round_2.zip" target="_self">
-                        <svg class="align-middle" fill="#FFFFFF" height="24" viewBox="0 0 24 24" width="24"
-                             xmlns="http://www.w3.org/2000/svg">
-                            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-                            <path d="M0 0h24v24H0z" fill="none"/>
-                        </svg>
-                    </a>
+        <div class="function-grid col-md-3 col-sm-6 col-10">
+            <div class="function function-indigo">
+                <img class="function-icon"
+                     src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KICAgIDxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0xOCAySDZjLTEuMSAwLTIgLjktMiAydjE2YzAgMS4xLjkgMiAyIDJoMTJjMS4xIDAgMi0uOSAyLTJWNGMwLTEuMS0uOS0yLTItMnpNNiA0aDV2OGwtMi41LTEuNUw2IDEyVjR6Ii8+Cjwvc3ZnPgo=">
+                <div class="mask d-flex align-items-center justify-content-center">
+                    <p class="function-text">生词收藏</p>
                 </div>
             </div>
-            <p>By 多巴胺</p>
+        </div>
+        <div class="function-grid col-md-3 col-sm-6 col-10">
+            <div class="function function-cyan">
+                <img class="function-icon"
+                     src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KICAgIDxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0yMSAxOVY1YzAtMS4xLS45LTItMi0ySDVjLTEuMSAwLTIgLjktMiAydjE0YzAgMS4xLjkgMiAyIDJoMTRjMS4xIDAgMi0uOSAyLTJ6TTguNSAxMy41bDIuNSAzLjAxTDE0LjUgMTJsNC41IDZINWwzLjUtNC41eiIvPgo8L3N2Zz4K">
+                <div class="mask d-flex align-items-center justify-content-center">
+                    <p class="function-text">每日图文</p>
+                </div>
+            </div>
+        </div>
+        <div class="function-grid col-md-3 col-sm-6 col-10">
+            <div class="function function-orange">
+                <img class="function-icon"
+                     src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KICAgIDxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0xOS4zNSAxMC4wNEMxOC42NyA2LjU5IDE1LjY0IDQgMTIgNCA5LjExIDQgNi42IDUuNjQgNS4zNSA4LjA0IDIuMzQgOC4zNiAwIDEwLjkxIDAgMTRjMCAzLjMxIDIuNjkgNiA2IDZoMTNjMi43NiAwIDUtMi4yNCA1LTUgMC0yLjY0LTIuMDUtNC43OC00LjY1LTQuOTZ6TTE5IDE4SDZjLTIuMjEgMC00LTEuNzktNC00czEuNzktNCA0LTRoLjcxQzcuMzcgNy42OSA5LjQ4IDYgMTIgNmMzLjA0IDAgNS41IDIuNDYgNS41IDUuNXYuNUgxOWMxLjY2IDAgMyAxLjM0IDMgM3MtMS4zNCAzLTMgM3oiLz4KPC9zdmc+Cg==">
+                <div class="mask d-flex align-items-center justify-content-center">
+                    <p class="function-text">云端同步</p>
+                </div>
+            </div>
         </div>
     </div>
-    <a name="thank"></a>
-    <h3>致谢</h3>
+</div>
+<div class="container mt-5">
+    <div class="text-center">
+        <a name="thank" id="thank"></a>
+        <h3>致谢</h3>
+    </div>
     <div>
         <table class="table table-hover table-sm">
             <thead>
@@ -184,54 +214,62 @@
             </tfoot>
         </table>
     </div>
-    <script>
-        $(document).ready(function () {
-            const tbodyDonation = $('#tbody-donation');
-            const btnLoad = $('#btn-load');
-            $('.icon-wrapper').hover(
-                function () {
-                    $(this).children('.icon-bottom').fadeIn(300);
-                }, function () {
-                    $(this).children('.icon-bottom').fadeOut(300);
+</div>
+<footer class="mt-5 w-100 text-center">
+    <p class="mb-0">&lt;/&gt; by <a href="https://github.com/zunpiau">zunpiau</a></p>
+</footer>
+<script>
+    $(document).ready(function () {
+        const tbodyDonation = $('#tbody-donation');
+        const btnLoad = $('#btn-load');
+
+        function load() {
+            $.ajax({
+                method: 'GET',
+                url: "/donation",
+                dataType: 'json',
+                data: {
+                    offset: tbodyDonation.children().length
                 }
-            );
+            }).done(function (result, status) {
+                const data = result.data;
+                const length = data.length;
+                if (length < 15) {
+                    btnLoad.prop('disabled', true);
+                    btnLoad.html("没有更多");
+                }
+                if (length > 0) {
+                    var insert = $();
+                    for (var i in data) {
+                        var element = data[i];
+                        var tr = "<td>" + element.time + "</td>" +
+                            "<td class=\"name\">" + element.name + "</td>" +
+                            "<td>" + element.amount / 100 + "</td>" +
+                            "<td class='comment'>" + element.comment + "</td>";
+                        insert = insert.add("<tr>" + tr + "</tr>")
+                    }
+                    tbodyDonation.append(insert);
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+            });
+        }
 
-            function load() {
-                $.ajax({
-                    method: 'GET',
-                    url: "/donation",
-                    dataType: 'json',
-                    data: {
-                        offset: tbodyDonation.children().length
-                    }
-                }).done(function (result, status) {
-                    const data = result.data;
-                    const length = data.length;
-                    if (length < 15) {
-                        btnLoad.prop('disabled', true);
-                        btnLoad.html("没有更多");
-                    }
-                    if (length > 0) {
-                        var insert = $();
-                        for (var i in data) {
-                            var element = data[i];
-                            var tr = "<td>" + element.time + "</td>" +
-                                "<td class=\"name\">" + element.name + "</td>" +
-                                "<td>" + element.amount / 100 + "</td>" +
-                                "<td class='comment'>" + element.comment + "</td>";
-                            insert = insert.add("<tr>" + tr + "</tr>")
-                        }
-                        tbodyDonation.append(insert);
-                    }
-                }).fail(function (jqXHR, textStatus, errorThrown) {
-                    console.log(jqXHR);
-                });
-            }
-
-            load();
-            btnLoad.click(load);
-        })
-    </script>
-</main>
+        load();
+        btnLoad.click(load);
+    })
+</script>
+<script>
+    $(document).ready(function () {
+        $('.navbar a[href^="#"]').click(function (event) {
+            event.preventDefault();
+            const target = $($.attr(this, 'href'));
+            $('html, body').animate({
+                scrollTop: target.offset().top
+            }, 500);
+            target.focusout();
+        });
+    })
+</script>
 </body>
 </html>
