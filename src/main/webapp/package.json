@@ -1,0 +1,14 @@
+{
+  "name": "TranslateIt-API",
+  "version": "1.0.0",
+  "license": "Apache-2.0",
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^4.0.0",
+    "gulp-htmlmin": "^4.0.0",
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-register": "^6.26.0"
+  }
+}

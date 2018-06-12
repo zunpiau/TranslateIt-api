@@ -8,6 +8,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <dependencies.version.spring>5.0.5.RELEASE</dependencies.version.spring>
+        <project.build.webappDirectory>src/main/webapp</project.build.webappDirectory>
     </properties>
 
     <groupId>zjp</groupId>
@@ -157,6 +158,7 @@
     </dependencies>
 
     <build>
+        <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -164,6 +166,28 @@
                 <version>3.2.0</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <packagingExcludes>
+                        node_modules/,
+                        gulpfile.babel.js,
+                        package.json,
+                        yarn.lock,
+                        .babelrc,
+                        src/
+                    </packagingExcludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${project.build.webappDirectory}/view</directory>
+                            <includes>
+                                <include>*.html</include>
+                            </includes>
+                        </fileset>
+                    </filesets>
                 </configuration>
             </plugin>
             <plugin>
@@ -178,12 +202,66 @@
                         </systemProperty>
                     </systemProperties>
                     <webApp>
-                        <contextPath>/translateit-api-1.0-SNAPSHOT</contextPath>
+                        <contextPath>/</contextPath>
                     </webApp>
                     <httpConnector>
                         <port>8090</port>
                     </httpConnector>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <id>npm-install</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>yarn</executable>
+                            <workingDirectory>${project.build.webappDirectory}</workingDirectory>
+                            <arguments>
+                                <argument>
+                                    install
+                                </argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>gulp-minify</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>gulp</executable>
+                            <workingDirectory>${project.build.webappDirectory}</workingDirectory>
+                            <arguments>
+                                <argument>
+                                    minify
+                                </argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>default-cli</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>gulp</executable>
+                            <workingDirectory>${project.build.webappDirectory}</workingDirectory>
+                            <arguments>
+                                <argument>
+                                    watch
+                                </argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

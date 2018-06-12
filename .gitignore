@@ -4,3 +4,5 @@ out/
 .git/
 translateit-api.iml
 swagger.yaml
+src/main/webapp/view/
+src/main/webapp/node_modules/
