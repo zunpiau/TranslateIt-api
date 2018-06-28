@@ -65,6 +65,9 @@ public class UserService {
 
     @Transactional
     public void registerUser(RegisterRequest registerRequest) {
+        if (repository.hasUser(registerRequest.getName())) {
+            throw new UserExistException();
+        }
         String passwordSalted = BCrypt.hashpw(registerRequest.getPassword(), BCrypt.gensalt(10));
         long uid = uidGenerator.generate();
         try {

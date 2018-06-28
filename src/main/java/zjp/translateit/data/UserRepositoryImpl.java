@@ -39,12 +39,20 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Override
     public boolean hasEmail(String email) {
-        return template.queryForObject("SELECT COUNT(id) FROM account WHERE email = ? ::citext",
+        Integer amount = template.queryForObject("SELECT COUNT(id) FROM account WHERE email = ? ::citext",
                 Integer.class,
-                email) == 1;
+                email);
+        return amount != null && amount == 1;
+    }
+
+    @Override
+    public boolean hasUser(String userName) {
+        Integer amount = template.queryForObject("SELECT COUNT(id) FROM account WHERE name = ? ::citext",
+                Integer.class,
+                userName);
+        return amount != null && amount == 1;
     }
 
     @Override

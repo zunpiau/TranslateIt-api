@@ -9,6 +9,8 @@ public interface UserRepository {
 
     boolean hasEmail(String email);
 
+    boolean hasUser(String userName);
+
     void saveUser(User user);
 
     int modifyPassword(long uid, String passwordSalted);
