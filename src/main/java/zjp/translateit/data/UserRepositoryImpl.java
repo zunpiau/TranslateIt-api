@@ -71,4 +71,9 @@ public class UserRepositoryImpl implements UserRepository {
         return template.update("UPDATE account SET password = ? WHERE uid = ? ", passwordSalted, uid);
     }
 
+    @Override
+    public int modifyUserName(long uid, String userName) {
+        return template.update("UPDATE account SET name = ? WHERE uid = ? ", userName, uid);
+    }
+
 }

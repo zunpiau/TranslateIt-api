@@ -12,10 +12,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import zjp.translateit.web.Interceptor.LoginInterceptor;
 import zjp.translateit.web.Interceptor.ManageInterceptor;
@@ -81,5 +78,11 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public ViewResolver viewResolver() {
         return new InternalResourceViewResolver("/view/", ".html");
+    }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addRedirectViewController("/view/modify_password.html", "/view/user.html")
+                .setContextRelative(false);
     }
 }

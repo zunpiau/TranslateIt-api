@@ -123,4 +123,17 @@ public class UserService {
         return repository.modifyPassword(uid, BCrypt.hashpw(newPassword, BCrypt.gensalt(10)));
     }
 
+    @Transactional
+    public int modifyUserName(long uid, String newUseName) {
+        if (repository.hasUser(newUseName)) {
+            throw new UserExistException();
+        }
+        try {
+            return repository.modifyUserName(uid, newUseName);
+        } catch (DuplicateKeyException e) {
+            logger.debug(e.getMessage());
+            throw new UserExistException();
+        }
+    }
+
 }

@@ -12,6 +12,7 @@ import zjp.translateit.service.UserService;
 import zjp.translateit.web.exception.UserExistException;
 import zjp.translateit.web.request.PasswordModifyRequest;
 import zjp.translateit.web.request.RegisterRequest;
+import zjp.translateit.web.request.UserNameModifyRequest;
 import zjp.translateit.web.response.Response;
 
 import javax.validation.Valid;
@@ -61,6 +62,24 @@ public class UserController {
             return new Response(Response.ResponseCode.USER_DELETED);
         }
         return new Response<>(userService.modifyPassword(user.getUid(), request.getNewPassword()));
+    }
+
+    @PostMapping(value = "username_modify",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Response modifyUserName(@RequestBody @Valid UserNameModifyRequest request, BindingResult result) {
+        if (result.hasErrors()) {
+            return new Response(Response.ResponseCode.INVALID_PARAMETER);
+        }
+        logger.debug("user [{}] request modify username", request.getAccount());
+        User user = userService.getUser(request.getAccount(), request.getPassword());
+        if (user == null) {
+            return new Response(Response.ResponseCode.INVALID_ACCOUNT);
+        }
+        if (user.getStatus() == User.Status.DELETE) {
+            return new Response(Response.ResponseCode.USER_DELETED);
+        }
+        return new Response<>(userService.modifyUserName(user.getUid(), request.getNewUserName()));
     }
 
     @ExceptionHandler(UserExistException.class)

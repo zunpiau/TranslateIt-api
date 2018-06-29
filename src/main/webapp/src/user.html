@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery-validate/1.17.0/jquery.validate.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery-validate/1.17.0/additional-methods.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <title>用户中心</title>
+    <style>
+        .fixed-width {
+            max-width: 420px;
+            margin: 90px auto 30px;
+        }
+
+        #alert-done {
+            margin: 0 auto;
+        }
+
+        input {
+            position: relative;
+        }
+
+        input:focus {
+            z-index: 10;
+        }
+
+        .input-top {
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .input-bottom {
+            border-top-right-radius: 0;
+            border-top-left-radius: 0;
+        }
+    </style>
+</head>
+<body class="bg-light">
+<div class="fixed-width">
+    <div id="alert-done" class="alert alert-dismissible fade invisible fixed-top fixed-width" role="alert">
+        -
+    </div>
+    <div class="container">
+        <form id="form-login">
+            <div class="form-group">
+                <input id="inputAccount" type="text" class="form-control input-top" placeholder="用户名/邮箱"
+                       name="account" autofocus>
+                <input id="inputPassword" type="password" class="form-control input-bottom"
+                       placeholder="密码" name="password">
+            </div>
+        </form>
+
+        <div class="row mb-4">
+            <div class="col">
+                <button class="btn btn-outline-primary col" type="button" data-toggle="collapse"
+                        data-target="#collapsePassword">
+                    修改密码
+                </button>
+            </div>
+            <div class="col">
+                <button class="btn btn-outline-primary col" type="button" data-toggle="collapse"
+                        data-target="#collapseName">
+                    修改用户名
+                </button>
+            </div>
+        </div>
+        <div class="collapse" id="collapsePassword">
+            <form id="form-password">
+                <div class="form-group">
+                    <input id="inputNewPassword" type="password" class="form-control input-top"
+                           placeholder="新密码" name="newPassword">
+                    <input id="inputConfirmPassword" type="password" class="form-control input-bottom"
+                           placeholder="重复密码" name="confirmPassword">
+                </div>
+                <button id="btnPassword" class="btn btn-primary btn-block">确认修改</button>
+            </form>
+        </div>
+
+        <div class="collapse" id="collapseName">
+            <form id="form-name">
+                <div class="form-group">
+                    <input id="inputNewUserName" type="text" class="form-control" placeholder="新用户名" name="newUserName">
+                </div>
+                <button id="btnName" class="btn btn-primary btn-block">确认修改</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        const loginForm = $('#form-login');
+        const passwordForm = $('#form-password');
+        const userNameForm = $('#form-name');
+        const alert = $('#alert-done');
+        const passwordCollapse = $('#collapsePassword');
+        const nameCollapse = $('#collapseName');
+        passwordCollapse.on('show.bs.collapse', function () {
+            nameCollapse.collapse('hide')
+        });
+        nameCollapse.on('show.bs.collapse', function () {
+            passwordCollapse.collapse('hide')
+        });
+        $.ajaxSetup({
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }
+        });
+
+        function resetAlert() {
+            alert.removeClass("show");
+            alert.addClass("invisible");
+            alert.removeClass("alert-danger");
+            alert.removeClass("alert-success");
+        }
+
+        function showDangerAlter(message) {
+            alert.addClass("alert-danger");
+            showAlter(message);
+        }
+
+        function showSuccessAlter(message) {
+            alert.addClass("alert-success");
+            showAlter(message);
+        }
+
+        function showAlter(message) {
+            alert.html(message);
+            alert.removeClass("invisible");
+            alert.addClass("show");
+        }
+
+        passwordForm.submit(function (event) {
+            event.preventDefault();
+            if (!(loginForm.valid() && passwordForm.valid())) {
+                return false;
+            }
+            resetAlert();
+            $.post("/user/password_modify",
+                JSON.stringify({
+                    account: $('#inputAccount').val(),
+                    oldPassword: $('#inputPassword').val(),
+                    newPassword: $('#inputNewPassword').val(),
+                }),
+                function (result, status) {
+                    console.log(result);
+                    if (status !== "success") {
+                        showDangerAlter(status);
+                        return;
+                    }
+                    const code = result.code;
+                    switch (code) {
+                        case 200:
+                            showSuccessAlter("密码已修改，你需要在设备上重新登录");
+                            $('#form-password')[0].reset();
+                            break;
+                        case 305:
+                            showDangerAlter("账号不存在或密码错误");
+                            break;
+                        case 409:
+                            showDangerAlter("该账号已被注销");
+                            break;
+                        case 500:
+                            showDangerAlter("服务器出错");
+                            break;
+                        default:
+                            showDangerAlter("错误：" + code);
+                            break;
+                    }
+                }, 'json');
+            return false;
+        });
+
+        userNameForm.submit(function (event) {
+            event.preventDefault();
+            if (!(loginForm.valid() && userNameForm.valid())) {
+                return false;
+            }
+            resetAlert();
+            $.post("/user/username_modify",
+                JSON.stringify({
+                    account: $('#inputAccount').val(),
+                    password: $('#inputPassword').val(),
+                    newUserName: $('#inputNewUserName').val(),
+                }),
+                function (result, status) {
+                    console.log(result);
+                    if (status !== "success") {
+                        showDangerAlter(status);
+                        return;
+                    }
+                    const code = result.code;
+                    switch (code) {
+                        case 200:
+                            showSuccessAlter("用户名已修改");
+                            $('#form-name')[0].reset();
+                            break;
+                        case 305:
+                            showDangerAlter("账号不存在或密码错误");
+                            break;
+                        case 409:
+                            showDangerAlter("该账号已被注销");
+                            break;
+                        case 406:
+                            showDangerAlter("该用户名已被使用");
+                            break;
+                        case 500:
+                            showDangerAlter("服务器出错");
+                            break;
+                        default:
+                            showDangerAlter("错误：" + code);
+                            break;
+                    }
+                }, 'json');
+            return false;
+        });
+        loginForm.validate({
+            rules: {
+                account: {
+                    required: true
+                },
+                password: {
+                    required: true,
+                    rangelength: [4, 9],
+                    pattern: "^[0-9a-zA-Z]*$"
+                }
+            },
+            messages: {
+                account: {
+                    required: "请输入你的账号"
+                },
+                password: {
+                    required: "请输入你的密码",
+                    rangelength: $.validator.format("请输入长度在 {0} 到 {1} 之间的密码"),
+                    pattern: "仅限字母和数字"
+                }
+            }
+        });
+        passwordForm.validate({
+            rules: {
+                newPassword: {
+                    required: true,
+                    rangelength: [4, 9],
+                    pattern: "^[0-9a-zA-Z]*$",
+                    notEqualTo: "#inputPassword"
+                },
+                confirmPassword: {
+                    required: true,
+                    equalTo: "#inputNewPassword"
+                }
+            },
+            messages: {
+                newPassword: {
+                    required: "请输入你的新密码",
+                    rangelength: $.validator.format("请输入长度在 {0} 到 {1} 之间的密码"),
+                    pattern: "仅限字母和数字",
+                    notEqualTo: "必须和旧密码不相同"
+                },
+                confirmPassword: {
+                    required: "请确认你的新密码",
+                    equalTo: "两次密码输入不一致"
+                }
+            }
+        });
+        userNameForm.validate({
+            rules: {
+                newUserName: {
+                    required: true,
+                    notEqualTo: "#inputAccount",
+                    rangelength: [3, 9],
+                    pattern: "[a-zA-Z][0-9a-zA-Z_]*"
+                }
+            },
+            messages: {
+                newUserName: {
+                    required: "请输入你的新用户名",
+                    notEqualTo: "必须和旧用户名不相同",
+                    rangelength: $.validator.format("请输入长度在 {0} 到 {1} 之间的用户名"),
+                    pattern: "仅限字母、数字和下划线，且字母开头"
+                }
+            }
+        })
+    });
+</script>
+</body>
+</html>

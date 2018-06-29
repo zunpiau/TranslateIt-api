@@ -15,4 +15,6 @@ public interface UserRepository {
 
     int modifyPassword(long uid, String passwordSalted);
 
+    int modifyUserName(long uid, String userName);
+
 }
