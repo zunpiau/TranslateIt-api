@@ -4,11 +4,11 @@
   "license": "Apache-2.0",
   "dependencies": {},
   "devDependencies": {
-    "gulp": "^4.0.0",
-    "gulp-htmlmin": "^4.0.0",
-    "babel-core": "^6.26.3",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-register": "^6.26.0"
+    "html-minifier": "^3.5.18",
+    "watch": "^1.0.2"
+  },
+  "scripts": {
+    "minify": "html-minifier --minify-css --remove-comments --collapse-whitespace --input-dir src/ --output-dir view/",
+    "watch:minify": "watch 'yarn run minify' src/ --wait 0"
   }
 }

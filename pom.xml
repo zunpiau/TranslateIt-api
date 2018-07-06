@@ -168,10 +168,8 @@
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                     <packagingExcludes>
                         node_modules/,
-                        gulpfile.babel.js,
                         package.json,
                         yarn.lock,
-                        .babelrc,
                         src/
                     </packagingExcludes>
                 </configuration>
@@ -202,7 +200,7 @@
                         </systemProperty>
                     </systemProperties>
                     <webApp>
-                        <contextPath>/</contextPath>
+                        <contextPath>/${project.artifactId}</contextPath>
                     </webApp>
                     <httpConnector>
                         <port>8090</port>
@@ -215,8 +213,8 @@
                 <version>1.6.0</version>
                 <executions>
                     <execution>
-                        <id>npm-install</id>
-                        <phase>prepare-package</phase>
+                        <id>minify</id>
+                        <phase>compile</phase>
                         <goals>
                             <goal>exec</goal>
                         </goals>
@@ -224,25 +222,8 @@
                             <executable>yarn</executable>
                             <workingDirectory>${project.build.webappDirectory}</workingDirectory>
                             <arguments>
-                                <argument>
-                                    install
-                                </argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>gulp-minify</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>gulp</executable>
-                            <workingDirectory>${project.build.webappDirectory}</workingDirectory>
-                            <arguments>
-                                <argument>
-                                    minify
-                                </argument>
+                                <argument>run</argument>
+                                <argument>minify</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -252,12 +233,11 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <executable>gulp</executable>
+                            <executable>yarn</executable>
                             <workingDirectory>${project.build.webappDirectory}</workingDirectory>
                             <arguments>
-                                <argument>
-                                    watch
-                                </argument>
+                                <argument>run</argument>
+                                <argument>watch:minify</argument>
                             </arguments>
                         </configuration>
                     </execution>
