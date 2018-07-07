@@ -213,7 +213,7 @@
                 <version>1.6.0</version>
                 <executions>
                     <execution>
-                        <id>minify</id>
+                        <id>build</id>
                         <phase>compile</phase>
                         <goals>
                             <goal>exec</goal>
@@ -223,7 +223,7 @@
                             <workingDirectory>${project.build.webappDirectory}</workingDirectory>
                             <arguments>
                                 <argument>run</argument>
-                                <argument>minify</argument>
+                                <argument>build</argument>
                             </arguments>
                         </configuration>
                     </execution>
@@ -237,7 +237,7 @@
                             <workingDirectory>${project.build.webappDirectory}</workingDirectory>
                             <arguments>
                                 <argument>run</argument>
-                                <argument>watch:minify</argument>
+                                <argument>watch</argument>
                             </arguments>
                         </configuration>
                     </execution>

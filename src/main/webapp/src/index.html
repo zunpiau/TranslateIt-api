@@ -60,11 +60,6 @@
             outline: thin dotted;
         }
 
-        .first-page {
-            height: 100%;
-            background: #f5f5f5;
-        }
-
         .logo {
             position: absolute;
             top: 30%;
@@ -72,30 +67,19 @@
             left: 0;
         }
 
-        .function-grid {
-            position: relative;
-            min-width: 10rem;
-            margin-top: 2rem;
-        }
-
-        .function {
-            text-align: center;
-            border-radius: 4px;
-        }
-
-        .function-indigo {
+        .bg-indigo {
             background: #4558c9;
         }
 
-        .function-blue {
+        .bg-blue {
             background: #739ba7;
         }
 
-        .function-cyan {
+        .bg-cyan {
             background: #4bc4d5;
         }
 
-        .function-orange {
+        .bg-orange {
             background: #fa8861;
         }
 
@@ -141,45 +125,48 @@
         <a href="#thank">致谢</a>
     </div>
 </nav>
-<div class="first-page">
+<div class="bg-light h-100">
     <div class="logo container text-center">
         <img src="/images/launcher.png">
         <h1>英语 ✓</h1>
     </div>
 </div>
-<div class="container mt-5 mb-3">
-    <div class="intro row justify-content-center">
-        <div class="function-grid col-md-3 col-sm-6 col-10">
-            <div class="function function-blue">
-                <img class="function-icon"
-                     src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KICAgIDxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0xMi44NyAxNS4wN2wtMi41NC0yLjUxLjAzLS4wM2MxLjc0LTEuOTQgMi45OC00LjE3IDMuNzEtNi41M0gxN1Y0aC03VjJIOHYySDF2MS45OWgxMS4xN0MxMS41IDcuOTIgMTAuNDQgOS43NSA5IDExLjM1IDguMDcgMTAuMzIgNy4zIDkuMTkgNi42OSA4aC0yYy43MyAxLjYzIDEuNzMgMy4xNyAyLjk4IDQuNTZsLTUuMDkgNS4wMkw0IDE5bDUtNSAzLjExIDMuMTEuNzYtMi4wNHpNMTguNSAxMGgtMkwxMiAyMmgybDEuMTItM2g0Ljc1TDIxIDIyaDJsLTQuNS0xMnptLTIuNjIgN2wxLjYyLTQuMzNMMTkuMTIgMTdoLTMuMjR6Ii8+Cjwvc3ZnPgo=">
+<div class="container mt-5">
+    <div class="text-center">
+        <h3>Feature</h3>
+    </div>
+    <div class="row justify-content-around">
+        <div class=" col-md-3 col-sm-6 col-9">
+            <div class="rounded text-center bg-blue">
+                <img class="function-icon inline"
+                     src="/src/images/translate.svg">
                 <div class="mask d-flex align-items-center justify-content-center">
                     <p class="function-text">多翻译源</p>
                 </div>
             </div>
         </div>
-        <div class="function-grid col-md-3 col-sm-6 col-10">
-            <div class="function function-indigo">
-                <img class="function-icon"
-                     src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KICAgIDxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0xOCAySDZjLTEuMSAwLTIgLjktMiAydjE2YzAgMS4xLjkgMiAyIDJoMTJjMS4xIDAgMi0uOSAyLTJWNGMwLTEuMS0uOS0yLTItMnpNNiA0aDV2OGwtMi41LTEuNUw2IDEyVjR6Ii8+Cjwvc3ZnPgo=">
+        <div class="col-md-3 col-sm-6 col-9 mt-3 mt-sm-0">
+            <div class="rounded text-center bg-indigo">
+                <img class="function-icon inline"
+                     src="/src/images/bookmark.svg">
                 <div class="mask d-flex align-items-center justify-content-center">
                     <p class="function-text">生词收藏</p>
                 </div>
             </div>
         </div>
-        <div class="function-grid col-md-3 col-sm-6 col-10">
-            <div class="function function-cyan">
-                <img class="function-icon"
-                     src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KICAgIDxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0yMSAxOVY1YzAtMS4xLS45LTItMi0ySDVjLTEuMSAwLTIgLjktMiAydjE0YzAgMS4xLjkgMiAyIDJoMTRjMS4xIDAgMi0uOSAyLTJ6TTguNSAxMy41bDIuNSAzLjAxTDE0LjUgMTJsNC41IDZINWwzLjUtNC41eiIvPgo8L3N2Zz4K">
+        <div class="col-md-3 col-sm-6 col-9 mt-3 mt-md-0">
+            <div class="rounded text-center bg-cyan">
+                <img class="function-icon inline"
+                     src="/src/images/photo.svg">
                 <div class="mask d-flex align-items-center justify-content-center">
                     <p class="function-text">每日图文</p>
                 </div>
             </div>
         </div>
-        <div class="function-grid col-md-3 col-sm-6 col-10">
-            <div class="function function-orange">
-                <img class="function-icon"
-                     src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij4KICAgIDxwYXRoIGQ9Ik0wIDBoMjR2MjRIMHoiIGZpbGw9Im5vbmUiLz4KICAgIDxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0xOS4zNSAxMC4wNEMxOC42NyA2LjU5IDE1LjY0IDQgMTIgNCA5LjExIDQgNi42IDUuNjQgNS4zNSA4LjA0IDIuMzQgOC4zNiAwIDEwLjkxIDAgMTRjMCAzLjMxIDIuNjkgNiA2IDZoMTNjMi43NiAwIDUtMi4yNCA1LTUgMC0yLjY0LTIuMDUtNC43OC00LjY1LTQuOTZ6TTE5IDE4SDZjLTIuMjEgMC00LTEuNzktNC00czEuNzktNCA0LTRoLjcxQzcuMzcgNy42OSA5LjQ4IDYgMTIgNmMzLjA0IDAgNS41IDIuNDYgNS41IDUuNXYuNUgxOWMxLjY2IDAgMyAxLjM0IDMgM3MtMS4zNCAzLTMgM3oiLz4KPC9zdmc+Cg==">
+        <div class="col-md-3 col-sm-6 col-9 mt-3 mt-md-0">
+            <div class="rounded text-center bg-orange">
+                <img class="function-icon inline"
+                     src="/src/images/cloud.svg">
                 <div class="mask d-flex align-items-center justify-content-center">
                     <p class="function-text">云端同步</p>
                 </div>

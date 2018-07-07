@@ -5,10 +5,13 @@
   "dependencies": {},
   "devDependencies": {
     "html-minifier": "^3.5.18",
+    "inline-images": "https://github.com/zunpiau/inline-images.git",
     "watch": "^1.0.2"
   },
   "scripts": {
-    "minify": "html-minifier --minify-css --remove-comments --collapse-whitespace --input-dir src/ --output-dir view/",
-    "watch:minify": "watch 'yarn run minify' src/ --wait 0"
+    "minify": "find src/ -regex 'src/[^index].*?.html' -type f -printf '%f\n' | xargs -i html-minifier --minify-css --remove-comments --collapse-whitespace -o 'view/{}' src/{}",
+    "inline": "inline-images -c inline --remove-class --root-dir . src/index.html | html-minifier --minify-css --remove-comments --collapse-whitespace --output view/index.html",
+    "build": "yarn run minify & yarn run inline",
+    "watch": "watch 'yarn run minify & yarn run inline' src/ --wait 0"
   }
 }
