@@ -226,16 +226,14 @@
                     btnLoad.html("没有更多");
                 }
                 if (length > 0) {
-                    var insert = $();
-                    for (var i in data) {
-                        var element = data[i];
-                        var tr = "<td>" + element.time + "</td>" +
-                            "<td class=\"name\">" + element.name + "</td>" +
-                            "<td>" + element.amount / 100 + "</td>" +
-                            "<td class='comment'>" + element.comment + "</td>";
-                        insert = insert.add("<tr>" + tr + "</tr>")
-                    }
-                    tbodyDonation.append(insert);
+                    var donations = "";
+                    $.each(data, function (index, donation) {
+                        donations += "<tr><td>" + donation.time
+                            + "</td><td class='name'>" + donation.name
+                            + "</td><td class='comment'>" + donation.comment
+                            + "</td></tr>";
+                    });
+                    tbodyDonation.append($(donations));
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) {
                 console.log(jqXHR);

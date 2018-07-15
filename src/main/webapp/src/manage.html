@@ -155,7 +155,7 @@
         let token;
 
         function refreshData() {
-            if (token === undefined) {
+            if (!token) {
                 modalLogin.modal();
                 return;
             }
@@ -171,41 +171,27 @@
                     const data = result.data;
                     $("#td-user").text(data.user);
                     $("#td-wordbook").text(data.wordbook);
-                    const refresh = data.refresh;
-                    const register = data.register;
-                    const login = data.login;
                     const today = new Date();
-                    let dateArray = new Array(7);
-                    dateArray[6] = formatDate(today);
-                    for (let i = 1; i < 7; i++) {
-                        let otherDate = new Date();
+                    const dateArray = new Array(7);
+                    for (let i = 0; i < 7; i++) {
+                        const otherDate = new Date();
                         otherDate.setDate(today.getDate() - i);
                         dateArray[6 - i] = formatDate(otherDate);
                     }
-                    let registerData = new Array(7);
-                    registerData.fill(0);
-                    for (let i = 0; i < register.length; i++) {
-                        let index = dateArray.findIndex((e) => (e === register[i].date));
-                        if (index >= 0) {
-                            registerData[index] = register[i].count;
+
+                    function createMap(dataArray, getField) {
+                        return date => {
+                            const data = dataArray.find(e => getField(e) === date);
+                            if (!data)
+                                return 0;
+                            else
+                                return data.count;
                         }
                     }
-                    let loginData = new Array(7);
-                    loginData.fill(0);
-                    for (let i = 0; i < login.length; i++) {
-                        let index = dateArray.findIndex((e) => (e === login[i].date));
-                        if (index >= 0) {
-                            loginData[index] = login[i].count;
-                        }
-                    }
-                    let refreshData = new Array(7);
-                    refreshData.fill(0);
-                    for (let i = 0; i < refresh.length; i++) {
-                        let index = dateArray.findIndex((e) => (e === refresh[i].date));
-                        if (index >= 0) {
-                            refreshData[index] = refresh[i].count;
-                        }
-                    }
+
+                    const loginData = dateArray.map(createMap(data.login, e => e.date));
+                    const registerData = dateArray.map(createMap(data.register, e => e.date));
+                    const refreshData = dateArray.map(createMap(data.refresh, e => e.date));
                     const option = {
                         scales: {
                             yAxes: [{
@@ -235,25 +221,12 @@
                         },
                         options: option
                     });
-
-                    const refreshHourly = data.refreshHourly;
                     const hourNow = new Date().getHours();
-                    let hourArray = new Array(24);
-                    for (let i = 1; i + hourNow < 24; i++) {
-                        hourArray[i - 1] = i + hourNow + "";
+                    const hourArray = new Array(24);
+                    for (let i = 0; i < 24; i++) {
+                        hourArray[i] = (hourNow + 1 + i) % 24 + "";
                     }
-                    for (let i = hourNow; i >= 0; i--) {
-                        hourArray[24 - (hourNow - i) - 1] = "" + i;
-                    }
-                    let refreshHourlyData = new Array(24);
-                    refreshHourlyData.fill(0);
-                    for (let i = 0; i < refreshHourly.length; i++) {
-                        let index = hourArray.findIndex((e) => (e === refreshHourly[i].time));
-                        if (index >= 0) {
-                            refreshHourlyData[index] = refreshHourly[i].count;
-                        }
-                    }
-
+                    const refreshHourlyData = hourArray.map(createMap(data.refreshHourly, e => e.time));
                     new Chart($("#chart-hourly"), {
                         type: 'line',
                         data: {
@@ -294,7 +267,7 @@
         $('#btnDonation').click(function () {
             let data = {};
             $.each($('#modal-donation *'), function (i, v) {
-                let input = $(v);
+                const input = $(v);
                 data[input.attr("name")] = input.val();
                 delete data["undefined"];
             });
@@ -318,13 +291,9 @@
             });
         });
         $('#btn-refresh').click(refreshData);
-        $('#btn-login').click(function () {
-            modalLogin.modal();
-        });
-        $('#btn-donation').click(function () {
-            modalDonation.modal();
-        });
-        setInterval(function () {
+        $('#btn-login').click(() => modalLogin.modal());
+        $('#btn-donation').click(() => modalLogin.modal());
+        setInterval(() => {
             const text = countDown.html().split(" ");
             const remain = Number.parseInt(text[0]);
             if (remain <= 1) {
@@ -335,9 +304,7 @@
         }, 1000 * 60);
     });
 
-    function formatDate(date) {
-        return date.toISOString().substr(5, 5)
-    }
+    const formatDate = date => date.toISOString().substr(5, 5);
 </script>
 </body>
 </html>
