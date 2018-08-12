@@ -290,6 +290,23 @@
                 alert(errorThrown);
             });
         });
+
+        $('#btn-evict').click(function () {
+            $.ajax({
+                    headers: {
+                        'X-token': token
+                    },
+                    method: "DELETE",
+                    url: "/manage/donation/cache",
+                }
+            ).done(function (data, status) {
+                if (data.code !== 200) {
+                    alert(data);
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                alert(errorThrown);
+            });
+        });
         $('#btn-refresh').click(refreshData);
         $('#btn-login').click(() => modalLogin.modal());
         $('#btn-donation').click(() => modalLogin.modal());
