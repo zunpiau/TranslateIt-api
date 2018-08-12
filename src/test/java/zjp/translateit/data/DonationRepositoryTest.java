@@ -7,8 +7,8 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import zjp.translateit.test.SpringJdbcTest;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ConcurrentMap;
 
 import static org.junit.Assert.*;
 import static zjp.translateit.Constant.CACHE_NAME_DONATION;
@@ -32,10 +32,10 @@ public class DonationRepositoryTest extends SpringJdbcTest {
     public void testCache() {
         testListDonation();
         ConcurrentMapCacheManager manager = (ConcurrentMapCacheManager) cacheManager;
-        Collection<String> caches = manager.getCacheNames();
-        assertEquals(1, caches.size());
+        assertEquals(1, manager.getCacheNames().size());
         Cache cache = manager.getCache(CACHE_NAME_DONATION);
         assertNotNull(cache);
+        assertEquals(2, ((ConcurrentMap) cache.getNativeCache()).size());
         assertEquals(15, cache.get(0, List.class).size());
         assertEquals(6, cache.get(10, List.class).size());
         assertNull(cache.get(20));

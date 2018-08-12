@@ -8,9 +8,9 @@ import zjp.translateit.domain.Donation;
 import zjp.translateit.test.SpringJdbcTest;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.ConcurrentMap;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static zjp.translateit.Constant.CACHE_NAME_DONATION;
 
 public class ManageRepositoryTest extends SpringJdbcTest {
@@ -33,5 +33,6 @@ public class ManageRepositoryTest extends SpringJdbcTest {
         assertNotNull(cache);
         assertNull(cache.get(0));
         assertNull(cache.get(10));
+        assertEquals(0, ((ConcurrentMap) cache.getNativeCache()).size());
     }
 }

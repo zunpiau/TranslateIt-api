@@ -10,7 +10,6 @@ import zjp.translateit.test.SpringJdbcTest;
 import javax.annotation.Nullable;
 
 import static org.junit.Assert.assertEquals;
-import static zjp.translateit.TestConstant.TOKEN;
 import static zjp.translateit.TestConstant.UID;
 
 public class TokenRepositoryTest extends SpringJdbcTest {
@@ -19,10 +18,11 @@ public class TokenRepositoryTest extends SpringJdbcTest {
     TokenRepository repository;
     @Autowired
     JdbcTemplate template;
+    private static final Token TOKEN = new Token(UID, 1527256284L, "sign");
 
     @Test
     public void testUpdateToken() {
-        testSaveToken();
+        repository.saveToken(TOKEN);
         assertEquals(1, repository.updateToken(TOKEN, new Token(UID, 1527256284L, "newSign")));
     }
 
@@ -33,14 +33,14 @@ public class TokenRepositoryTest extends SpringJdbcTest {
         assertEquals(1, countRow(null));
     }
 
-    private int countRow(@Nullable String whereClause) {
-        return JdbcTestUtils.countRowsInTableWhere(template, "token", whereClause);
-    }
-
     @Test
     public void testRemoveAll() {
-        testSaveToken();
+        repository.saveToken(TOKEN);
         repository.removeAll(UID);
         assertEquals(0, countRow("uid = " + UID));
+    }
+
+    private int countRow(@Nullable String whereClause) {
+        return JdbcTestUtils.countRowsInTableWhere(template, "token", whereClause);
     }
 }

@@ -25,9 +25,9 @@ public class UserRepositoryTest extends SpringJdbcTest {
 
     @Test
     public void testAddUser() {
-        int i = JdbcTestUtils.countRowsInTable(template, "account");
+        assertEquals(1, JdbcTestUtils.countRowsInTable(template, "account"));
         repository.saveUser(new User(10000000000002L, "other", "password", "other@example", 0));
-        assertEquals(i + 1, JdbcTestUtils.countRowsInTable(template, "account"));
+        assertEquals(2, JdbcTestUtils.countRowsInTable(template, "account"));
     }
 
     @Test

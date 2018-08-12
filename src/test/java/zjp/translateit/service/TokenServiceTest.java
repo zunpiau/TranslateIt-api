@@ -7,8 +7,7 @@ import org.springframework.test.jdbc.JdbcTestUtils;
 import zjp.translateit.domain.Token;
 import zjp.translateit.test.SpringJdbcTest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static zjp.translateit.TestConstant.UID;
 
 public class TokenServiceTest extends SpringJdbcTest {
@@ -19,9 +18,22 @@ public class TokenServiceTest extends SpringJdbcTest {
     JdbcTemplate template;
 
     @Test
+    public void testGetNewToken() {
+        assertEquals(0, JdbcTestUtils.countRowsInTable(template, "token"));
+        service.getNewToken(UID);
+        assertEquals(1, JdbcTestUtils.countRowsInTable(template, "token"));
+    }
+
+    @Test
     public void testRefreshToken() {
-        Token token = service.getNewToken(UID);
-        Token nonexistentToken = new Token(token.getUid(), token.getTimestamp() - 10, "nonexistent");
+        Token oldToken = service.getNewToken(UID);
+        Token newToken = service.refreshToken(oldToken);
+        assertNotNull(newToken);
+        assertEquals(UID, newToken.getUid());
+        assertEquals(1, JdbcTestUtils.countRowsInTable(template, "token"));
+
+        // must modify timestamp
+        Token nonexistentToken = new Token(UID, oldToken.getTimestamp() - 10, oldToken.getSign());
         assertNull(service.refreshToken(nonexistentToken));
         assertEquals(0, JdbcTestUtils.countRowsInTable(template, "token"));
     }

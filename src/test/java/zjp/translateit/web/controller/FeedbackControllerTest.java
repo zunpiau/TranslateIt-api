@@ -32,5 +32,12 @@ public class FeedbackControllerTest extends SpringMvcTest {
                 .header("User-Agent", ua)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.content().json("{\"code\":200}"));
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/feedback")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsBytes(new FeedbackRequest(null, "contact", "")))
+                .header("User-Agent", ua)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.content().json("{\"code\":400}"));
     }
 }

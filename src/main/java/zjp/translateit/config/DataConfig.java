@@ -2,11 +2,10 @@ package zjp.translateit.config;
 
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.apache.tomcat.jdbc.pool.DataSourceFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -22,7 +21,6 @@ import java.text.MessageFormat;
 import java.util.Properties;
 
 @Configuration
-@PropertySource(value = "classpath:application.properties")
 @EnableTransactionManagement
 public class DataConfig {
 
@@ -32,10 +30,10 @@ public class DataConfig {
     }
 
     @Bean(name = "jdbcProperties")
-    public PropertiesFactoryBean jdbcProperties(@Value("${spring.profiles.active}") String profile) {
+    public PropertiesFactoryBean jdbcProperties(Environment env) {
         PropertiesFactoryBean bean = new PropertiesFactoryBean();
         bean.setLocations(new ClassPathResource(
-                MessageFormat.format("jdbc-{0}.properties", profile)));
+                MessageFormat.format("jdbc-{0}.properties", env.getActiveProfiles()[0])));
         return bean;
     }
 

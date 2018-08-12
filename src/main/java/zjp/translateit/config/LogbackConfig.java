@@ -36,7 +36,7 @@ public class LogbackConfig {
         return encoder;
     }
 
-    @Profile("dev")
+    @Profile("!prod")
     @Bean(initMethod = "start", destroyMethod = "stop", name = "appender")
     public static ConsoleAppender<ILoggingEvent> consoleAppender(LoggerContext ctx, PatternLayoutEncoder encoder) {
         ConsoleAppender<ILoggingEvent> appender = new ConsoleAppender<>();
@@ -45,7 +45,7 @@ public class LogbackConfig {
         return appender;
     }
 
-    @Profile("!dev")
+    @Profile("prod")
     @Bean(initMethod = "start", destroyMethod = "stop", name = "appender")
     public static RollingFileAppender<ILoggingEvent> fileAppender(LoggerContext ctx,
             PatternLayoutEncoder encoder,
