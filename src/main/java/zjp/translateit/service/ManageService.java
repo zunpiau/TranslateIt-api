@@ -9,7 +9,6 @@ import zjp.translateit.domain.Donation;
 import zjp.translateit.dto.SystemCounter;
 import zjp.translateit.util.EncryptUtil;
 
-import javax.annotation.Nullable;
 import java.time.Instant;
 import java.util.Base64;
 
@@ -18,14 +17,8 @@ import java.util.Base64;
 public class ManageService {
 
     private final ManageRepository repository;
-    @Value("${salt.token.manager}")
+    @Value("${manager.salt.token}")
     private String tokenSalt;
-    @Value("${salt.account.manager}")
-    private String accountSalt;
-    @Value("${manager.name}")
-    private String rootName;
-    @Value("${manager.password.hashed}")
-    private String passwordHashed;
 
     @Autowired
     public ManageService(ManageRepository repository) {
@@ -43,18 +36,7 @@ public class ManageService {
         );
     }
 
-    @Nullable
-    public String login(String name, String password) {
-        if (name.equals(rootName)
-            && passwordHashed.equals(EncryptUtil.hash(EncryptUtil.Algorithm.SHA256,
-                name + accountSalt + password))) {
-            return generateToken(name);
-        } else {
-            return null;
-        }
-    }
-
-    private String generateToken(String name) {
+    public String login(String name) {
         long currentTime = Instant.now().getEpochSecond();
         String key = EncryptUtil.hash(EncryptUtil.Algorithm.SHA256, name + tokenSalt + currentTime);
         return Base64.getEncoder().encodeToString((name + "." + currentTime + "." + key).getBytes());

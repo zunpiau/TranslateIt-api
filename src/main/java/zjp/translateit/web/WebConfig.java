@@ -1,5 +1,6 @@
 package zjp.translateit.web;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -14,10 +15,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
-import zjp.translateit.web.Interceptor.LoginInterceptor;
-import zjp.translateit.web.Interceptor.ManageInterceptor;
-import zjp.translateit.web.Interceptor.TokenInterceptor;
-import zjp.translateit.web.Interceptor.VerifyInterceptor;
+import zjp.translateit.web.Interceptor.*;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -39,10 +37,12 @@ public class WebConfig implements WebMvcConfigurer {
     private long verifyExpire;
     @Value("${expire.token}")
     private long tokenExpire;
-    @Value("${salt.token.manager}")
+    @Value("${manager.salt.token}")
     private String rootSalt;
     @Value("${expire.manager}")
     private long rootExpire;
+    @Autowired
+    private ManageTokenInterceptor manageTokenInterceptor;
 
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
@@ -60,6 +60,8 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(new ManageInterceptor(rootExpire, rootSalt))
                 .addPathPatterns("/manage", "/manage/*")
                 .excludePathPatterns("/manage/token");
+        registry.addInterceptor(manageTokenInterceptor)
+                .addPathPatterns("/manage/token");
     }
 
     @Override

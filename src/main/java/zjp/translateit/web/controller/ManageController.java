@@ -28,13 +28,8 @@ public class ManageController {
     }
 
     @RequestMapping(value = "/token", method = RequestMethod.POST)
-    public ResponseEntity login(@RequestParam String name, @RequestParam String password) {
-        String tokenString = service.login(name, password);
-        if (tokenString == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        } else {
-            return ResponseEntity.ok(tokenString);
-        }
+    public ResponseEntity login(@RequestParam String name) {
+        return ResponseEntity.ok(service.login(name));
     }
 
     @ResponseBody
