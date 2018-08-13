@@ -1,6 +1,9 @@
 package zjp.translateit.web.Interceptor;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import zjp.translateit.util.EncryptUtil;
 
@@ -10,15 +13,14 @@ import java.time.Instant;
 
 import static zjp.translateit.Constant.*;
 
+@Component
+@PropertySource(value = "classpath:application.properties")
 public class VerifyInterceptor extends HandlerInterceptorAdapter {
 
-    private final long REQUEST_EXPIRE;
-    private final String verifySalt;
-
-    public VerifyInterceptor(long requestExpire, String verifySalt) {
-        REQUEST_EXPIRE = requestExpire;
-        this.verifySalt = verifySalt;
-    }
+    @Value("${salt.verify}")
+    private String verifySalt;
+    @Value("${expire.verify}")
+    private long verifyExpire;
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler) {
@@ -32,7 +34,7 @@ public class VerifyInterceptor extends HandlerInterceptorAdapter {
             httpServletResponse.setStatus(HttpStatus.FORBIDDEN.value());
             return false;
         }
-        if ((Instant.now().getEpochSecond() - Integer.parseInt(timestamp)) > REQUEST_EXPIRE) {
+        if ((Instant.now().getEpochSecond() - Integer.parseInt(timestamp)) > verifyExpire) {
             httpServletResponse.setStatus(HttpStatus.BAD_REQUEST.value());
             return false;
         }

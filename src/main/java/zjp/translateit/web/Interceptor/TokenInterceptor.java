@@ -1,6 +1,9 @@
 package zjp.translateit.web.Interceptor;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import zjp.translateit.domain.Token;
 import zjp.translateit.util.EncryptUtil;
@@ -10,13 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import static zjp.translateit.Constant.*;
 
+@Component
+@PropertySource(value = "classpath:application.properties")
 public class TokenInterceptor extends HandlerInterceptorAdapter {
 
-    private final String tokenSalt;
-
-    public TokenInterceptor(String tokenSalt) {
-        this.tokenSalt = tokenSalt;
-    }
+    @Value("${salt.token}")
+    private String tokenSalt;
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler) {

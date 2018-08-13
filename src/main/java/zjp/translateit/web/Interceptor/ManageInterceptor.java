@@ -1,6 +1,9 @@
 package zjp.translateit.web.Interceptor;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import zjp.translateit.util.EncryptUtil;
 
@@ -12,15 +15,14 @@ import java.util.Base64;
 
 import static zjp.translateit.Constant.AUTH_TOKEN;
 
+@Component
+@PropertySource(value = "classpath:application.properties")
 public class ManageInterceptor extends HandlerInterceptorAdapter {
 
-    private final long ROOT_EXPIRE;
-    private final String ROOT_SALT;
-
-    public ManageInterceptor(long root_expire, String root_salt) {
-        ROOT_EXPIRE = root_expire;
-        ROOT_SALT = root_salt;
-    }
+    @Value("${manager.salt.token}")
+    private String salt;
+    @Value("${expire.manager}")
+    private long expire;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -42,11 +44,11 @@ public class ManageInterceptor extends HandlerInterceptorAdapter {
         if (name == null
             || timestamp == null
             || sign == null
-            || !sign.equals(EncryptUtil.hash(EncryptUtil.Algorithm.SHA256, name + ROOT_SALT + timestamp))) {
+            || !sign.equals(EncryptUtil.hash(EncryptUtil.Algorithm.SHA256, name + salt + timestamp))) {
             response.setStatus(HttpStatus.FORBIDDEN.value());
             return false;
         }
-        if ((Instant.now().getEpochSecond() - Integer.parseInt(timestamp)) > ROOT_EXPIRE) {
+        if ((Instant.now().getEpochSecond() - Integer.parseInt(timestamp)) > expire) {
             response.setStatus(HttpStatus.BAD_REQUEST.value());
             return false;
         }

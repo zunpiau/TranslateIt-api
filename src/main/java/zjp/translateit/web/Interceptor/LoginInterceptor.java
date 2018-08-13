@@ -1,6 +1,9 @@
 package zjp.translateit.web.Interceptor;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import zjp.translateit.domain.Token;
 
@@ -10,17 +13,16 @@ import java.time.Instant;
 
 import static zjp.translateit.Constant.ATTRIBUTE_TOKEN;
 
+@Component
+@PropertySource(value = "classpath:application.properties")
 public class LoginInterceptor extends HandlerInterceptorAdapter {
 
-    private final long TOKEN_EXPIRE;
-
-    public LoginInterceptor(long tokenExpire) {
-        TOKEN_EXPIRE = tokenExpire;
-    }
+    @Value("${expire.token}")
+    private long tokenExpire;
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object handler) {
-        if ((Instant.now().getEpochSecond() - ((Token) httpServletRequest.getAttribute(ATTRIBUTE_TOKEN)).getTimestamp()) > TOKEN_EXPIRE) {
+        if ((Instant.now().getEpochSecond() - ((Token) httpServletRequest.getAttribute(ATTRIBUTE_TOKEN)).getTimestamp()) > tokenExpire) {
             httpServletResponse.setStatus(HttpStatus.BAD_REQUEST.value());
             return false;
         } else {

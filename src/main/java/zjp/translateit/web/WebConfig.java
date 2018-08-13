@@ -1,11 +1,9 @@
 package zjp.translateit.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -24,25 +22,24 @@ import java.util.List;
 
 @EnableWebMvc
 @Configuration
-@PropertySource(value = "classpath:application.properties")
 @ComponentScan(basePackages = "zjp.translateit.web",
         includeFilters = @ComponentScan.Filter({ControllerAdvice.class, Controller.class}))
 public class WebConfig implements WebMvcConfigurer {
 
-    @Value("${salt.token}")
-    private String tokenSalt;
-    @Value("${salt.verify}")
-    private String verifySalt;
-    @Value("${expire.verify}")
-    private long verifyExpire;
-    @Value("${expire.token}")
-    private long tokenExpire;
-    @Value("${manager.salt.token}")
-    private String rootSalt;
-    @Value("${expire.manager}")
-    private long rootExpire;
+    private final ManageTokenInterceptor manageTokenInterceptor;
+    private final TokenInterceptor tokenInterceptor;
+    private final LoginInterceptor loginInterceptor;
+    private final ManageInterceptor manageInterceptor;
+    private final VerifyInterceptor verifyInterceptor;
+
     @Autowired
-    private ManageTokenInterceptor manageTokenInterceptor;
+    public WebConfig(ManageTokenInterceptor manageTokenInterceptor, TokenInterceptor tokenInterceptor, LoginInterceptor loginInterceptor, ManageInterceptor manageInterceptor, VerifyInterceptor verifyInterceptor) {
+        this.manageTokenInterceptor = manageTokenInterceptor;
+        this.tokenInterceptor = tokenInterceptor;
+        this.loginInterceptor = loginInterceptor;
+        this.manageInterceptor = manageInterceptor;
+        this.verifyInterceptor = verifyInterceptor;
+    }
 
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
@@ -51,17 +48,23 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new TokenInterceptor(tokenSalt))
+        registry.addInterceptor(tokenInterceptor)
                 .addPathPatterns("/wordbook", "/wordbook/**", "/token/refresh");
-        registry.addInterceptor(new LoginInterceptor(tokenExpire))
+        registry.addInterceptor(loginInterceptor)
                 .addPathPatterns("/wordbook", "/wordbook/**");
-        registry.addInterceptor(new VerifyInterceptor(verifyExpire, verifySalt))
+        registry.addInterceptor(verifyInterceptor)
                 .addPathPatterns("/verifyCode");
-        registry.addInterceptor(new ManageInterceptor(rootExpire, rootSalt))
+        registry.addInterceptor(manageInterceptor)
                 .addPathPatterns("/manage", "/manage/**")
                 .excludePathPatterns("/manage/token");
         registry.addInterceptor(manageTokenInterceptor)
                 .addPathPatterns("/manage/token");
+    }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addRedirectViewController("/view/modify_password.html", "/view/user.html")
+                .setContextRelative(false);
     }
 
     @Override
@@ -80,11 +83,5 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public ViewResolver viewResolver() {
         return new InternalResourceViewResolver("/view/", ".html");
-    }
-
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addRedirectViewController("/view/modify_password.html", "/view/user.html")
-                .setContextRelative(false);
     }
 }
