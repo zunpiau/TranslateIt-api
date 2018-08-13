@@ -25,6 +25,11 @@
             color: #fff;
         }
 
+        .navbar a:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+
         .comment {
             max-width: 36ch;
             word-wrap: break-word;
@@ -119,10 +124,17 @@
     </style>
 </head>
 <body>
-<nav class="navbar navbar-dark bg-dark justify-content-between">
-    <div class="container">
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container justify-content-between">
         <span class="navbar-brand mb-0 h1">英语 ✓</span>
-        <a href="#thank">致谢</a>
+        <ul class="nav justify-content-cente">
+            <li class="nav-item active">
+                <a class="nav-item nav-link" href="#thank">致谢</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-item nav-link" href="/view/api-help.html">API 申请</a>
+            </li>
+        </ul>
     </div>
 </nav>
 <div class="bg-light h-100">
@@ -185,7 +197,6 @@
             <tr>
                 <th scope="col">时间</th>
                 <th scope="col">支付宝ID</th>
-                <th scope="col">金额</th>
                 <th scope="col">留言</th>
             </tr>
             </thead>
