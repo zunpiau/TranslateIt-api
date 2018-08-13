@@ -25,8 +25,6 @@ public class ManageTokenInterceptorTest extends SpringMvcTest {
 
     @Test
     public void preHandle() throws Exception {
-        System.out.println("name = " + name);
-        System.out.println("password = " + password);
         MockMvc mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .build();
         mockMvc.perform(MockMvcRequestBuilders.post("/manage/token")
