@@ -172,27 +172,6 @@
                     const data = result.data;
                     $("#td-user").text(data.user);
                     $("#td-wordbook").text(data.wordbook);
-                    const today = new Date();
-                    const dateArray = new Array(7);
-                    for (let i = 0; i < 7; i++) {
-                        const otherDate = new Date();
-                        otherDate.setDate(today.getDate() - i);
-                        dateArray[6 - i] = formatDate(otherDate);
-                    }
-
-                    function createMap(dataArray, getField) {
-                        return date => {
-                            const data = dataArray.find(e => getField(e) === date);
-                            if (!data)
-                                return 0;
-                            else
-                                return data.count;
-                        }
-                    }
-
-                    const loginData = dateArray.map(createMap(data.login, e => e.date));
-                    const registerData = dateArray.map(createMap(data.register, e => e.date));
-                    const refreshData = dateArray.map(createMap(data.refresh, e => e.date));
                     const option = {
                         scales: {
                             yAxes: [{
@@ -205,37 +184,31 @@
                     new Chart($("#chart-daily"), {
                         type: 'line',
                         data: {
-                            labels: dateArray,
+                            labels: data.dateCounters.map(e => e.date),
                             datasets: [{
                                 backgroundColor: "#feffb0",
                                 label: "注册",
-                                data: registerData
+                                data: data.dateCounters.map(e => e.register),
                             }, {
                                 backgroundColor: "#a9b9ff",
                                 label: "登录",
-                                data: loginData
+                                data: data.dateCounters.map(e => e.login),
                             }, {
                                 backgroundColor: "#aaffa8",
                                 label: "刷新",
-                                data: refreshData
+                                data: data.dateCounters.map(e => e.refresh),
                             }]
                         },
                         options: option
                     });
-                    const hourNow = new Date().getHours();
-                    const hourArray = new Array(24);
-                    for (let i = 0; i < 24; i++) {
-                        hourArray[i] = (hourNow + 1 + i) % 24 + "";
-                    }
-                    const refreshHourlyData = hourArray.map(createMap(data.refreshHourly, e => e.time));
                     new Chart($("#chart-hourly"), {
                         type: 'line',
                         data: {
-                            labels: hourArray,
+                            labels: data.dateTimeCounters.map(e => e.time),
                             datasets: [{
                                 backgroundColor: "#aaffa8",
                                 label: "刷新",
-                                data: refreshHourlyData
+                                data: data.dateTimeCounters.map(e => e.count)
                             }]
                         },
                         options: option
@@ -310,7 +283,7 @@
         });
         $('#btn-refresh').click(refreshData);
         $('#btn-login').click(() => modalLogin.modal());
-        $('#btn-donation').click(() => modalLogin.modal());
+        $('#btn-donation').click(() => modalDonation.modal());
         setInterval(() => {
             const text = countDown.html().split(" ");
             const remain = Number.parseInt(text[0]);
@@ -321,8 +294,6 @@
             countDown.html(remain - 1 + " " + text[1]);
         }, 1000 * 60);
     });
-
-    const formatDate = date => date.toISOString().substr(5, 5);
 </script>
 </body>
 </html>

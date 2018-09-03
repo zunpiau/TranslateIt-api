@@ -20,7 +20,9 @@ public class ManageRepository {
     private final JdbcTemplate template;
     private final RowMapper<DateCounter> dateCounterRowMapper = (resultSet, i) ->
             new DateCounter(resultSet.getString("date"),
-                    resultSet.getInt("count"));
+                    resultSet.getInt("register"),
+                    resultSet.getInt("login"),
+                    resultSet.getInt("refresh"));
     private final RowMapper<DateTimeCounter> dateTimeCounterRowMapper = (resultSet, i) ->
             new DateTimeCounter(resultSet.getString("date"),
                     resultSet.getString("hour"),
@@ -31,36 +33,26 @@ public class ManageRepository {
         this.template = template;
     }
 
-    public List<DateCounter> countLoginDaily(int day) {
-        return template.query("SELECT to_char(create_at ,'MM-DD') AS date, COUNT(id) " +
-                              "FROM token WHERE create_at > current_date - ? " +
-                              "GROUP BY date",
+    public List<DateCounter> countDaily(int day) {
+        return template.query("SELECT to_char(date_series, 'MM-DD') AS date, register, login, refresh " +
+                              "FROM generate_series(current_date - ?, current_date, interval '1 day') AS date_series " +
+                              "  LEFT JOIN (select count(id) AS refresh, date_trunc('day', updated_at) AS date FROM token GROUP BY date) t1 " +
+                              "    ON date_series = t1.date " +
+                              "  LEFT JOIN (select count(id) AS login, date_trunc('day', create_at) AS date FROM token GROUP BY date) t2 " +
+                              "    ON date_series = t2.date " +
+                              "  LEFT JOIN (select count(id) AS register, date_trunc('day', create_at) AS date FROM account GROUP BY date) t3 " +
+                              "    ON date_series = t3.date " +
+                              "ORDER BY date_series",
                 dateCounterRowMapper,
                 day - 1);
     }
 
-    public List<DateCounter> countRegisterDaily(int day) {
-        return template.query("SELECT to_char(create_at, 'MM-DD') AS date, COUNT(id) " +
-                              "FROM account WHERE create_at > current_date - ? " +
-                              "GROUP BY date",
-                dateCounterRowMapper,
-                day - 1);
-    }
-
-    public List<DateCounter> countRefreshDaily(int day) {
-        return template.query("SELECT to_char(updated_at, 'MM-DD') AS date, COUNT(id) " +
-                              "FROM token WHERE updated_at > current_date - ? " +
-                              "GROUP BY date",
-                dateCounterRowMapper,
-                day - 1);
-    }
-
-    public List<DateTimeCounter> countRefreshHourly() {
-        return template.query("SELECT to_char(updated_at, 'MM-DD') AS date, " +
-                              "EXTRACT(HOUR FROM updated_at) AS hour, " +
-                              "COUNT(id) " +
-                              "FROM token WHERE updated_at > (now() - interval '24 hours') " +
-                              "GROUP BY date, hour",
+    public List<DateTimeCounter> countHourly() {
+        return template.query("SELECT to_char(time_series, 'MM-DD') AS date, date_part('hour',time_series) AS hour, count(id) " +
+                              " FROM generate_series(date_trunc('hour', now() - interval '23 hours'), now(), interval '1 hour') AS time_series " +
+                              " LEFT JOIN token ON time_series = date_trunc('hour', updated_at) " +
+                              " GROUP BY time_series " +
+                              " ORDER BY time_series",
                 dateTimeCounterRowMapper);
     }
 

@@ -3,18 +3,30 @@ package zjp.translateit.dto;
 public class DateCounter {
 
     private final String date;
-    private final int count;
+    private final int register;
+    private final int login;
+    private final int refresh;
 
-    public DateCounter(String date, int count) {
+    public DateCounter(String date, int register, int login, int refresh) {
         this.date = date;
-        this.count = count;
+        this.register = register;
+        this.login = login;
+        this.refresh = refresh;
     }
 
     public String getDate() {
         return date;
     }
 
-    public int getCount() {
-        return count;
+    public int getRegister() {
+        return register;
+    }
+
+    public int getLogin() {
+        return login;
+    }
+
+    public int getRefresh() {
+        return refresh;
     }
 }

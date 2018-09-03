@@ -6,43 +6,29 @@ public class SystemCounter {
 
     private final long user;
     private final long wordbook;
-    private final List<DateCounter> refresh;
-    private final List<DateCounter> login;
-    private final List<DateCounter> register;
-    private final List<DateTimeCounter> refreshHourly;
+    private final List<DateCounter> dateCounters;
+    private final List<DateTimeCounter> dateTimeCounters;
 
     public SystemCounter(long user,
             long wordbook,
-            List<DateCounter> refresh,
-            List<DateCounter> login,
-            List<DateCounter> register,
-            List<DateTimeCounter> refreshHourly) {
+            List<DateCounter> dateCounters,
+            List<DateTimeCounter> dateTimeCounters) {
         this.user = user;
         this.wordbook = wordbook;
-        this.refresh = refresh;
-        this.login = login;
-        this.register = register;
-        this.refreshHourly = refreshHourly;
+        this.dateCounters = dateCounters;
+        this.dateTimeCounters = dateTimeCounters;
     }
 
     public long getUser() {
         return user;
     }
 
-    public List<DateCounter> getRefresh() {
-        return refresh;
+    public List<DateCounter> getDateCounters() {
+        return dateCounters;
     }
 
-    public List<DateCounter> getLogin() {
-        return login;
-    }
-
-    public List<DateCounter> getRegister() {
-        return register;
-    }
-
-    public List<DateTimeCounter> getRefreshHourly() {
-        return refreshHourly;
+    public List<DateTimeCounter> getDateTimeCounters() {
+        return dateTimeCounters;
     }
 
     public long getWordbook() {

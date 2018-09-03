@@ -29,10 +29,8 @@ public class ManageService {
         return new SystemCounter(
                 repository.countUser(),
                 repository.countWordbook(),
-                repository.countRefreshDaily(7),
-                repository.countLoginDaily(7),
-                repository.countRegisterDaily(7),
-                repository.countRefreshHourly()
+                repository.countDaily(7),
+                repository.countHourly()
         );
     }
 
