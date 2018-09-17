@@ -6,3 +6,4 @@ translateit-api.iml
 swagger.yaml
 src/main/webapp/view/
 src/main/webapp/node_modules/
+src/main/webapp/dist.zip

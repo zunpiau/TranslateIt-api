@@ -166,26 +166,9 @@
                 <version>3.2.0</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
-                    <packagingExcludes>
-                        node_modules/,
-                        package.json,
-                        yarn.lock,
-                        src/
-                    </packagingExcludes>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <filesets>
-                        <fileset>
-                            <directory>${project.build.webappDirectory}/view</directory>
-                            <includes>
-                                <include>*.html</include>
-                            </includes>
-                        </fileset>
-                    </filesets>
+                    <packagingIncludes>
+                        WEB-INF/
+                    </packagingIncludes>
                 </configuration>
             </plugin>
             <plugin>
@@ -206,42 +189,6 @@
                         <port>8090</port>
                     </httpConnector>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.6.0</version>
-                <executions>
-                    <execution>
-                        <id>build</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>yarn</executable>
-                            <workingDirectory>${project.build.webappDirectory}</workingDirectory>
-                            <arguments>
-                                <argument>run</argument>
-                                <argument>build</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>default-cli</id>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>yarn</executable>
-                            <workingDirectory>${project.build.webappDirectory}</workingDirectory>
-                            <arguments>
-                                <argument>run</argument>
-                                <argument>watch</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

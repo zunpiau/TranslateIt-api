@@ -12,6 +12,7 @@
     "minify": "find src/ -regex 'src/[^index].*?.html' -type f -printf '%f\n' | xargs -i html-minifier --minify-css --remove-comments --collapse-whitespace -o 'view/{}' src/{}",
     "inline": "inline-images -c inline --remove-class --root-dir . src/index.html | html-minifier --minify-css --remove-comments --collapse-whitespace --output view/index.html",
     "build": "yarn run minify & yarn run inline",
-    "watch": "watch 'yarn run minify & yarn run inline' src/ --wait 0"
+    "watch": "watch 'yarn run minify & yarn run inline' src/ --wait 0",
+    "package": "yarn run build && zip -r dist.zip view/ images/"
   }
 }

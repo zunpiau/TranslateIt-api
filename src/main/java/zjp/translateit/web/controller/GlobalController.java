@@ -11,19 +11,12 @@ public class GlobalController {
 
     @RequestMapping("*")
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public String notFound() {
-        return "404";
-    }
-
-    @RequestMapping(value = "/")
-    public String home() {
-        return "index";
+    public void notFound() {
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public String serverError() {
-        return "500";
+    public void serverError() {
     }
 
 }

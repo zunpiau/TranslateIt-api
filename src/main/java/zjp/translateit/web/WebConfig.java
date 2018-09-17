@@ -1,7 +1,6 @@
 package zjp.translateit.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -10,9 +9,10 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.*;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import zjp.translateit.web.Interceptor.*;
 
 import java.nio.charset.StandardCharsets;
@@ -62,12 +62,6 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addRedirectViewController("/view/modify_password.html", "/view/user.html")
-                .setContextRelative(false);
-    }
-
-    @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         ArrayList<MediaType> mediaTypes = new ArrayList<>(2);
         mediaTypes.add(new MediaType(MediaType.TEXT_PLAIN, StandardCharsets.UTF_8));
@@ -78,10 +72,5 @@ public class WebConfig implements WebMvcConfigurer {
         jackson2HttpMessageConverter.setSupportedMediaTypes(Collections.singletonList(MediaType.APPLICATION_JSON));
         converters.add(stringHttpMessageConverter);
         converters.add(jackson2HttpMessageConverter);
-    }
-
-    @Bean
-    public ViewResolver viewResolver() {
-        return new InternalResourceViewResolver("/view/", ".html");
     }
 }
