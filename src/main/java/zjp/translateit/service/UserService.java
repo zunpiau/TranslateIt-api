@@ -22,6 +22,7 @@ import zjp.translateit.web.exception.UserExistException;
 import zjp.translateit.web.request.RegisterRequest;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 
 @Service
 @PropertySource(value = "classpath:application.properties")
@@ -80,12 +81,8 @@ public class UserService {
             logger.debug(e.getMessage());
             throw new UserExistException();
         }
-        redisTemplate.executePipelined((RedisCallback<Object>) connection -> {
-            ((StringRedisConnection) connection).del(VERIFY_CODE_KEY_PREFIX + registerRequest.getEmail(),
-                    EMAIL_KEY_PREFIX + registerRequest.getEmail());
-            return null;
-        });
-
+        redisTemplate.delete(Arrays.asList(VERIFY_CODE_KEY_PREFIX + registerRequest.getEmail(),
+                EMAIL_KEY_PREFIX + registerRequest.getEmail()));
     }
 
     public boolean emailRegistered(String email) {
