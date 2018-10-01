@@ -3,10 +3,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.bootcss.com/Chart.js/2.7.2/Chart.bundle.min.js"></script>
-    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <link href="https://cdnjs.loli.net/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <title>Manage</title>
     <style>
         .footer {
@@ -186,15 +186,18 @@
                         data: {
                             labels: data.dateCounters.map(e => e.date),
                             datasets: [{
-                                backgroundColor: "#feffb0",
+                                backgroundColor: "#ffa6a6A0",
+                                borderColor: "#ffa6a6",
                                 label: "注册",
                                 data: data.dateCounters.map(e => e.register),
                             }, {
-                                backgroundColor: "#a9b9ff",
+                                backgroundColor: "#a6a6ffA0",
+                                borderColor: "#a6a6ff",
                                 label: "登录",
                                 data: data.dateCounters.map(e => e.login),
                             }, {
-                                backgroundColor: "#aaffa8",
+                                backgroundColor: "#a6ffa6A0",
+                                borderColor: "#b3ffb3",
                                 label: "刷新",
                                 data: data.dateCounters.map(e => e.refresh),
                             }]
@@ -206,7 +209,8 @@
                         data: {
                             labels: data.dateTimeCounters.map(e => e.time),
                             datasets: [{
-                                backgroundColor: "#aaffa8",
+                                backgroundColor: "#a6ffa6A0",
+                                borderColor: "#a6ffa6",
                                 label: "刷新",
                                 data: data.dateTimeCounters.map(e => e.count)
                             }]
