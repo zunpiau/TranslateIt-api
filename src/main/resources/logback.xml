@@ -8,7 +8,7 @@
     <logger name="org.springframework" level="DEBUG" additivity="false">
         <appender-ref ref="appender"/>
     </logger>
-    <logger name="io.lettuce.core.protocol" level="INFO" additivity="false">
+    <logger name="io.lettuce.core.protocol" level="DEBUG" additivity="false">
         <appender-ref ref="appender"/>
     </logger>
 
